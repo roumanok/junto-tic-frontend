@@ -3,11 +3,17 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
+    "build:staging": "ng build --configuration=staging",
+    "build:production": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:junto-tic-frontend": "node dist/junto-tic-frontend/server/server.mjs"
+    "serve:ssr": "node dist/junto-tic-frontend/server/main.js",
+    "build:ssr": "ng build && ng run junto-tic-frontend:server",
+    "prerender": "ng run junto-tic-frontend:prerender",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -21,8 +27,14 @@
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.20",
+    "@ionic/angular": "^8.7.3",
+    "@ngrx/effects": "^18.1.1",
+    "@ngrx/router-store": "^18.1.1",
+    "@ngrx/store": "^18.1.1",
+    "@ngrx/store-devtools": "^18.1.1",
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
+    "swiper": "^11.2.10",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
   },

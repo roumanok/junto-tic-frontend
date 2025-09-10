@@ -1,0 +1,8 @@
+{
+  "/api/*": {
+    "target": "https://s.jatic.com.ar",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
