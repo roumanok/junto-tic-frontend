@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Listing } from '../../../core/models/listing.model';
+import { CdnService } from '../../../core/services/cdn.service';
 
 @Component({
   selector: 'app-listing-card',
@@ -10,7 +11,7 @@ import { Listing } from '../../../core/models/listing.model';
   <div class="listing-card" (click)="onCardClick()">
     <div class="listing-image">
       <img 
-        *ngIf="listing.images && listing.images.length > 0; else placeholderImage"
+        *ngIf="listing.primary_image && listing.primary_image.image_url != ''; else placeholderImage"
         [src]="getMainImage()"
         [alt]="listing.title"
         class="image">
@@ -23,12 +24,12 @@ import { Listing } from '../../../core/models/listing.model';
     </div>
 
     <div class="listing-info">
-      <div class="listing-category">{{ listing.categoryName }}</div>
+      <div class="listing-category">{{ listing.category && listing.category.name ? listing.category.name : '' }}</div>
       <h3 class="listing-title">{{ listing.title }}</h3>
       
       <div class="listing-price">
-        <span *ngIf="listing.originalPrice" class="price-original">
-          \${{ listing.originalPrice }}
+        <span *ngIf="listing.list_price" class="price-original">
+          \${{ listing.list_price }}
         </span>
         <span class="price-current">
           \${{ listing.price }}
@@ -36,7 +37,7 @@ import { Listing } from '../../../core/models/listing.model';
       </div>
 
       <div class="listing-seller">
-        {{ listing.advertiserName }}
+        {{ listing.advertiser && listing.advertiser.name ? listing.advertiser.name : '' }}
       </div>
 
       <button class="btn-view-more" (click)="onViewMore($event)">
@@ -157,9 +158,13 @@ export class ListingCardComponent {
   @Output() cardClick = new EventEmitter<Listing>();
   @Output() viewMore = new EventEmitter<Listing>();
 
+  constructor(
+      private cdnService: CdnService          
+  ) {}
+
   getMainImage(): string {
-    const mainImage = this.listing.images?.find(img => img.isMain) || this.listing.images?.[0];
-    return mainImage?.url || '/assets/images/placeholder.png';
+    const mainImage = this.listing.primary_image;    
+    return mainImage && mainImage.image_url ? this.cdnService.getCdnUrl(mainImage.image_url) : '/assets/images/placeholder.png';
   }
 
   onCardClick(): void {

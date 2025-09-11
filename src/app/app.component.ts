@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(AppActions.loadCommunity());
-    this.store.dispatch(AppActions.loadTheme());
-    this.store.dispatch(AppActions.loadCategories());
+    // this.store.dispatch(AppActions.loadTheme());
+    // this.store.dispatch(AppActions.loadCategories());
   }
 }

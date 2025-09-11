@@ -2,17 +2,9 @@ export interface Community {
   id: string; 
   slug: string;
   name: string;
-  domain: string;
-  version: number;
-  isActive: boolean;
-}
-
-export interface CommunityInfo {
-  id: string;
-  name: string;
-  slug: string;
-  domain: string;
-  isActive: boolean;
+  cdn_domain: string;
+  gen_version: number;
+  res_version: number;
 }
 
 export interface CommunityTheme {

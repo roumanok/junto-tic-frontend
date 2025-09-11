@@ -1,30 +1,30 @@
+import { Advertiser } from "./advertiser.model";
+import { Category } from "./category.model";
+
 export interface Listing {
   id: string;
-  title: string;
-  description: string;
-  shortDescription?: string;
-  price: number;
-  originalPrice?: number;
-  currency: string;
+  public_token: string;
+  title?: string;
+  description?: string;
+  short_description?: string;
+  price?: number;
+  list_price?: number;
   type: 'product' | 'service';
-  categoryId: string;
-  categoryName: string;
-  advertiserName: string;
-  advertiserId: string;
-  images: ListingImage[];
-  isActive: boolean;
-  maxQuantity?: number;
-  deliveryMethods?: DeliveryMethod[];
-  createdAt: string;
-  updatedAt: string;
+  max_quantity_per_order: number;
+  stock_quantity: number;
+  is_featured: boolean;
+  category: Category;
+  advertiser: Advertiser;
+  primary_image: ListingImage; 
+  created_at: string;  
 }
 
 export interface ListingImage {
   id: string;
-  url: string;
-  altText?: string;
-  isMain: boolean;
-  sortOrder: number;
+  image_url: string;
+  alt_text?: string;
+  is_primary: boolean;
+  sort_order: number;
 }
 
 export interface DeliveryMethod {
@@ -33,5 +33,5 @@ export interface DeliveryMethod {
   name: string;
   description?: string;
   cost: number;
-  isActive: boolean;
+  is_active: boolean;
 }

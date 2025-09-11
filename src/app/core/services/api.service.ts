@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface ApiResponse<T> {
-  data: T;
+  items: T;
   message?: string;
   success: boolean;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
+export type ApiSimpleResponse<T>  = T;
+
+export interface ApiPaginatedResponse<T> {
+  items: T[];
   pagination: {
     page: number;
     limit: number;
@@ -27,7 +29,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  get<T>(endpoint: string, params?: HttpParams): Observable<ApiResponse<T>> {
+  get<T>(endpoint: string, params?: HttpParams): Observable<ApiResponse<T>> {    
     return this.http.get<ApiResponse<T>>(`${this.baseUrl}${endpoint}`, { params });
   }
 
@@ -43,7 +45,11 @@ export class ApiService {
     return this.http.delete<ApiResponse<T>>(`${this.baseUrl}${endpoint}`);
   }
 
-  getPaginated<T>(endpoint: string, params?: HttpParams): Observable<PaginatedResponse<T>> {
-    return this.http.get<PaginatedResponse<T>>(`${this.baseUrl}${endpoint}`, { params });
+  getSimple<T>(endpoint: string, params?: HttpParams): Observable<ApiSimpleResponse<T>> {
+    return this.http.get<ApiSimpleResponse<T>>(`${this.baseUrl}${endpoint}`, { params });
+  }
+
+  getPaginated<T>(endpoint: string, params?: HttpParams): Observable<ApiPaginatedResponse<T>> {
+    return this.http.get<ApiPaginatedResponse<T>>(`${this.baseUrl}${endpoint}`, { params });
   }
 }

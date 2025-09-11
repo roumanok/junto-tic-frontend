@@ -1,7 +1,8 @@
 export const environment = {
   production: false,
   staging: false,
-  apiUrl: '/api', 
+  cmDomain: 'tubarrio.com.ar',
+  apiUrl: 'https://s.jatic.com.ar/api', 
   cdnUrl: 'https://cdn.jatic.com.ar',
   googleAnalyticsId: '',
   enableDevTools: true,

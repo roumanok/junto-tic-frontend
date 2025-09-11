@@ -1,8 +1,7 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { provideRouter, withEnabledBlockingInitialNavigation } from '@angular/router';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
@@ -12,20 +11,14 @@ import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes, withEnabledBlockingInitialNavigation()),
-    provideHttpClient(withFetch()), // ← Agregado withFetch()
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
     provideClientHydration(),
-    provideAnimations(),
+    provideHttpClient(withFetch()),
     provideStore({ app: appReducer }),
-    
-    ...(!environment.production ? [
-      provideStoreDevtools({
-        maxAge: 25,
-        logOnly: environment.production,
-        autoPause: true,
-        trace: false,
-        traceLimit: 75
-      })
-    ] : [])
-  ]
+    provideStoreDevtools({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+  ],
 };

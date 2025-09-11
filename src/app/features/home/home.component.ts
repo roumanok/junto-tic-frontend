@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, takeUntil } from 'rxjs/operators';
 
 import { HomeService } from './services/home.service';
+import { ListingService } from '../../core/services/listing.service';
 import { Listing } from '../../core/models/listing.model';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card-component';
 
@@ -145,22 +146,38 @@ import { ListingCardComponent } from '../../shared/components/listing-card/listi
     }
   `]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   listings: Listing[] = [];
   isLoading = false;
   error: string | null = null;
+  
+  private destroy$ = new Subject<void>();
 
-  constructor(private homeService: HomeService) {}
+  constructor(
+    private homeService: HomeService,
+    private listingService: ListingService
+  ) {}
 
   ngOnInit(): void {
     this.loadListings();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadListings(): void {
+    // Evitar múltiples llamadas simultáneas
+    if (this.isLoading) {
+      return;
+    }
+
     this.isLoading = true;
     this.error = null;
 
-    this.homeService.getHomeListings(15).pipe(
+    this.listingService.getFeaturedListings(15, 'featured_first').pipe(
+      takeUntil(this.destroy$),
       catchError(error => {
         console.error('Error loading listings:', error);
         this.error = 'No se pudieron cargar los productos.';
