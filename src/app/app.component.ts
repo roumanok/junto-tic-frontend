@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
   constructor(private store: Store<{ app: AppState }>) {}
 
   ngOnInit(): void {
-    this.store.dispatch(AppActions.loadCommunity());
+    //this.store.dispatch(AppActions.loadCommunity());
     // this.store.dispatch(AppActions.loadTheme());
     // this.store.dispatch(AppActions.loadCategories());
   }

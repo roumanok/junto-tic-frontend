@@ -7,16 +7,17 @@ export interface Community {
   res_version: number;
 }
 
+type Dict<T = any> = Record<string, T>;
 export interface CommunityTheme {
-  communitySlug: string;
-  version: number;
+  slug: string;
+  genVersion: number;
+  resVersion: number;
+  cdn: string; 
   assets: {
-    logo: string;
-    favicon: string;
+    logo?: string;
+    favicon?: string;
   };
-  customCSS?: string;
-  customJS?: string;
-  i18nOverride?: string;
-  slider?: string;
-  categoryImages?: Record<string, string>;
+  i18n: Dict<string>;
+  slider: { slides: Array<{ image: string; title?: string; link?: string }> };
+  ready: boolean;
 }

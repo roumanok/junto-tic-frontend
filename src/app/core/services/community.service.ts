@@ -1,5 +1,5 @@
-import { Injectable, signal } from '@angular/core';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { Community } from '../models/community.model';
 import { environment } from '../../../environments/environment';
 import { ApiService } from './api.service';
@@ -10,17 +10,18 @@ import { catchError, map, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CommunityService {
-  private currentCommunitySubject = new BehaviorSubject<Community | null>(null);
-  public currentCommunity$ = this.currentCommunitySubject.asObservable();
+  private _community = signal<Community | null>(null);
+  readonly community = this._community;
+  readonly isLoaded = computed(() => this._community() !== null);
   private detectedDomain = environment.cmDomain;
-  
-  constructor(private apiService: ApiService) {
-    this.detectCommunityFromDomain();
-  }
 
-  private detectCommunityFromDomain(): void {
+  private _loadPromise: Promise<void> | null = null;
+  
+  constructor(private apiService: ApiService) {}
+
+  async loadFromDomain(): Promise<void> {
     if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
+      const hostname = window.location.hostname.toLowerCase();
       
       // Extraer subdomain
       const parts = hostname.split('.');
@@ -34,57 +35,62 @@ export class CommunityService {
 
       console.log('Detected domain:', this.detectedDomain);
 
-      this.getCommunityByDomain(this.detectedDomain).subscribe(community => {
-        if (community) {
-          this.setCurrentCommunity(community);
-        }
-      });
-            
-    }
-  }
+      const params = new HttpParams()
+      .set('domain', this.detectedDomain);
 
-  // Signals para manejo de estado
-  private loading = signal(false);
-  private error = signal<string | null>(null);  
-
-  // Getters públicos para los signals
-  get isLoading() { return this.loading.asReadonly(); }
-  get errorMessage() { return this.error.asReadonly(); }
-
-  getCommunityByDomain(domain?: string): Observable<Community | undefined> {
-    this.loading.set(true);
-    this.error.set(null); 
-
-    const targetDomain = domain || this.detectedDomain;
-    
-    if (!targetDomain) {
-      return of(undefined);
-    }
-
-    const params = new HttpParams().set('domain', targetDomain);
-    
-    return this.apiService.getSimple<Community>('/communities/info', params)
-      .pipe(
-        map(response => {
-          console.log('Community fetched:', response);
-          return response}),
-        catchError(error => {
-          console.error('Error getting community by domain:', error);
-          return of(undefined);
-        }),
-        tap(() => this.loading.set(false))
+      const data = await firstValueFrom(
+        this.apiService.getSimple<Community>('/communities/info', params)
       );
+
+      if (!data?.id) throw new Error('No se pudo resolver comunidad');
+      this._community.set(data);            
+    }
   }
 
-  getCurrentCommunity(): Community | null {
-    return this.currentCommunitySubject.value;
+  getIdOrThrow(): string {
+    const c = this._community();
+    if (!c) throw new Error('Comunidad no disponible');
+    return c.id;
   }
 
-  setCurrentCommunity(community: Community): void {
-    this.currentCommunitySubject.next(community);
+  getCdnUrl(): string {
+    const c = this._community();
+    if (!c) throw new Error('Comunidad no disponible');
+    return c.cdn_domain;
   }
 
-  getDetectedDomain(): string {
-    return this.detectedDomain;
+  getSlugOrNull(): string {
+    const c = this._community();
+    if (!c) throw new Error('Comunidad no disponible');
+    return c.slug;
   }
+
+  /** Devuelve toda la info o lanza error si aún no está disponible. */
+  getInfoOrThrow(): Community {
+    const c = this._community();
+    if (!c) throw new Error('Comunidad no disponible');
+    return c;
+  }
+
+  /** Vuelve a cargar desde el dominio, ignorando caché en memoria. */
+  async reload(): Promise<void> {
+    this._community.set(null);
+    await this.loadFromDomain();
+  }
+
+  /**
+   * Garantiza que la comunidad esté disponible.
+   * Reusa la misma promesa si una carga ya está en curso.
+   */
+  ensureLoaded(): Promise<void> {
+    if (this._community()) return Promise.resolve();
+    if (!this._loadPromise) {
+      this._loadPromise = this.loadFromDomain().finally(() => {
+        // limpiar para permitir futuros reloads si hiciera falta
+        this._loadPromise = null;
+      });
+    }
+    return this._loadPromise;
+  }
+  
 }

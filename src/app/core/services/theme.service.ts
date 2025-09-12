@@ -1,169 +1,291 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { CommunityTheme } from '../models/community.model';
+// src/app/services/theme.service.ts
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { ApiService } from './api.service';
 import { CommunityService } from './community.service';
+import { CommunityTheme } from '../models/community.model';
+import { environment } from '../../../environments/environment';
 
-export interface SliderConfig {
-  slides: SlideItem[];
+type Dict<T = any> = Record<string, T>;
+
+declare global {
+  interface Window {
+    javascriptcommunityResourcesCallback?: (data: {
+      assets?: { logo?: string; favicon?: string };
+      customCSS?: string;
+      customJS?: string;
+      i18nOverride?: string;
+      slider?: string;
+    }) => void;
+
+    javascriptsliderConfigCallback?: (data: {
+      slides: Array<{ image: string; title?: string; link?: string }>;
+    }) => void;
+  }
 }
 
-export interface SlideItem {
-  image: string;
-  title: string;
-  link: string;
-  altText?: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private readonly cdnBaseUrl = 'https://cdn.jatic.com.ar';
-  private currentThemeSubject = new BehaviorSubject<CommunityTheme | null>(null);
-  public currentTheme$ = this.currentThemeSubject.asObservable();
-  
-  private isLoadingSubject = new BehaviorSubject<boolean>(false);
-  public isLoading$ = this.isLoadingSubject.asObservable();
+  private api = inject(ApiService);
+  private community = inject(CommunityService);
 
-  constructor(private communityService: CommunityService) {}
+  // ---- STATE (signals)
+  private _state = signal<CommunityTheme>({
+    slug: '',
+    genVersion: 0,
+    resVersion: 0,
+    cdn: '',
+    assets: {},
+    i18n: {},
+    slider: { slides: [] },
+    ready: false,
+  });
 
-  loadCommunityTheme(): Observable<CommunityTheme | null> {
-    this.isLoadingSubject.next(true);
+  readonly state = this._state.asReadonly();
+  readonly isReady = computed(() => this._state().ready);
+  readonly i18n = computed(() => this._state().i18n);
+  readonly slider = computed(() => this._state().slider);
+  readonly assets = computed(() => this._state().assets);
 
-    return this.communityService.getCommunityByDomain().pipe(
-      map(({ communitySlug, version }) => {
-        const cacheKey = `theme_${communitySlug}_${version}`;
-        const cachedTheme = this.getCachedTheme(cacheKey);
-        
-        if (cachedTheme) {
-          this.currentThemeSubject.next(cachedTheme);
-          this.isLoadingSubject.next(false);
-          return cachedTheme;
-        }
+  // ---- PUBLIC API
+  async init(): Promise<void> {
+    await this.community.ensureLoaded?.(); 
+    const info =
+      this.community.getInfoOrThrow?.() 
+      ?? this.community.community?.();   
 
-        this.loadThemeFromCDN(communitySlug, version, cacheKey);
-        return null;
-      }),
-      catchError(error => {
-        console.error('Error loading community theme:', error);
-        this.loadFallbackTheme();
-        this.isLoadingSubject.next(false);
-        return of(null);
-      })
-    );
-  }
+    if (!info) {
+      throw new Error('ThemeService: comunidad no disponible tras ensureLoaded()');
+    }
 
-  private loadThemeFromCDN(communitySlug: string, version: number, cacheKey: string): void {
-    this.loadBaseAssets(version);
-    
-    const resourcesUrl = `${this.cdnBaseUrl}/cmn/${communitySlug}/res-${version}.js`;
-    
-    (window as any).communityResourcesCallback = (theme: CommunityTheme) => {
-      this.applyTheme(theme, communitySlug, version);
-      this.setCachedTheme(cacheKey, theme);
-      this.currentThemeSubject.next(theme);
-      this.isLoadingSubject.next(false);
-    };
+    const slug = info.slug;
+    const genVersion = info.gen_version;
+    const resVersion = info.res_version;
+    const cdn = (info.cdn_domain ?? environment.cdnUrl).replace(/\/+$/, '') + '/';
 
-    this.loadScript(resourcesUrl).catch(error => {
-      console.error('Error loading community resources:', error);
-      this.loadFallbackTheme();
+    if (!slug || !genVersion || !resVersion) {
+      throw new Error('ThemeService: faltan datos de comunidad (slug/genVersion/resVersion)');
+    }
+
+    // 2) cache key
+    const cacheKey = this.cacheKey(slug, genVersion, resVersion);
+    const cached = this.readCache(cacheKey);
+
+    // 3) Setear base del state
+    this._state.update(s => ({
+      ...s,
+      slug,
+      genVersion,
+      resVersion,
+      cdn,
+      assets: cached?.assets ?? {},
+      i18n: cached?.i18n ?? {},
+      slider: cached?.slider ?? { slides: [] },
+      ready: false,
+    }));
+
+    // 4) Cargar BASE gen (CSS/JS)
+    await this.loadBaseAssets(cdn, genVersion);
+
+    // 5) Cargar recursos de comunidad via JSONP (res-{version}.js)
+    const res = await this.loadCommunityResourcesJSONP(cdn, slug, resVersion);
+
+    // 6) Overrides opcionales (custom CSS, JS, slider, i18n)
+    await this.applyCommunityOverrides(cdn, slug, res, resVersion);
+
+    // 7) Aplicar favicon/logo si existen
+    this.applyFaviconIfAny();
+    // (si querés, también podrías setear <img> globalmente si usás un id en el layout)
+
+    // 8) Guardar en cache y marcar ready
+    const current = this._state();
+    this.writeCache(cacheKey, {
+      assets: current.assets,
+      i18n: current.i18n,
+      slider: current.slider,
+      at: Date.now(),
     });
+
+    this._state.update(s => ({ ...s, ready: true }));
   }
 
-  private loadBaseAssets(version: number): void {
-    if (!document.querySelector(`link[href*="main-${version}.css"]`)) {
-      const cssLink = document.createElement('link');
-      cssLink.rel = 'stylesheet';
-      cssLink.href = `${this.cdnBaseUrl}/gen/main-${version}.css`;
-      document.head.appendChild(cssLink);
-    }
+  // ---- HELPERS
+
+  private cacheKey(slug: string, genV: number, resV: number) {
+    return `theme_${slug}_${genV}_${resV}`;
   }
 
-  private applyTheme(theme: CommunityTheme, communitySlug: string, version: number): void {
-    if (theme.customCSS) {
-      const customCssUrl = `${this.cdnBaseUrl}/cmn/${communitySlug}/${theme.customCSS}`;
-      this.loadStylesheet(customCssUrl);
-    }
-
-    if (theme.assets.favicon) {
-      this.updateFavicon(`${this.cdnBaseUrl}/cmn/${communitySlug}/${theme.assets.favicon}`);
-    }
+  private readCache(key: string): Partial<CommunityTheme> | null {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
   }
 
-  private loadStylesheet(url: string): void {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = url;
-    document.head.appendChild(link);
+  private writeCache(key: string, data: any) {
+    try { localStorage.setItem(key, JSON.stringify(data)); } catch { /* ignore */ }
   }
 
-  private loadScript(url: string): Promise<void> {
+  private loadCSS(url: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = url;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error(`Failed to load script: ${url}`));
-      document.head.appendChild(script);
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = url;
+      link.onload = () => resolve();
+      link.onerror = () => reject(new Error(`No se pudo cargar CSS: ${url}`));
+      document.head.appendChild(link);
     });
   }
 
-  private updateFavicon(url: string): void {
-    const existingFavicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
-    if (existingFavicon) {
-      existingFavicon.href = url;
-    } else {
-      const favicon = document.createElement('link');
-      favicon.rel = 'icon';
-      favicon.href = url;
-      document.head.appendChild(favicon);
+  private loadScript(url: string, isModule = false): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      if (isModule) s.type = 'module';
+      s.src = url;
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error(`No se pudo cargar JS: ${url}`));
+      document.head.appendChild(s);
+    });
+  }
+
+  private async fetchJSON<T>(url: string): Promise<T> {
+    const res = await fetch(url, { credentials: 'omit' });
+    if (!res.ok) throw new Error(`fetchJSON ${url} -> ${res.status}`);
+    return res.json() as Promise<T>;
+  }
+
+  private applyFaviconIfAny() {
+    const { assets, cdn, slug, resVersion } = this._state();
+    if (!assets.favicon) return;
+    const href = this.cdnURL(cdn, `cmn/${slug}/${assets.favicon.replace('{version}', String(resVersion))}`);
+    let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
     }
+    link.href = href;
   }
 
-  private loadFallbackTheme(): void {
-    const fallbackTheme: CommunityTheme = {
-      communitySlug: 'default',
-      version: 1,
-      assets: {
-        logo: '/assets/images/logo-junto-a-tic.svg',
-        favicon: '/favicon.ico'
-      }
-    };
-    
-    this.currentThemeSubject.next(fallbackTheme);
-    this.isLoadingSubject.next(false);
+  private cdnURL(cdn: string, path: string) {
+    return `${cdn.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
   }
 
-  private getCachedTheme(key: string): CommunityTheme | null {
-    if (typeof localStorage === 'undefined') return null;
-    
+  private async loadBaseAssets(cdn: string, genVersion: number): Promise<void> {
+    // Base CSS
+    await this.loadCSS(this.cdnURL(cdn, `gen/main-${genVersion}.css`));
+    // Base JS (si lo usás)
+    await this.loadScript(this.cdnURL(cdn, `gen/main-${genVersion}.js`));
+    // (Opcional) i18n base
     try {
-      const cached = localStorage.getItem(key);
-      return cached ? JSON.parse(cached) : null;
-    } catch {
-      return null;
+      const baseI18n = await this.fetchJSON<Dict<string>>(this.cdnURL(cdn, `gen/i18n/es.json`));
+      this._state.update(s => ({ ...s, i18n: { ...baseI18n, ...s.i18n } }));
+    } catch { /* si no está, seguimos */ }
+  }
+
+  private loadCommunityResourcesJSONP(
+    cdn: string,
+    slug: string,
+    resVersion: number
+  ): Promise<{
+    assets?: { logo?: string; favicon?: string };
+    customCSS?: string;
+    customJS?: string;
+    i18nOverride?: string;
+    slider?: string;
+  }> {
+    return new Promise((resolve, reject) => {
+      // Registrar callback temporal
+      window.javascriptcommunityResourcesCallback = (data) => {
+        // Actualizar assets en state (paths relativos al folder de la comunidad)
+        if (data.assets) {
+          this._state.update(s => ({
+            ...s,
+            assets: {
+              ...s.assets,
+              ...data.assets,
+            },
+          }));
+        }
+        resolve(data);
+        // limpiar callback
+        setTimeout(() => { delete window.javascriptcommunityResourcesCallback; }, 0);
+      };
+
+      const url = this.cdnURL(cdn, `cmn/${slug}/res-${resVersion}.js`);
+      const tag = document.createElement('script');
+      tag.src = url;
+      tag.async = true;
+      tag.onerror = () => {
+        delete window.javascriptcommunityResourcesCallback;
+        reject(new Error(`No se pudo cargar ${url}`));
+      };
+      document.head.appendChild(tag);
+    });
+  }
+
+  private async applyCommunityOverrides(
+    cdn: string,
+    slug: string,
+    res: {
+      assets?: { logo?: string; favicon?: string };
+      customCSS?: string;
+      customJS?: string;
+      i18nOverride?: string;
+      slider?: string;
+    },
+    resVersion: number
+  ): Promise<void> {
+    // custom CSS
+    if (res.customCSS) {
+      const cssUrl = this.cdnURL(cdn, `cmn/${slug}/${res.customCSS.replace('{version}', String(resVersion))}`);
+      await this.loadCSS(cssUrl);
+    }
+
+    // custom JS
+    if (res.customJS) {
+      const jsUrl = this.cdnURL(cdn, `cmn/${slug}/${res.customJS.replace('{version}', String(resVersion))}`);
+      await this.loadScript(jsUrl);
+    }
+
+    // i18n override
+    if (res.i18nOverride) {
+      const i18nUrl = this.cdnURL(cdn, `cmn/${slug}/${res.i18nOverride}`);
+      try {
+        const override = await this.fetchJSON<Dict<string>>(i18nUrl);
+        this._state.update(s => ({ ...s, i18n: { ...s.i18n, ...override } }));
+      } catch { /* ignorar si no existe */ }
+    }
+
+    // slider via JSONP
+    if (res.slider) {
+      /*
+      await new Promise<void>((resolve, reject) => {
+        window.javascriptsliderConfigCallback = (data) => {
+          this._state.update(s => ({ ...s, slider: data ?? { slides: [] } }));
+          resolve();
+          setTimeout(() => { delete window.javascriptsliderConfigCallback; }, 0);
+        };
+        const sliderUrl = this.cdnURL(cdn, `cmn/${slug}/${res.slider.replace('{version}', String(resVersion))}`);
+        const tag = document.createElement('script');
+        tag.src = sliderUrl;
+        tag.async = true;
+        tag.onerror = () => {
+          delete window.javascriptsliderConfigCallback;
+          reject(new Error(`No se pudo cargar slider ${sliderUrl}`));
+        };
+        document.head.appendChild(tag);        
+      });
+      */
     }
   }
 
-  private setCachedTheme(key: string, theme: CommunityTheme): void {
-    if (typeof localStorage === 'undefined') return;
-    
-    try {
-      localStorage.setItem(key, JSON.stringify(theme));
-    } catch (error) {
-      console.warn('Could not cache theme:', error);
-    }
-  }
+  // ---- UTILS PÚBLICOS
 
-  getCurrentTheme(): CommunityTheme | null {
-    return this.currentThemeSubject.value;
-  }
-
-  getAssetUrl(assetPath: string): string {
-    const theme = this.getCurrentTheme();
-    if (!theme) return `/assets/images/placeholder.png`;
-    
-    return `${this.cdnBaseUrl}/cmn/${theme.communitySlug}/${assetPath}`;
+  /** Devuelve URL absoluta en CDN para un asset de comunidad (ej: "med/logo.png"). */
+  assetUrl(relPath: string): string {
+    const { cdn, slug } = this._state();
+    return this.cdnURL(cdn, `cmn/${slug}/${relPath.replace(/^\/+/, '')}`);
   }
 }

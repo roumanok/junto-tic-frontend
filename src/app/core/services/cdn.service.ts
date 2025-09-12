@@ -11,9 +11,8 @@ export class CdnService {
   ) {}
   
   getCdnUrl(fileUrl: string = ''): string {
-    const community = this.communityService.getCurrentCommunity();
-    const cdnUrl = community?.cdn_domain || environment.cdnUrl;
-    return cdnUrl + fileUrl;
+    const cdnUrl = this.communityService.getCdnUrl();
+    return (cdnUrl || environment.cdnUrl) + fileUrl;
   }    
   
 }
