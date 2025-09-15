@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Observable, of } from 'rxjs';
 import { Listing } from '../../../core/models/listing.model';
 import { CdnService } from '../../../core/services/cdn.service';
 
@@ -12,7 +13,7 @@ import { CdnService } from '../../../core/services/cdn.service';
     <div class="listing-image">
       <img 
         *ngIf="listing.primary_image && listing.primary_image.image_url != ''; else placeholderImage"
-        [src]="getMainImage()"
+        [src]="getMainImage() | async"
         [alt]="listing.title"
         class="image">
       
@@ -162,9 +163,11 @@ export class ListingCardComponent {
       private cdnService: CdnService          
   ) {}
 
-  getMainImage(): string {
+  getMainImage(): Observable<string> {
     const mainImage = this.listing.primary_image;    
-    return mainImage && mainImage.image_url ? this.cdnService.getCdnUrl(mainImage.image_url) : '/assets/images/placeholder.png';
+    return mainImage && mainImage.image_url
+      ? this.cdnService.getCdnUrl$(mainImage.image_url)
+      : of('/assets/images/placeholder.png');
   }
 
   onCardClick(): void {

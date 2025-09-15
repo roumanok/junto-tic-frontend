@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
+import { PLATFORM_ID } from '@angular/core';
 
 import { HomeService } from './services/home.service';
+import { CommunityService } from '../../core/services/community.service';
 import { ListingService } from '../../core/services/listing.service';
 import { Listing } from '../../core/models/listing.model';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card-component';
@@ -35,8 +37,7 @@ import { ListingCardComponent } from '../../shared/components/listing-card/listi
           
           <!-- Error state -->
           <div *ngIf="error" class="error">
-            <p>{{ error }}</p>
-            <button (click)="loadListings()" class="btn-retry">Reintentar</button>
+            <p>{{ error }}</p>            
           </div>
           
           <!-- Listings grid -->
@@ -151,51 +152,53 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoading = false;
   error: string | null = null;
   
-  private destroy$ = new Subject<void>();
+  private destroy$ = new Subject<void>();    
+  private isBrowser: boolean;
 
   constructor(
     private homeService: HomeService,
-    private listingService: ListingService
-  ) {}
+    private listingService: ListingService,
+    private community: CommunityService,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit(): void {
-    this.loadListings();
+    //No dispares cargas en SSR
+    if (!this.isBrowser) {
+      return;
+    }
+
+    // Asegurá comunidad primero
+    this.community.ensureLoaded()
+      .then(() => {
+        // Ya estamos en browser; ahora sí pedimos los destacados
+        this.isLoading = true;
+        this.listingService.getFeaturedListings(15, 'featured_first')
+          .pipe(
+            takeUntil(this.destroy$),
+            catchError(err => {
+              console.error('Error loading listings:', err);
+              this.error = err?.message || 'Error al cargar los listados';
+              this.isLoading = false;
+              return of<Listing[]>([]);
+            })
+          )
+          .subscribe(items => {
+            this.listings = items;
+            this.isLoading = false;
+          });
+      })
+      .catch(err => {
+        console.warn('No se pudo garantizar comunidad al iniciar:', err);
+        // Podés optar por reintentar o dejar el estado vacío
+      });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  loadListings(): void {
-    // Evitar múltiples llamadas simultáneas
-    if (this.isLoading) {
-      return;
-    }
-
-    this.isLoading = true;
-    this.error = null;
-
-    this.listingService.getFeaturedListings(15, 'featured_first').pipe(
-      takeUntil(this.destroy$),
-      catchError(error => {
-        console.error('Error loading listings:', error);
-        this.error = 'No se pudieron cargar los productos.';
-        return of([]);
-      })
-    ).subscribe({
-      next: (listings) => {
-        console.log('Listings loaded:', listings);
-        this.listings = listings || [];
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Subscribe error:', error);
-        this.error = 'Error inesperado al cargar productos.';
-        this.isLoading = false;
-        this.listings = [];
-      }
-    });
   }
 
   onListingClick(listing: Listing): void {

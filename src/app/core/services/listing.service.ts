@@ -1,24 +1,14 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable, BehaviorSubject, of, map, finalize, catchError, switchMap, from, defer } from 'rxjs';
+import { Observable, map, tap, catchError, switchMap } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Listing } from '../models/listing.model';
 import { CommunityService } from './community.service';
 
 
-interface ApiResponse<T> {
-  items?: T;
-}
-
-interface FeaturedResponse {
-  items: Listing[];
-}
-
-function unwrap<T>(r: ApiResponse<T> | T): T {
-  // adapta si tu ApiResponse usa otra clave
-  return (r as ApiResponse<T>)?.items
-      ?? (r as T);
-}
+type FeaturedResponse = { items: Listing[] };
 
 @Injectable({
   providedIn: 'root'
@@ -30,18 +20,12 @@ export class ListingService {
     private communityService: CommunityService
   ) {}
 
-  private currentListingSubject = new BehaviorSubject<Listing | null>(null);
-  public currentListing$ = this.currentListingSubject.asObservable();
+  private readonly community = inject(CommunityService);
+
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private apiService =inject(ApiService);    
-  
-  /** Espera a que haya comunidad y ejecuta la llamada */
-  private withCommunity<T>(fn: (communityId: string) => Observable<T>): Observable<T> {
-    return defer(() => from(this.communityService.ensureLoaded())).pipe(
-      switchMap(() => fn(this.communityService.getIdOrThrow()))
-    );
-  }
-
+   
   // Signals para manejo de estado
   private loading = signal(false);
   private error = signal<string | null>(null);  
@@ -50,33 +34,27 @@ export class ListingService {
   get isLoading() { return this.loading.asReadonly(); }
   get errorMessage() { return this.error.asReadonly(); }
 
+
   getFeaturedListings(limit = 15, strategy = ''): Observable<Listing[]> {
-    this.loading.set(true);
-    this.error.set(null);
+    console.log('Cargando destacados con limit=', limit, 'strategy=', strategy);
 
-    const params = new HttpParams()
-      .set('page', '1')
-      .set('limit', String(limit))
-      .set('strategy', strategy);
-
-    return this.withCommunity<Listing[]>(id =>
-      // OBLIGATORIO: tipar el GET para que el stream sea FeaturedResponse
-      this.apiService
-        .get<FeaturedResponse>(`/communities/${id}/listings/featured`, params)
-        .pipe(          
-          map((res) => unwrap<FeaturedResponse>(res).items),
-
-          // mantener el tipo del stream: siempre devolvemos Listing[]
-          catchError(err => {
-            console.error('❌ Error en featured listings:', err);
-            this.error.set('No se pudieron cargar los destacados');
-            return of<Listing[]>([]);
-          }),
-
-          finalize(() => this.loading.set(false)),
-        )
+    return this.community.waitForId$().pipe(
+      switchMap((communityId) => {
+        const params = new HttpParams()
+          .set('page', '1')
+          .set('limit', String(limit))
+          .set('strategy', strategy);
+        return this.apiService.get(
+          `/communities/${communityId}/listings/featured`,
+          params 
+        );
+      }),
+      map(res => res.items as Listing[]),     
+      catchError((err) => {
+        console.error('Error loading listings:', err);
+        throw err;
+      })
     );
   }
-
   
 }

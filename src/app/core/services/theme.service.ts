@@ -50,9 +50,7 @@ export class ThemeService {
   // ---- PUBLIC API
   async init(): Promise<void> {
     await this.community.ensureLoaded?.(); 
-    const info =
-      this.community.getInfoOrThrow?.() 
-      ?? this.community.community?.();   
+    const info = this.community.community();
 
     if (!info) {
       throw new Error('ThemeService: comunidad no disponible tras ensureLoaded()');
