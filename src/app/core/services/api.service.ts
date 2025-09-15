@@ -11,6 +11,8 @@ export interface ApiResponse<T> {
 
 export type ApiSimpleResponse<T>  = T;
 
+export type ApiSimpleListResponse<T>  = T[];
+
 export interface ApiPaginatedResponse<T> {
   items: T[];
   pagination: {
@@ -47,6 +49,10 @@ export class ApiService {
 
   getSimple<T>(endpoint: string, params?: HttpParams): Observable<ApiSimpleResponse<T>> {
     return this.http.get<ApiSimpleResponse<T>>(`${this.baseUrl}${endpoint}`, { params });
+  }
+
+  getSimpleList<T>(endpoint: string, params?: HttpParams): Observable<ApiSimpleListResponse<T>> {
+    return this.http.get<ApiSimpleListResponse<T>>(`${this.baseUrl}${endpoint}`, { params });
   }
 
   getPaginated<T>(endpoint: string, params?: HttpParams): Observable<ApiPaginatedResponse<T>> {

@@ -1,6 +1,6 @@
 // src/app/services/theme.service.ts
-import { Injectable, signal, computed, inject } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Injectable, signal, computed, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ApiService } from './api.service';
 import { CommunityService } from './community.service';
 import { CommunityTheme } from '../models/community.model';
@@ -47,6 +47,11 @@ export class ThemeService {
   readonly slider = computed(() => this._state().slider);
   readonly assets = computed(() => this._state().assets);
 
+  constructor(    
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(DOCUMENT) private document: Document
+  ) {}
+
   // ---- PUBLIC API
   async init(): Promise<void> {
     await this.community.ensureLoaded?.(); 
@@ -83,7 +88,7 @@ export class ThemeService {
     }));
 
     // 4) Cargar BASE gen (CSS/JS)
-    await this.loadBaseAssets(cdn, genVersion);
+    //await this.loadBaseAssets(cdn, genVersion);
 
     // 5) Cargar recursos de comunidad via JSONP (res-{version}.js)
     const res = await this.loadCommunityResourcesJSONP(cdn, slug, resVersion);
@@ -108,6 +113,32 @@ export class ThemeService {
   }
 
   // ---- HELPERS
+
+   async loadComponentStyles(name: 'home' | string): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const info = this.community.community?.();
+    if (!info) return;
+
+    const cdn = (info as any).cdn_domain || (info as any).cdnUrl; // según tu modelo
+    const slug = (info as any).slug;
+    const res  = (info as any).res_version;
+
+    const href = `${cdn}/cmn/${slug}/${res}/styles/${name}.css`;
+    this.injectStylesheet(`theme-css-${name}`, href);
+  }
+
+  private injectStylesheet(id: string, href: string) {
+    let link = this.document.getElementById(id) as HTMLLinkElement | null;
+    if (link) {
+      if (link.href !== href) link.href = href;
+      return;
+    }
+    link = this.document.createElement('link');
+    link.id = id;
+    link.rel = 'stylesheet';
+    link.href = href;
+    this.document.head.appendChild(link);
+  }
 
   private cacheKey(slug: string, genV: number, resV: number) {
     return `theme_${slug}_${genV}_${resV}`;
@@ -153,9 +184,10 @@ export class ThemeService {
     return res.json() as Promise<T>;
   }
 
-  private applyFaviconIfAny() {
+  private applyFaviconIfAny() {    
     const { assets, cdn, slug, resVersion } = this._state();
     if (!assets.favicon) return;
+    console.log('Aplicando favicon:', assets.favicon);
     const href = this.cdnURL(cdn, `cmn/${slug}/${assets.favicon.replace('{version}', String(resVersion))}`);
     let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
     if (!link) {
@@ -212,6 +244,7 @@ export class ThemeService {
       };
 
       const url = this.cdnURL(cdn, `cmn/${slug}/res-${resVersion}.js`);
+      console.log('Cargando recursos de comunidad desde:', url);
       const tag = document.createElement('script');
       tag.src = url;
       tag.async = true;

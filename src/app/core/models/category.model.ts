@@ -8,3 +8,19 @@ export interface Category {
   is_featured: boolean;
   sort_order: number;
 }
+
+export interface CategoryWithChildren extends Category {
+  children?: Category[];
+}
+
+export interface MegaMenuCategory {
+  id: string;
+  title: string;
+  subcategories: {
+    title: string;
+    links: {
+      name: string;
+      url: string;
+    }[];
+  }[];
+}
