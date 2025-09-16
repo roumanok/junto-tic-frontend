@@ -1,0 +1,39 @@
+<div class="home-page">
+      <section class="hero">
+        <div class="hero-container">
+          <h1>Bienvenido a Junto a TIC</h1>
+          <p>Conectamos comunidades con sus emprendedores locales</p>
+        </div>
+      </section>
+      
+      <section class="listings-section">
+        <div class="container">
+          <h2>Productos y Servicios Destacados</h2>
+          
+          <!-- Loading state -->
+          <div *ngIf="isLoading" class="loading">
+            <p>Cargando productos...</p>
+          </div>
+          
+          <!-- Error state -->
+          <div *ngIf="error" class="error">
+            <p>{{ error }}</p>            
+          </div>
+          
+          <!-- Listings grid -->
+          <div *ngIf="!isLoading && !error && listings && listings.length > 0" class="listings-grid">
+            <app-listing-card
+              *ngFor="let listing of listings; trackBy: trackByListing"
+              [listing]="listing"
+              (cardClick)="onListingClick($event)"
+              (viewMore)="onListingClick($event)">
+            </app-listing-card>
+          </div>
+          
+          <!-- Empty state -->
+          <div *ngIf="!isLoading && !error && listings && listings.length === 0" class="empty-state">
+            <p>No hay productos disponibles en este momento</p>
+          </div>
+        </div>
+      </section>
+    </div>

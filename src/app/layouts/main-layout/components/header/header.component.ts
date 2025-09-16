@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { AppState } from '../../../../store/app.state';
-import { CommunityTheme } from '../../../../core/models/community.model';
 import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
@@ -12,11 +9,10 @@ import { ThemeService } from '../../../../core/services/theme.service';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit {  
   constructor(
-    private store: Store<AppState>,
     private themeService: ThemeService
   ) {    
   }

@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { AppState } from './store/app.state';
-import * as AppActions from './store/app.actions';
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -16,13 +13,6 @@ import * as AppActions from './store/app.actions';
   styles: []
 })
 export class AppComponent implements OnInit {
-  title = 'junto-tic-frontend';
-
-  constructor(private store: Store<{ app: AppState }>) {}
-
-  ngOnInit(): void {
-    // this.store.dispatch(AppActions.loadTheme());
-    //this.store.dispatch(AppActions.loadCategories());
-    this.store.dispatch(AppActions.setGlobalLoading({ isLoading: false }));
-  }
+  title = 'junto-tic-frontend';  
+  ngOnInit(): void {}
 }

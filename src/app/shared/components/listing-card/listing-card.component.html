@@ -1,0 +1,37 @@
+<div class="listing-card" (click)="onCardClick()">
+    <div class="listing-image">
+      <img 
+        *ngIf="listing.primary_image && listing.primary_image.image_url != ''; else placeholderImage"
+        [src]="getMainImage() | async"
+        [alt]="listing.title"
+        class="image">
+      
+      <ng-template #placeholderImage>
+        <div class="placeholder-icon">
+          <i class="fas fa-image"></i>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="listing-info">
+      <div class="listing-category">{{ listing.category && listing.category.name ? listing.category.name : '' }}</div>
+      <h3 class="listing-title">{{ listing.title }}</h3>
+      
+      <div class="listing-price">
+        <span *ngIf="listing.list_price" class="price-original">
+          \${{ listing.list_price }}
+        </span>
+        <span class="price-current">
+          \${{ listing.price }}
+        </span>
+      </div>
+
+      <div class="listing-seller">
+        {{ listing.advertiser && listing.advertiser.name ? listing.advertiser.name : '' }}
+      </div>
+
+      <button class="btn-view-more" (click)="onViewMore($event)">
+        Ver más
+      </button>
+    </div>
+  </div>

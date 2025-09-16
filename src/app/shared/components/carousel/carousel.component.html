@@ -1,0 +1,33 @@
+<div class="carousel-section">
+      <div class="carousel-header" *ngIf="title">
+        <h2 class="carousel-title">{{ title }}</h2>
+        <div class="carousel-controls">
+          <button 
+            class="carousel-btn" 
+            (click)="prevSlide()"
+            [disabled]="currentIndex === 0"
+            aria-label="Anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button 
+            class="carousel-btn" 
+            (click)="nextSlide()"
+            [disabled]="currentIndex >= maxIndex"
+            aria-label="Siguiente">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="carousel-container" #carouselContainer>
+        <div 
+          class="carousel-track" 
+          #carouselTrack
+          [style.transform]="'translateX(-' + offset + 'px)'"
+          (touchstart)="onTouchStart($event)"
+          (touchmove)="onTouchMove($event)"
+          (touchend)="onTouchEnd()">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>

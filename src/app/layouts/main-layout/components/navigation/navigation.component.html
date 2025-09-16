@@ -1,0 +1,29 @@
+<nav class="nav">
+      <div class="nav-container">
+        <div class="nav-left">
+          <button 
+            class="mobile-menu-toggle" 
+            (click)="toggleMobileMenu()"
+            >
+            <i class="fas fa-bars"></i>
+          </button>
+          
+          <app-mega-menu 
+            [categories]="(megaMenuData$ | async) ?? []"
+            >
+          </app-mega-menu>
+          
+          <div class="featured-categories">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="category-item">
+              Inicio
+            </a>
+            <a href="#novedades" class="category-item">Novedades</a>
+            <a href="#ofertas" class="category-item">Ofertas</a>
+          </div>
+        </div>
+        
+        <div class="user-actions">
+          <!-- Futuras acciones de usuario -->
+        </div>
+      </div>
+    </nav>
