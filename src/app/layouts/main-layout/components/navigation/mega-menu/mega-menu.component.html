@@ -1,95 +1,106 @@
-<div class="categories-dropdown" [class.active]="isMobileOpen">
-      <button class="categories-btn" (click)="toggleDropdown()" *ngIf="!isMobile()">
-        <i class="fas fa-bars"></i> Categorías
-        <span class="dropdown-arrow"><i class="fas fa-chevron-down"></i></span>
-      </button>
-      
-      <div class="dropdown-menu" [class.no-panel]="!hasSelectedCategory">
-        <!-- Header móvil -->
-        <div class="mega-mobile-header" *ngIf="isMobile()">
-          <img 
-            src="/assets/images/logo-junto-a-tic.svg" 
+<div class="dropdown-menu no-panel" [class.active]="isOpen">
+      <!-- Mobile Header -->
+      <div class="mega-mobile-header">                            
+        <img 
+            [src]="getLogoUrl()" 
             alt="Logo" 
-            class="logo-img">
-          <button 
-            class="mega-close-btn" 
-            (click)="closeMobileMenu()" 
-            aria-label="Cerrar menú">
-            Cerrar
-          </button>
-        </div>
-        
-        <div class="mega-grid">
-          <!-- Izquierda: Categorías padre -->
-          <aside class="mega-left">
-            <div class="mega-mobile-user-actions" *ngIf="isMobile()">
-              <!-- Futuras acciones de usuario -->
-            </div>
-            
-            <div class="mega-mobile-categories-title" *ngIf="isMobile()">
-              Categorías
-            </div>
-            
-            <ul class="mega-parents">
-              <li 
-                *ngFor="let category of categories" 
-                [attr.data-panel]="category.id"
-                [class.active]="selectedCategoryId === category.id"
-                (mouseenter)="onDesktopHover(category.id)"
-                (click)="onMobileClick(category.id)">
-                
-                <div class="acc-title">
-                  {{ category.title }}
-                  <i class="fa fa-chevron-right chev"></i>
-                </div>
-                
-                <!-- Acordeón móvil -->
-                <div 
-                  class="acc-children" 
-                  [class.open]="isMobile() && selectedCategoryId === category.id"
-                  [attr.data-acc]="category.id">
-                  <div class="mega-columns">
-                    <div 
-                      class="mega-col" 
-                      *ngFor="let subcategory of category.subcategories">
-                      <h4>{{ subcategory.title }}</h4>
-                      <ul class="mega-links">
-                        <li *ngFor="let link of subcategory.links">
-                          <a [routerLink]="link.url" (click)="onLinkClick()">
-                            {{ link.name }}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
+            class="logo-img"
+            loading="eager">
+        <button class="mega-close-btn" (click)="closeMegaMenu()" aria-label="Cerrar menú">
+          Cerrar
+        </button>
+      </div>
+      
+      <div class="mega-grid" #megaGrid>
+        <!-- Left Panel: Categories -->
+        <aside class="mega-left">
+          <!-- Mobile User Actions -->
+          <div class="mega-mobile-user-actions">
+            <a routerLink="/login" class="btn-secondary">Ingresar</a>
+            <a routerLink="/register" class="btn-primary">Registrarse</a>
+          </div>
+          
+          <div class="mega-mobile-categories-title">Categorías</div>
+          
+          <ul class="mega-parents" #megaParents>
+            <li 
+              *ngFor="let category of transformedCategories$ | async" 
+              [attr.data-panel]="category.id"
+              [class.active]="activeCategory === category.id"
+              (mouseenter)="onCategoryHover(category.id)"
+              (click)="onCategoryClick(category.id, $event)"
+            >
+              <div class="acc-title">
+                {{ category.title }}
+                <i class="fa fa-chevron-right chev"></i>
+              </div>                                
+              
+              <!-- Mobile Accordion Content -->
+              <div 
+                class="acc-children" 
+                [attr.data-acc]="category.id"
+                [class.open]="openAccordion === category.id"
+              >
+                <div class="mega-columns">
+                  <div 
+                    *ngFor="let subcategory of category.subcategories" 
+                    class="mega-col"
+                  >
+                    <h4>
+                      <a 
+                        [routerLink]="'/categoria/' + getCategorySlug(category.id, subcategory.id)" 
+                        (click)="onLinkClick()"
+                        class="subcategory-title-link"
+                      >
+                        {{ subcategory.title }}
+                      </a>
+                    </h4>
+                    <ul class="mega-links" *ngIf="subcategory.links.length > 0">
+                      <li *ngFor="let link of subcategory.links">
+                        <a [routerLink]="link.url" (click)="onLinkClick()">
+                          {{ link.name }}
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                 </div>
-              </li>
-            </ul>
-          </aside>
-          
-          <!-- Derecha: Panel de subcategorías (solo desktop) -->
-          <section class="mega-right" *ngIf="!isMobile()">
-            <div 
-              class="mega-panel" 
-              *ngFor="let category of categories"
-              [class.active]="selectedCategoryId === category.id"
-              [id]="'panel-' + category.id">
-              <div class="mega-columns">
-                <div 
-                  class="mega-col" 
-                  *ngFor="let subcategory of category.subcategories">
-                  <h4>{{ subcategory.title }}</h4>
-                  <ul class="mega-links">
-                    <li *ngFor="let link of subcategory.links">
-                      <a [routerLink]="link.url" (click)="onLinkClick()">
-                        {{ link.name }}
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+              </div>
+            </li>
+          </ul>
+        </aside>
+        
+        <!-- Right Panel: Desktop Subcategories -->
+        <section class="mega-right" #megaRight>
+          <div 
+            *ngFor="let category of transformedCategories$ | async" 
+            class="mega-panel" 
+            [id]="'panel-' + category.id"
+            [class.active]="activeCategory === category.id"
+          >
+            <div class="mega-columns">
+              <div 
+                *ngFor="let subcategory of category.subcategories" 
+                class="mega-col"
+              >
+                <h4>
+                  <a 
+                    [routerLink]="'/categoria/' + getCategorySlug(category.id, subcategory.id)" 
+                    (click)="onLinkClick()"
+                    class="subcategory-title-link"
+                  >
+                    {{ subcategory.title }}
+                  </a>
+                </h4>
+                <ul class="mega-links" *ngIf="subcategory.links.length > 0">
+                  <li *ngFor="let link of subcategory.links">
+                    <a [routerLink]="link.url" (click)="onLinkClick()">
+                      {{ link.name }}
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
     </div>

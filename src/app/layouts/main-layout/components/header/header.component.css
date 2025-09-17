@@ -1,10 +1,14 @@
+:host{
+  display: block;  /* importante, los custom elements son inline por defecto */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 .header {
       background: linear-gradient(135deg, #4A90A4 0%, #2C5F6F 100%);
       color: white;
       padding: 1rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
       box-shadow: 0 2px 10px rgba(0,0,0,0.15);
     }
 
@@ -47,6 +51,7 @@
       font-size: 1rem;
       outline: none;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
     }
 
     .search-btn {
@@ -91,6 +96,12 @@
       .search-container {
         width: 100%;
         max-width: none;
+      }
+
+      .search-bar {
+        width: calc(100% - 20px);
+        padding: 8px 40px 8px 15px;
+        border-radius: 10px;
       }
 
       .header-right {

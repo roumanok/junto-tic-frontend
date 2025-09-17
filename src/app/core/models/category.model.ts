@@ -6,21 +6,45 @@ export interface Category {
   parent_id: string;
   icon_url?: string;
   is_featured: boolean;
-  sort_order: number;
+  sort_order: number;  
 }
 
-export interface CategoryWithChildren extends Category {
-  children?: Category[];
+// Para el mega menú transformado
+export interface CategoryLink {
+  name: string;
+  url: string;
+  icon?: string;
+  description?: string;
 }
 
-export interface MegaMenuCategory {
+export interface Subcategory {
+  id?: string;
+  title: string;
+  description?: string;
+  links: CategoryLink[];
+  image?: string;
+}
+
+export interface MMCategory {
   id: string;
   title: string;
-  subcategories: {
-    title: string;
-    links: {
-      name: string;
-      url: string;
-    }[];
-  }[];
+  description?: string;
+  icon?: string;
+  image?: string;
+  subcategories: Subcategory[];
+  featured?: boolean;
+  order?: number;
+}
+
+export interface FeaturedCategory {
+  name: string;
+  url: string;
+  active: boolean;
+  icon?: string;
+}
+
+// Para la navegación
+export interface NavigationConfig {
+  featuredCategories: FeaturedCategory[];
+  showMobileUserActions: boolean;
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
@@ -14,8 +13,7 @@ import { ThemeService } from '../../../../core/services/theme.service';
 export class HeaderComponent implements OnInit {  
   constructor(
     private themeService: ThemeService
-  ) {    
-  }
+  ) {}
 
   ngOnInit(): void {}
 
