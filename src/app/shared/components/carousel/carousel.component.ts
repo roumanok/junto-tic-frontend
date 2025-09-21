@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ElementRef, ViewChild ,Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -16,7 +16,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
   @Input() visibleItems: number = 4;
   @Output() slideChange = new EventEmitter<number>();
 
-  @ViewChild('carouselTrack') carouselTrack!: ElementRef;
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,    
+  ) {};
+
+  @ViewChild('carouselTrack') carouselTrack!: ElementRef; 
   @ViewChild('carouselContainer') carouselContainer!: ElementRef;
 
   currentIndex = 0;
@@ -41,11 +45,12 @@ export class CarouselComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  ngAfterViewInit(): void {
-    this.calculateDimensions();
+  
+  ngAfterViewInit(): void {    
+      if (isPlatformBrowser(this.platformId)) {        
+        this.calculateDimensions();
+      }
   }
-
   private setupResizeListener(): void {
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', () => {
@@ -54,13 +59,19 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
   }
 
-  private calculateDimensions(): void {
-    if (this.carouselTrack?.nativeElement) {
-      this.totalItems = this.carouselTrack.nativeElement.children.length;
-      this.visibleItems = this.getVisibleItems();
-      this.maxIndex = Math.max(0, this.totalItems - this.visibleItems);
-      this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
-      this.updateCarousel();
+  private calculateDimensions(): void {    
+    if (this.carouselTrack?.nativeElement) {      
+      this.totalItems = this.carouselTrack.nativeElement.children.length;      
+      if (this.totalItems === 0) {
+        console.warn('No items found in carouselTrack');
+        setTimeout(() => this.calculateDimensions(), 100);        
+      }
+      else{
+        this.visibleItems = this.getVisibleItems();
+        this.maxIndex = Math.max(0, this.totalItems - this.visibleItems);
+        this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
+        this.updateCarousel();
+      }
     }
   }
 

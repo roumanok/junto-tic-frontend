@@ -1,0 +1,17 @@
+    <section class="highlights-strip">
+      <div class="highlights-container">
+        <div 
+          *ngFor="let highlight of highlights; trackBy: trackByFn" 
+          class="highlight-item"
+          (click)="onHighlightClick(highlight)"
+        >
+          <div class="highlight-icon">
+            <i [class]="'fas ' + highlight.icon"></i>
+          </div>
+          <div class="highlight-content">
+            <h3>{{ highlight.title }}</h3>
+            <p>{{ highlight.description }}</p>
+          </div>
+        </div>
+      </div>
+    </section>

@@ -4,8 +4,7 @@
   padding: 3rem 0 1rem;
 }
 
-.footer-container {
-  max-width: 1200px;
+.footer-container {  
   margin: 0 auto;
   padding: 0 2rem;
   display: grid;

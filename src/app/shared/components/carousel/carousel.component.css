@@ -59,6 +59,11 @@
       transition: transform 0.3s ease;
     }
 
+    .carousel-track ::ng-deep app-listing-card {
+      flex: 0 0 280px;
+      max-width: 280px;
+    }
+
     @media (max-width: 768px) {
       .carousel-section {
         margin: 2rem auto;
@@ -77,5 +82,10 @@
 
       .carousel-track {
         gap: 1rem;
+      }
+
+      .carousel-track ::ng-deep app-listing-card {
+        flex: 0 0 250px;
+        max-width: 250px;
       }
     }

@@ -7,8 +7,7 @@
   z-index: 999;
 }
 
-.nav-container {
-  max-width: 1200px;
+.nav-container {  
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
