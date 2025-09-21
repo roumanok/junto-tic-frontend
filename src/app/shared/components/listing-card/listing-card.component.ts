@@ -1,8 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
 import { Listing } from '../../../core/models/listing.model';
 import { CdnService } from '../../../core/services/cdn.service';
+import { ListingService } from 'src/app/core/services/listing.service';
 
 @Component({
   selector: 'app-listing-card',
@@ -17,7 +19,9 @@ export class ListingCardComponent {
   @Output() viewMore = new EventEmitter<Listing>();
 
   constructor(
-      private cdnService: CdnService          
+      private cdnService: CdnService,
+      private router: Router,
+      private listingService: ListingService 
   ) {}
 
   getMainImage(): Observable<string> {
@@ -27,12 +31,17 @@ export class ListingCardComponent {
       : of('/assets/images/placeholder.png');
   }
 
-  onCardClick(): void {
+  onCardClick(): void {    
+    const slug = this.listingService.generateSlugWithId(this.listing.title || 'listing', this.listing.id);
+    this.router.navigate(['/listing', slug]);
     this.cardClick.emit(this.listing);
   }
 
   onViewMore(event: Event): void {
-    event.stopPropagation();
+    event.stopPropagation();    
+    const slug = this.listingService.generateSlugWithId(this.listing.title || 'listing', this.listing.id);
+    this.router.navigate(['/listing', slug]);
     this.viewMore.emit(this.listing);
   }
+
 }

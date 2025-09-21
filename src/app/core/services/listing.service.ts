@@ -56,5 +56,17 @@ export class ListingService {
       })
     );
   }
+
+  generateSlugWithId(title: string, id: string): string {
+    const baseSlug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+    
+    // Formato: {slug}-lid-{id}
+    return `${baseSlug}-lid-${id}`;
+  }
   
 }

@@ -27,6 +27,15 @@ export interface ListingImage {
   sort_order: number;
 }
 
+export interface ListingDetail extends Listing {
+  images: ListingImage[];
+  slug?: string;
+  meta_description?: string;
+  tags?: string[];
+  delivery_methods?: DeliveryMethod[];
+  related_listings?: Listing[];
+}
+
 export interface DeliveryMethod {
   id: string;
   type: 'pickup' | 'delivery';

@@ -1,0 +1,182 @@
+<!-- src/app/features/listing-detail/listing-detail.component.html -->
+<div class="listing-detail-page">
+  
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Cargando...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <div class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h2>Error al cargar el listing</h2>
+      <p>{{ error }}</p>
+      <button class="btn-secondary" (click)="goHome()">
+        Volver al inicio
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main *ngIf="listing && !loading && !error" class="listing-container">
+    
+    <div class="listing-content">
+      
+      <!-- Image Gallery -->
+      <div class="gallery-section">
+        <app-image-gallery 
+          [images]="displayImages" 
+          [title]="listing.title || ''">
+        </app-image-gallery>
+      </div>
+
+      <!-- Listing Info -->
+      <div class="listing-info">
+        
+        <div class="listing-category" *ngIf="listing.category">
+          {{ listing.category.name || listing.category.slug }}
+        </div>
+        
+        <h1 class="listing-title">{{ listing.title }}</h1>
+        
+        <div class="listing-price">
+          <span *ngIf="hasDiscount" class="price-original">
+            ${{ formattedListPrice | number:'1.2-2' }}
+          </span>
+          <span *ngIf="hasDiscount" class="price-discount">
+            -{{ discountPercentage }}%
+          </span>
+          <div class="price-current">
+            ${{ formattedPrice | number:'1.2-2' }}
+          </div>
+        </div>
+
+        <div class="short-description" *ngIf="listing.short_description">
+          <p>{{ listing.short_description }}</p>
+        </div>
+
+        <div class="listing-seller" *ngIf="listing.advertiser">
+          <i class="fas fa-store"></i>
+          Vendido por: <strong>{{ listing.advertiser.name }}</strong>
+        </div>
+
+        <!-- Stock Info -->
+        <div class="stock-info" *ngIf="listing.stock_quantity">
+          <i class="fas fa-box"></i>
+          Stock disponible: {{ listing.stock_quantity }} unidades
+        </div>
+
+        <!-- Purchase Section -->
+        <div class="purchase-section">
+          
+          <div class="quantity-selector">
+            <span class="quantity-label">Cantidad:</span>
+            <div class="quantity-controls">
+              <button 
+                class="quantity-btn" 
+                (click)="decreaseQuantity()"
+                [disabled]="quantity <= 1">
+                -
+              </button>
+              <input 
+                type="number" 
+                class="quantity-input" 
+                [(ngModel)]="quantity"
+                [min]="1" 
+                [max]="listing.max_quantity_per_order">
+              <button 
+                class="quantity-btn" 
+                (click)="increaseQuantity()"
+                [disabled]="quantity >= listing.max_quantity_per_order">
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn-add-cart" (click)="addToCart()">
+              <i class="fas fa-shopping-cart"></i>
+              Agregar al carrito
+            </button>
+            <button class="btn-wishlist" (click)="toggleWishlist()">
+              <i class="far fa-heart"></i>
+            </button>
+          </div>
+
+          <!-- Delivery Methods -->
+          <div class="delivery-info" *ngIf="listing.delivery_methods && listing.delivery_methods.length > 0">
+            <div class="delivery-title">
+              <i class="fas fa-truck"></i>
+              Métodos de entrega
+            </div>
+            <div class="delivery-methods">
+              <div *ngFor="let method of listing.delivery_methods" class="delivery-method">
+                <div class="method-name">
+                  <i class="fas" [ngClass]="{'fa-store': method.type === 'pickup', 'fa-shipping-fast': method.type === 'delivery'}"></i>
+                  {{ method.name }}
+                </div>
+                <div class="method-description" *ngIf="method.description">
+                  {{ method.description }}
+                </div>
+                <div class="method-cost">
+                  {{ getMethodCostDisplay(method.cost) }}
+                </div>
+                <div class="method-address" *ngIf="method.address">
+                  <small>{{ method.address }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Default shipping info if no delivery methods -->
+          <div class="shipping-info" *ngIf="!listing.delivery_methods || listing.delivery_methods.length === 0">
+            <div class="shipping-title">
+              <i class="fas fa-truck"></i>
+              Información de envío
+            </div>
+            <div class="shipping-details">
+              • Envío gratis en compras mayores a $50<br>
+              • Entrega estimada: 2-3 días hábiles<br>
+              • Consulta métodos de entrega disponibles
+            </div>
+          </div>
+
+        </div>
+        
+      </div>
+      
+    </div>
+
+    <!-- Full Description Section -->
+    <section class="description-section" *ngIf="listing.long_description">
+      <div class="section-container">
+        <h2>Descripción completa</h2>
+        <div class="description-content">
+          <p>{{ listing.long_description }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Products -->
+    <section class="related-section" *ngIf="relatedListings.length > 0">
+      <div class="section-container">
+        <app-carousel title="Listings relacionados">
+          <app-listing-card 
+            *ngFor="let relatedListing of relatedListings" 
+            [listing]="relatedListing"
+            (cardClick)="onRelatedListingClick($event)">
+          </app-listing-card>
+        </app-carousel>
+      </div>
+    </section>
+
+  </main>
+  
+</div>

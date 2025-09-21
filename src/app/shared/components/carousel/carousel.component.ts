@@ -62,8 +62,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   private calculateDimensions(): void {    
     if (this.carouselTrack?.nativeElement) {      
       this.totalItems = this.carouselTrack.nativeElement.children.length;      
-      if (this.totalItems === 0) {
-        console.warn('No items found in carouselTrack');
+      if (this.totalItems === 0) {        
         setTimeout(() => this.calculateDimensions(), 100);        
       }
       else{
