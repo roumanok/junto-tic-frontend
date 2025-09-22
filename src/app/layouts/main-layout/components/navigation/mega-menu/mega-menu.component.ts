@@ -29,7 +29,7 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private cats: CategoryService,
-    private themeService: ThemeService
+    public themeService: ThemeService
   ) {
     this.transformedCategories$ = this.cats.all$.pipe(
       map(categories => this.transformCategories(categories))
@@ -43,14 +43,6 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  getLogoUrl(): string {
-    const theme = this.themeService;
-    if (theme?.assets().logo) {
-      return theme.assetUrl(theme.assets().logo ? theme.assets().logo as string : '/med/logo.png');
-    }
-    return theme.assetUrl('/med/logo.png');
   }
 
   private transformCategories(categories: Category[]): MMCategory[] {

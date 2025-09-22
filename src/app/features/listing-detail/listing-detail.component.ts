@@ -194,6 +194,20 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  purchase(): void {
+    if (!this.listing) return;
+
+    // Aquí implementarías la lógica de agregar al carrito
+    console.log('Iniciando compra:', {
+      listing: this.listing.id,
+      quantity: this.quantity
+    });
+
+    if (this.isBrowser) {
+      alert(`${this.listing.title} (${this.quantity} unidad${this.quantity > 1 ? 'es' : ''})`);
+    }
+  }
+
   toggleWishlist(): void {
     if (!this.listing) return;
 

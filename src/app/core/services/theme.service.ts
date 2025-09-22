@@ -319,4 +319,11 @@ export class ThemeService {
     const { cdn, slug } = this._state();
     return this.cdnURL(cdn, `cmn/${slug}/${relPath.replace(/^\/+/, '')}`);
   }
+
+  getLogoUrl(): string {    
+    if (this.assets().logo) {
+      return this.assetUrl(this.assets().logo ? this.assets().logo as string : '/med/logo.png');
+    }
+    return 'placeholder.png';
+  }
 }

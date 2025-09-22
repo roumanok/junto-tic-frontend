@@ -14,16 +14,9 @@ export class FooterComponent implements OnInit {
   currentYear = new Date().getFullYear();
 
   constructor(
-    private themeService: ThemeService
+    public themeService: ThemeService
   ) {}
 
   ngOnInit(): void {}
 
-  getLogoUrl(): string {
-    const theme = this.themeService;
-    if (theme?.assets().logo) {
-      return theme.assetUrl(theme.assets().logo ? theme.assets().logo as string : '/med/logo.png');
-    }
-    return theme.assetUrl('/med/logo.png');
-  }
 }

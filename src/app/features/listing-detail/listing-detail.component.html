@@ -47,12 +47,14 @@
         <h1 class="listing-title">{{ listing.title }}</h1>
         
         <div class="listing-price">
-          <span *ngIf="hasDiscount" class="price-original">
-            ${{ formattedListPrice | number:'1.2-2' }}
-          </span>
-          <span *ngIf="hasDiscount" class="price-discount">
-            -{{ discountPercentage }}%
-          </span>
+          <div class="price-original-wrapper">
+            <span *ngIf="hasDiscount" class="price-original">
+              ${{ formattedListPrice | number:'1.2-2' }}
+            </span>
+            <span *ngIf="hasDiscount" class="price-discount">
+              -{{ discountPercentage }}%
+            </span>
+          </div>
           <div class="price-current">
             ${{ formattedPrice | number:'1.2-2' }}
           </div>
@@ -75,39 +77,44 @@
 
         <!-- Purchase Section -->
         <div class="purchase-section">
-          
-          <div class="quantity-selector">
-            <span class="quantity-label">Cantidad:</span>
-            <div class="quantity-controls">
-              <button 
-                class="quantity-btn" 
-                (click)="decreaseQuantity()"
-                [disabled]="quantity <= 1">
-                -
+          <div class="purchase-wrapper">
+            <div class="quantity-selector">
+              <span class="quantity-label">Cantidad:</span>
+              <div class="quantity-controls">
+                <button 
+                  class="quantity-btn" 
+                  (click)="decreaseQuantity()"
+                  [disabled]="quantity <= 1">
+                  -
+                </button>
+                <input 
+                  type="number" 
+                  class="quantity-input" 
+                  [(ngModel)]="quantity"
+                  [min]="1" 
+                  [max]="listing.max_quantity_per_order">
+                <button 
+                  class="quantity-btn" 
+                  (click)="increaseQuantity()"
+                  [disabled]="quantity >= listing.max_quantity_per_order">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button class="btn-purchase" (click)="purchase()">
+                <i class="fas fa-shopping-cart"></i>
+                Comprar
               </button>
-              <input 
-                type="number" 
-                class="quantity-input" 
-                [(ngModel)]="quantity"
-                [min]="1" 
-                [max]="listing.max_quantity_per_order">
-              <button 
-                class="quantity-btn" 
-                (click)="increaseQuantity()"
-                [disabled]="quantity >= listing.max_quantity_per_order">
-                +
+              <button class="btn-add-cart" (click)="addToCart()">
+                <i class="fas fa-shopping-cart"></i>
+                Agregar al carrito
+              </button>
+              <button class="btn-wishlist" (click)="toggleWishlist()">
+                <i class="far fa-heart"></i>
               </button>
             </div>
-          </div>
-
-          <div class="action-buttons">
-            <button class="btn-add-cart" (click)="addToCart()">
-              <i class="fas fa-shopping-cart"></i>
-              Agregar al carrito
-            </button>
-            <button class="btn-wishlist" (click)="toggleWishlist()">
-              <i class="far fa-heart"></i>
-            </button>
           </div>
 
           <!-- Delivery Methods -->
@@ -167,7 +174,7 @@
     <!-- Related Products -->
     <section class="related-section" *ngIf="relatedListings.length > 0">
       <div class="section-container">
-        <app-carousel title="Listings relacionados">
+        <app-carousel title="Te puede interesar">
           <app-listing-card 
             *ngFor="let relatedListing of relatedListings" 
             [listing]="relatedListing"
