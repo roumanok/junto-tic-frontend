@@ -27,7 +27,7 @@ import { CarouselComponent } from '../../shared/components/carousel/carousel.com
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  featuredListings: Listing[] = [];
+  newestListings: Listing[] = [];
   offerListings: Listing[] = [];
   error: string | null = null;
   
@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Asegurá comunidad primero
     this.community.ensureLoaded()
       .then(() => {
-        this.listingService.getFeaturedListings(15, 'featured_first')
+        this.listingService.getFeaturedListings(15, 'newest_first')
           .pipe(
             takeUntil(this.destroy$),
             catchError(err => {
@@ -61,9 +61,9 @@ export class HomeComponent implements OnInit, OnDestroy {
             })
           )
           .subscribe(items => {
-            this.featuredListings = items;            
+            this.newestListings = items;            
           });
-        this.listingService.getFeaturedListings(15, 'mixed_random')
+        this.listingService.getFeaturedListings(15, 'offers_first')
           .pipe(
             takeUntil(this.destroy$),
             catchError(err => {

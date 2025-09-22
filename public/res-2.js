@@ -1,7 +1,7 @@
 javascriptcommunityResourcesCallback({
   "assets": {
     "logo": "med/logo.svg",
-    "favicon": "med/favicon.png"
+    "favicon": "med/favicon.svg"
   },
   //"customCSS": "custom-{version}.css",
   //"customJS": "main-{version}.js",

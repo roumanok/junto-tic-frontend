@@ -49,14 +49,14 @@
         <div class="listing-price">
           <div class="price-original-wrapper">
             <span *ngIf="hasDiscount" class="price-original">
-              ${{ formattedListPrice | number:'1.2-2' }}
+              ${{ formattedListPrice }}
             </span>
             <span *ngIf="hasDiscount" class="price-discount">
               -{{ discountPercentage }}%
             </span>
           </div>
           <div class="price-current">
-            ${{ formattedPrice | number:'1.2-2' }}
+            ${{ formattedPrice }}
           </div>
         </div>
 

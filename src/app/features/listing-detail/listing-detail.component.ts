@@ -256,12 +256,12 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
     return Math.round(((listPrice - currentPrice) / listPrice) * 100);
   }
 
-  get formattedPrice(): number {
-    return this.listing ? parseFloat(this.listing.price) : 0;
+  get formattedPrice(): string {    
+    return this.listing ? parseInt(this.listing.price).toLocaleString('es-AR') : '0';
   }
 
-  get formattedListPrice(): number {
-    return this.listing ? parseFloat(this.listing.list_price as string) : 0;
+  get formattedListPrice(): string {
+    return this.listing ? parseInt(this.listing.list_price as string).toLocaleString('es-AR') : '0';
   }
 
   goHome(): void {
@@ -269,7 +269,9 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   }
 
   getMethodCostDisplay(cost: string): string {
-    const numericCost = parseFloat(cost);
-    return numericCost === 0 ? 'Gratis' : `${numericCost.toFixed(2)}`;
+    const numericCost = parseInt(cost);
+    return numericCost === 0 
+      ? 'Gratis' 
+      : `$${numericCost.toLocaleString('es-AR')}`;
   }
 }
