@@ -34,6 +34,9 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
     this.transformedCategories$ = this.cats.all$.pipe(
       map(categories => this.transformCategories(categories))
     );
+    this.cats.all$.subscribe(categories => {
+      this.allCategories = categories;      
+    });
   }
 
   ngOnInit() {
@@ -47,12 +50,11 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
 
   private transformCategories(categories: Category[]): MMCategory[] {
     // Filtrar solo categorías padre (sin parent_id o parent_id null)
-    const parentCategories = categories.filter(cat => !cat.parent_id || cat.parent_id === null);
-    
+    const parentCategories = categories.filter(cat => !cat.parent_id || cat.parent_id === null);    
     return parentCategories.map(parentCat => {
       // Buscar categorías hijas
       const childCategories = categories.filter(cat => cat.parent_id === parentCat.id);
-      
+                 
       // Si no hay hijas, crear estructura básica con la misma categoría como subcategoría
       const subcategories: Subcategory[] = childCategories.length > 0 
         ? childCategories.map(child => ({
@@ -68,20 +70,19 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
               links: [
                 {
                   name: `Ver todo en ${parentCat.name || parentCat.slug}`,
-                  url: `/categoria/${parentCat.slug}`
+                  url: `/category/${parentCat.slug}`
                 },
                 {
                   name: 'Novedades',
-                  url: `/categoria/${parentCat.slug}/novedades`
+                  url: `/category/${parentCat.slug}/novedades`
                 },
                 {
                   name: 'Ofertas',
-                  url: `/categoria/${parentCat.slug}/ofertas`
+                  url: `/category/${parentCat.slug}/ofertas`
                 }
               ]
             }
           ];
-
       return {
         id: parentCat.id,
         title: parentCat.name || parentCat.slug,

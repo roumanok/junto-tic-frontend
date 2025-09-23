@@ -88,7 +88,8 @@ export class ThemeService {
     }));
 
     // 4) Cargar BASE gen (CSS/JS)
-    //await this.loadBaseAssets(cdn, genVersion);
+    console.log('Cargando assets base desde CDN...');
+    await this.loadBaseAssets(cdn, genVersion);
 
     // 5) Cargar recursos de comunidad via JSONP (res-{version}.js)
     const res = await this.loadCommunityResourcesJSONP(cdn, slug, resVersion);
@@ -202,16 +203,17 @@ export class ThemeService {
     return `${cdn.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
   }
 
-  private async loadBaseAssets(cdn: string, genVersion: number): Promise<void> {
+  private async loadBaseAssets(cdn: string, genVersion: number): Promise<void> {    
     // Base CSS
-    await this.loadCSS(this.cdnURL(cdn, `gen/main-${genVersion}.css`));
+    //await this.loadCSS(this.cdnURL(cdn, `gen/main-${genVersion}.css`));
     // Base JS (si lo usás)
-    await this.loadScript(this.cdnURL(cdn, `gen/main-${genVersion}.js`));
-    // (Opcional) i18n base
-    try {
-      const baseI18n = await this.fetchJSON<Dict<string>>(this.cdnURL(cdn, `gen/i18n/es.json`));
-      this._state.update(s => ({ ...s, i18n: { ...baseI18n, ...s.i18n } }));
-    } catch { /* si no está, seguimos */ }
+    //await this.loadScript(this.cdnURL(cdn, `gen/main-${genVersion}.js`));
+    // i18n base
+    console.log('Cargando i18n base desde CDN...');
+    console.log('CDN:', cdn);
+    console.log('genVersion:', genVersion); 
+    const baseI18n = await this.fetchJSON<Dict<string>>(this.cdnURL(cdn, `gen/i18n/es.json`));
+    this._state.update(s => ({ ...s, i18n: { ...baseI18n, ...s.i18n } }));    
   }
 
   private loadCommunityResourcesJSONP(

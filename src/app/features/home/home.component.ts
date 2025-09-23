@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { PLATFORM_ID } from '@angular/core';
 
-import { HomeService } from './services/home.service';
+import { SeoService } from '../../core/services/seo.service';
+import { I18nService } from '../../core/services/i18n.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { CommunityService } from '../../core/services/community.service';
 import { ListingService } from '../../core/services/listing.service';
 import { Listing } from '../../core/models/listing.model';
@@ -33,6 +35,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   
   private destroy$ = new Subject<void>();    
   private isBrowser: boolean;  
+  private seo = inject(SeoService);
+  private i18n = inject(I18nService);
+  private theme = inject(ThemeService);
 
   constructor(
     private listingService: ListingService,
@@ -51,6 +56,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Asegurá comunidad primero
     this.community.ensureLoaded()
       .then(() => {
+        this.setupSEO();
         this.listingService.getFeaturedListings(15, 'newest_first')
           .pipe(
             takeUntil(this.destroy$),
@@ -84,6 +90,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private setupSEO(): void {    
+    const communityName = this.i18n.t('COMMUNITY.NAME'); 
+    this.seo.setPageMeta(
+      'PAGES.HOME.TITLE',
+      'PAGES.HOME.DESCRIPTION',
+      { communityName }
+    );
   }
   
 }

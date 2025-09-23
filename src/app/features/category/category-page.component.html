@@ -1,0 +1,74 @@
+<div class="category-page">
+  <!-- Breadcrumbs -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <!-- Category Header -->
+  <div class="category-header" *ngIf="category && !loading">
+    <div class="container">
+      <div class="category-info">
+        <h1 class="category-title">{{ category.name || category.slug }}</h1>
+        <p class="category-description" *ngIf="category.description">
+          {{ category.description }}
+        </p>
+        <div class="category-meta">
+          <span class="results-count" *ngIf="totalItems > 0">
+            {{ totalItems }} producto{{ totalItems === 1 ? '' : 's' }} encontrado{{ totalItems === 1 ? '' : 's' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Cargando productos...</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="error && !loading">
+      <div class="error-message">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Error al cargar la categoría</h3>
+        <p>{{ error }}</p>
+        <button class="btn btn-primary" (click)="ngOnInit()">
+          Intentar de nuevo
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && !error && listings.length === 0">
+      <div class="empty-message">
+        <i class="fas fa-box-open"></i>
+        <h3>No se encontraron productos</h3>
+        <p *ngIf="category">No hay productos disponibles en {{ category.name || category.slug }} en este momento.</p>
+        <a routerLink="/" class="btn btn-primary">Volver al inicio</a>
+      </div>
+    </div>
+
+    <!-- Listings Grid -->
+    <div class="listings-section" *ngIf="!loading && !error && listings.length > 0">
+      <div class="listings-grid">
+        <app-listing-card 
+          *ngFor="let listing of listings; trackBy: trackByListing"
+          [listing]="listing">
+        </app-listing-card>
+      </div>
+
+      <!-- Pagination -->
+      <app-pagination 
+        *ngIf="totalPages > 1"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [totalItems]="totalItems"
+        [itemsPerPage]="itemsPerPage"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    </div>
+  </div>
+</div>

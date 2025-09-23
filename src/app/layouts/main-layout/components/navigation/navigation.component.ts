@@ -5,11 +5,12 @@ import { Observable, Subject } from 'rxjs';
 import { MegaMenuComponent } from './mega-menu/mega-menu.component';
 import { CategoryService } from 'src/app/core/services/category.service';
 import { Category } from 'src/app/core/models/category.model';
+import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [CommonModule, RouterModule, MegaMenuComponent],
+  imports: [CommonModule, RouterModule, MegaMenuComponent, TranslatePipe],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.css'
 })

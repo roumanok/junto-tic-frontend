@@ -13,6 +13,10 @@ export const routes: Routes = [
       {
         path: 'listing',
         loadChildren: () => import('./features/listing-detail/listing-detail.routes').then(m => m.listingDetailRoutes)
+      },
+      {
+        path: 'category',
+        loadChildren: () => import('./features/category/category.routes').then(m => m.categoryRoutes)
       }
     ]
   },

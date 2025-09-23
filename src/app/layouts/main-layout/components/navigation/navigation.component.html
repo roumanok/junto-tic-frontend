@@ -5,8 +5,7 @@
           <button 
             class="mobile-menu-toggle" 
             [class.active]="showMobileMenu"
-            (click)="toggleMobileMenu()"
-            aria-label="Abrir menú"
+            (click)="toggleMobileMenu()"            
           >
             <i class="fas fa-bars"></i>
           </button>
@@ -16,9 +15,9 @@
             <button 
               class="categories-btn" 
               (click)="toggleCategoriesDropdown()"
-              [disabled]="isMobile()"
+              [disabled]="isMobile()"              
             >
-              <i class="fas fa-bars"></i> Categorías
+              <i class="fas fa-bars"></i> {{ 'HEADER.MENU.CATEGORIES' | translate }}
               <span class="dropdown-arrow">
                 <i class="fas fa-chevron-down" [class.rotated]="showCategoriesDropdown"></i>
               </span>
@@ -46,8 +45,8 @@
         
         <!-- User Actions (Desktop only) -->
         <div class="user-actions" *ngIf="!isMobile()">
-          <a routerLink="/login" class="btn-secondary">Ingresar</a>
-          <a routerLink="/register" class="btn-primary">Registrarse</a>
+          <a routerLink="/login" class="btn-secondary">{{ 'HEADER.MENU.LOGIN' | translate }}</a>
+          <a routerLink="/register" class="btn-primary">{{ 'HEADER.MENU.REGISTER' | translate }}</a>
         </div>
       </div>
     </nav>
