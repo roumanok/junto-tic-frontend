@@ -143,7 +143,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
           if (parentCategory) {
             this.breadcrumbItems.splice(1, 0, {
               label: parentCategory.name || parentCategory.slug,
-              url: `/category/${parentCategory.slug}`
+              url: `/categoria/${parentCategory.slug}`
             });
           }
         });
@@ -151,12 +151,12 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
 
       this.breadcrumbItems.push({
         label: this.listing.category.name || this.listing.category.slug,
-        url: `/category/${this.listing.category.slug}`
+        url: `/categoria/${this.listing.category.slug}`
       });
     }
 
     this.breadcrumbItems.push({
-      label: this.listing.title || 'Listing',
+      label: this.listing.title || 'Artículo',
       isActive: true
     });
   }
@@ -228,7 +228,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
 
   onRelatedListingClick(listing: Listing): void {    
     const slug = this.listingService.generateSlugWithId(listing.title || 'listing', listing.id);
-    this.router.navigate(['/listing', slug]);    
+    this.router.navigate(['/articulo', slug]);    
   }
 
   get hasImages(): boolean | undefined {

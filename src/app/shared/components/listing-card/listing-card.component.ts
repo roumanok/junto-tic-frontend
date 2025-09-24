@@ -28,19 +28,19 @@ export class ListingCardComponent {
     const mainImage = this.listing.primary_image;    
     return mainImage && mainImage.image_url
       ? this.cdnService.getCdnUrl$(mainImage.image_url)
-      : of('/assets/images/placeholder.png');
+      : of('placeholder.png');
   }
 
   onCardClick(): void {    
     const slug = this.listingService.generateSlugWithId(this.listing.title || 'listing', this.listing.id);
-    this.router.navigate(['/listing', slug]);
+    this.router.navigate(['/articulo', slug]);
     this.cardClick.emit(this.listing);
   }
 
   onViewMore(event: Event): void {
     event.stopPropagation();    
     const slug = this.listingService.generateSlugWithId(this.listing.title || 'listing', this.listing.id);
-    this.router.navigate(['/listing', slug]);
+    this.router.navigate(['/articulo', slug]);
     this.viewMore.emit(this.listing);
   }
 

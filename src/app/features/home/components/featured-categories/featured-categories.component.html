@@ -3,7 +3,7 @@
         <div class="featured-categories-grid">
           <a 
             *ngFor="let category of featuredCategories$ | async; trackBy: trackByCategory" 
-            [routerLink]="['/category', category.slug]"
+            [routerLink]="['/categoria', category.slug]"
             class="featured-category-circle"
             [attr.aria-label]="'Ver productos de ' + category.name"
           >

@@ -1,15 +1,12 @@
-// src/app/features/category/category-page.component.ts
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
-import { Subject, combineLatest, of, from, Observable } from 'rxjs';
-import { takeUntil, switchMap, map, catchError, tap, take } from 'rxjs/operators';
+import { Subject, combineLatest, switchMap, map, catchError, tap, take } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import { CategoryService } from '../../core/services/category.service';
 import { ApiService } from '../../core/services/api.service';
 import { CommunityService } from '../../core/services/community.service';
-import { Category } from '../../core/models/category.model';
 import { Listing } from '../../core/models/listing.model';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
@@ -20,7 +17,7 @@ import { PaginationComponent } from '../../shared/components/pagination/paginati
 
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
-interface CategoryListingsResponse {
+interface OffersListingsResponse {
   items: Listing[];
   pagination: {
     page: number;
@@ -33,7 +30,7 @@ interface CategoryListingsResponse {
 }
 
 @Component({
-  selector: 'app-category-page',
+  selector: 'app-offers-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -42,11 +39,10 @@ interface CategoryListingsResponse {
     ListingCardComponent,
     PaginationComponent
   ],
-  templateUrl: './category-page.component.html',
-  styleUrls: ['./category-page.component.scss']
+  templateUrl: './offers-page.component.html',
+  styleUrls: ['./offers-page.component.css']
 })
-export class CategoryPageComponent implements OnInit, OnDestroy {
-  category: Category | null = null;
+export class OffersPageComponent implements OnInit, OnDestroy {
   listings: Listing[] = [];
   breadcrumbItems: BreadcrumbItem[] = [];
   loading = true;
@@ -66,7 +62,6 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private categoryService: CategoryService,
     private apiService: ApiService,
     private communityService: CommunityService,
     @Inject(PLATFORM_ID) platformId: Object
@@ -75,50 +70,28 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Observar cambios en los parámetros de ruta y query params
-    combineLatest([
-      this.route.params,
-      this.route.queryParams
-    ]).pipe(
+    this.buildBreadcrumbs();
+    this.setupSEO();
+
+    // Observar cambios en los query params para la paginación
+    this.route.queryParams.pipe(
       takeUntil(this.destroy$),
       tap(() => {
         this.loading = true;
         this.error = null;
       }),
-      switchMap(([params, queryParams]) => {
-        const slug = params['slug'];
+      switchMap((queryParams) => {
         this.currentPage = parseInt(queryParams['page']) || 1;
-        
-        if (!slug) {
-          throw new Error('No se encontró el slug de la categoría');
-        }
-        
-        // Primero asegurarnos de que las categorías estén cargadas
-        return from(this.categoryService.ensureCategoriesLoaded()).pipe(
-          map((categories: Category[]) => {
-            const category = categories.find((cat: Category) => cat.slug === slug);
-            if (!category) {
-              console.error('Available categories:', categories.map((c: Category) => c.slug));
-              throw new Error(`No se encontró la categoría con slug: ${slug}`);
-            }
-            return category;
-          }),
-          switchMap((category: Category) => {
-            this.category = category;
-            this.setupSEO();
-            this.buildBreadcrumbs();
-            return this.loadCategoryListings(category.id, this.currentPage);
-          })
-        );
+        return this.loadOffersListings(this.currentPage);
       }),
       catchError(err => {
-        console.error('Error loading category page:', err);
-        this.error = err.message || 'Error al cargar la categoría';
+        console.error('Error loading Offers page:', err);
+        this.error = err.message || 'Error al cargar las novedades';
         this.loading = false;
         throw err;
       })
     ).subscribe({
-      next: (response: CategoryListingsResponse) => {
+      next: (response: OffersListingsResponse) => {
         this.listings = response.items;
         this.totalItems = response.pagination.total;
         this.totalPages = response.pagination.total_pages;        
@@ -135,13 +108,14 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadCategoryListings(categoryId: string, page: number = 1): Observable<CategoryListingsResponse> {
+  private loadOffersListings(page: number = 1) {
     return this.communityService.waitForId$().pipe(
       switchMap((communityId: string) => {
-        const endpoint = `/communities/${communityId}/listings/categories/${categoryId}/listings`;        
+        const endpoint = `/communities/${communityId}/listings/featured`;        
         const params = new HttpParams()
           .set('page', page.toString())
-          .set('limit', this.itemsPerPage.toString());
+          .set('limit', this.itemsPerPage.toString())
+          .set('strategy', 'offers_first');
         
         return this.apiService.getPaginated<Listing>(endpoint, params);
       })
@@ -149,31 +123,10 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
   }
 
   private buildBreadcrumbs(): void {
-    if (!this.category) return;
-
     this.breadcrumbItems = [
-      { label: 'Inicio', url: '/' }
+      { label: 'Inicio', url: '/' },
+      { label: 'Ofertas', isActive: true }
     ];
-
-    // Si la categoría tiene padre, buscarlo
-    if (this.category.parent_id) {
-      this.categoryService.all$.pipe(
-        takeUntil(this.destroy$)
-      ).subscribe(categories => {
-        const parentCategory = categories.find(cat => cat.id === this.category!.parent_id);
-        if (parentCategory) {
-          this.breadcrumbItems.splice(1, 0, {
-            label: parentCategory.name || parentCategory.slug,
-            url: `/categoria/${parentCategory.slug}`
-          });
-        }
-      });
-    }
-
-    this.breadcrumbItems.push({
-      label: this.category.name || this.category.slug,
-      isActive: true
-    });
   }
 
   onPageChange(page: number): void {
@@ -200,11 +153,10 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
 
   private setupSEO(): void {    
     const communityName = this.i18n.t('COMMUNITY.NAME'); 
-    const categoryName = this.category?.name || '';
     this.seo.setPageMeta(
-      'PAGES.CATEGORY.TITLE',
-      'PAGES.CATEGORY.DESCRIPTION',
-      { categoryName, communityName }
+      'PAGES.OFFERS.TITLE',
+      'PAGES.OFFERS.DESCRIPTION',
+      { communityName }
     );
   }
 }

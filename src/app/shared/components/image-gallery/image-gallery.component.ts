@@ -42,7 +42,7 @@ export class ImageGalleryComponent {
 
   getImageUrl(image: GalleryImage): Observable<string> {
     if (!image || !image.image_url) {
-      return of('/assets/images/placeholder.png');
+      return of('placeholder.png');
     }
     return this.cdnService.getCdnUrl$(image.image_url);
   }

@@ -1,0 +1,210 @@
+.offers-page {
+  min-height: 100vh;
+}
+
+.offers-page .page-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.offers-page .page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+  text-transform: capitalize;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.offers-page .page-header .header-info {
+  text-align: center;
+}
+
+.offers-page .page-header .page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.offers-page .page-header .page-title i {
+  color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  .offers-page .page-header .page-title {
+    font-size: 2rem;
+  }
+}
+
+.offers-page .page-header .page-description {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .offers-page .page-header .page-description {
+    font-size: 1rem;
+  }
+}
+
+.offers-page .container {
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.offers-page .loading-state,
+.offers-page .error-state,
+.offers-page .empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.offers-page .loading-spinner,
+.offers-page .error-message,
+.offers-page .empty-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.offers-page .loading-spinner i,
+.offers-page .error-message i,
+.offers-page .empty-message i {
+  font-size: 3rem;
+  color: var(--text-muted);
+}
+
+.offers-page .error-message i.fa-exclamation-triangle {
+  color: var(--danger-color);
+}
+
+.offers-page .loading-spinner i.fa-sparkles,
+.offers-page .error-message i.fa-sparkles,
+.offers-page .empty-message i.fa-sparkles {
+  color: var(--primary-color);
+}
+
+.offers-page .empty-message i.fa-calendar-times {
+  color: var(--text-muted);
+}
+
+.offers-page .loading-spinner h3,
+.offers-page .error-message h3,
+.offers-page .empty-message h3 {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.offers-page .loading-spinner p,
+.offers-page .error-message p,
+.offers-page .empty-message p {
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 400px;
+}
+
+.offers-page .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.offers-page .listings-section .results-info {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--card-background);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.offers-page .listings-section .results-count {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.offers-page .listings-section .results-count .total {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.offers-page .listings-section .listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 1024px) {
+  .offers-page .listings-section .listings-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .offers-page .listings-section .listings-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .offers-page .listings-section .listings-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+}
+
+.offers-page .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.offers-page .btn.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.offers-page .btn.btn-primary:hover {
+  background: var(--primary-color-dark);
+  transform: translateY(-2px);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .offers-page .page-header {
+  background: linear-gradient(135deg, var(--primary-color-dark) 0%, #1a1a2e 100%);
+}

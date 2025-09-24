@@ -11,12 +11,20 @@ export const routes: Routes = [
         loadChildren: () => import('./features/home/home.routes').then(m => m.homeRoutes)
       },
       {
-        path: 'listing',
+        path: 'articulo',
         loadChildren: () => import('./features/listing-detail/listing-detail.routes').then(m => m.listingDetailRoutes)
       },
       {
-        path: 'category',
+        path: 'categoria',
         loadChildren: () => import('./features/category/category.routes').then(m => m.categoryRoutes)
+      },
+      {
+        path: 'novedades',
+        loadChildren: () => import('./features/news/news.routes').then(m => m.newsRoutes)
+      },
+      {
+        path: 'ofertas',
+        loadChildren: () => import('./features/offers/offers.routes').then(m => m.offersRoutes)
       }
     ]
   },

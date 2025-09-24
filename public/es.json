@@ -56,6 +56,12 @@
 
     "PAGES.CATEGORY.TITLE": "{{categoryName}} - {{communityName}}",
     "PAGES.CATEGORY.DESCRIPTION": "Productos de la categoría {{categoryTitle}} en {{communityName}}",
+
+    "PAGES.NEWS.TITLE": "Novedades - {{communityName}}",
+    "PAGES.NEWS.DESCRIPTION": "Últimos productos y servicios en {{communityName}}",
+
+    "PAGES.OFFERS.TITLE": "Ofertas - {{communityName}}",
+    "PAGES.OFFERS.DESCRIPTION": "Productos en oferta en {{communityName}}",
     
     "ERRORS.NETWORK": "Error de conexión",
     "ERRORS.GENERAL": "Ha ocurrido un error inesperado"

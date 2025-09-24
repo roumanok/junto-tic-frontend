@@ -70,15 +70,15 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
               links: [
                 {
                   name: `Ver todo en ${parentCat.name || parentCat.slug}`,
-                  url: `/category/${parentCat.slug}`
+                  url: `/categoria/${parentCat.slug}`
                 },
                 {
                   name: 'Novedades',
-                  url: `/category/${parentCat.slug}/novedades`
+                  url: `/categoria/${parentCat.slug}/novedades`
                 },
                 {
                   name: 'Ofertas',
-                  url: `/category/${parentCat.slug}/ofertas`
+                  url: `/categoria/${parentCat.slug}/ofertas`
                 }
               ]
             }

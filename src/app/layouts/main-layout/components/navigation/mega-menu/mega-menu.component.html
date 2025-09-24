@@ -16,8 +16,8 @@
         <aside class="mega-left">
           <!-- Mobile User Actions -->
           <div class="mega-mobile-user-actions">
-            <a routerLink="/login" class="btn-secondary">Ingresar</a>
-            <a routerLink="/register" class="btn-primary">Registrarse</a>
+            <a routerLink="/ingresar" class="btn-secondary">Ingresar</a>
+            <a routerLink="/registro" class="btn-primary">Registrarse</a>
           </div>
           
           <div class="mega-mobile-categories-title">Categorías</div>
@@ -48,7 +48,7 @@
                   >
                     <h4>
                       <a 
-                        [routerLink]="'/category/' + getCategorySlug(category.id, subcategory.id)" 
+                        [routerLink]="'/categoria/' + getCategorySlug(category.id, subcategory.id)" 
                         (click)="onLinkClick()"
                         class="subcategory-title-link"
                       >
@@ -84,7 +84,7 @@
               >
                 <h4>
                   <a 
-                    [routerLink]="'/category/' + getCategorySlug(category.id, subcategory.id)" 
+                    [routerLink]="'/categoria/' + getCategorySlug(category.id, subcategory.id)" 
                     (click)="onLinkClick()"
                     class="subcategory-title-link"
                   >
