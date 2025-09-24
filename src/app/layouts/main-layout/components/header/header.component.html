@@ -12,13 +12,12 @@
           <input 
             type="text" 
             class="search-bar" 
-            placeholder="Buscar productos, servicios..."
+            placeholder="{{ 'LISTINGS.SEARCH.PLACEHOLDER' | translate }}"
             (keyup.enter)="onSearch($event)"
             #searchInput>
           <button 
             class="search-btn" 
-            (click)="onSearch(searchInput)"
-            aria-label="Buscar">
+            (click)="onSearch(searchInput)"            >
             <i class="fas fa-search"></i>
           </button>
         </div>

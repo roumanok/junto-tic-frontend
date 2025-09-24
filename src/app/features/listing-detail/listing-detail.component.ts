@@ -1,5 +1,5 @@
 // src/app/features/listing-detail/listing-detail.component.ts
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
@@ -7,21 +7,25 @@ import { Subject, of } from 'rxjs';
 import { takeUntil, catchError, switchMap, filter } from 'rxjs/operators';
 
 import { ListingDetailService, ListingDetail } from './services/listing-detail.service';
-import { CommunityService } from '../../core/services/community.service';
 import { CategoryService } from '../../core/services/category.service';
 import { ListingService } from '../../core/services/listing.service';
 import { Listing } from '../../core/models/listing.model';
+import { SeoService } from '../../core/services/seo.service';
+import { I18nService } from '../../core/services/i18n.service';
 
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { ImageGalleryComponent } from '../../shared/components/image-gallery/image-gallery.component';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { CarouselComponent } from '../../shared/components/carousel/carousel.component';
 
+import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
+
 @Component({
   selector: 'app-listing-detail',
   standalone: true,
   imports: [
     CommonModule,
+    TranslatePipe,
     FormsModule,
     BreadcrumbComponent,
     ImageGalleryComponent,
@@ -41,6 +45,8 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   
   private destroy$ = new Subject<void>();
   private isBrowser: boolean;
+  private seo = inject(SeoService);
+  private i18n = inject(I18nService);
 
   constructor(
     private route: ActivatedRoute,
@@ -56,7 +62,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (!this.isBrowser) {
       return;
-    }
+    }    
 
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -88,6 +94,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
     ).subscribe(listing => {
       if (listing) {
         this.listing = listing;
+        this.setupSEO();
         this.buildBreadcrumbs();
         this.loadRelatedListings();
       }
@@ -257,11 +264,11 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   }
 
   get formattedPrice(): string {    
-    return this.listing ? parseInt(this.listing.price).toLocaleString('es-AR') : '0';
+    return this.listingService.getformattedPrice(this.listing?.price as string);
   }
 
   get formattedListPrice(): string {
-    return this.listing ? parseInt(this.listing.list_price as string).toLocaleString('es-AR') : '0';
+    return this.listingService.getformattedPrice(this.listing?.list_price as string);
   }
 
   goHome(): void {
@@ -273,5 +280,15 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
     return numericCost === 0 
       ? 'Gratis' 
       : `$${numericCost.toLocaleString('es-AR')}`;
+  }
+
+  private setupSEO(): void {    
+    const communityName = this.i18n.t('COMMUNITY.NAME'); 
+    const listingTitle = this.listing?.title || '';
+    this.seo.setPageMeta(
+      'PAGES.LISTING_DETAIL.TITLE',
+      'PAGES.LISTING_DETAIL.DESCRIPTION',
+      { listingTitle, communityName }
+    );
   }
 }

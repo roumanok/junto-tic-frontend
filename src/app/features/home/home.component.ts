@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Inject, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Observable, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { PLATFORM_ID } from '@angular/core';
 
@@ -37,8 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private isBrowser: boolean;  
   private seo = inject(SeoService);
   private i18n = inject(I18nService);
-  private theme = inject(ThemeService);
-
+  
   constructor(
     private listingService: ListingService,
     private community: CommunityService,

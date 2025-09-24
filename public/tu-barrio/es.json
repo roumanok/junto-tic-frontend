@@ -1,35 +1,12 @@
 {
   "COMMUNITY.NAME": "Club Tu Barrio",
 
-  "COMMON.SAVE": "Guardar",
-  "COMMON.CANCEL": "Cancelar",
-  "COMMON.DELETE": "Eliminar",
-  "COMMON.EDIT": "Editar",
-  "COMMON.SEARCH": "Buscar",
-  "COMMON.LOADING": "Cargando...",
+  "COMMUNITY.SOCIAL.INSTAGRAM": "https://instagram.com/tubarrio",
+  "COMMUNITY.SOCIAL.FACEBOOK": "https://facebook.com/tubarrio",
+  "COMMUNITY.SOCIAL.LINKEDIN": "https://linkedin.com/tubarrio",  
   
-  "HEADER.TITLE": "Junto a TIC",
-  "HEADER.SUBTITLE": "Red económica con propósito",
-  "HEADER.MENU.HOME": "Inicio",
-  "HEADER.MENU.PRODUCTS": "Productos",
-  "HEADER.MENU.ABOUT": "Acerca de",
+  "HEADER.TITLE": "Club Tu Barrio",
+  "HEADER.SUBTITLE": "Productos oficiales de Club Tu Barrio",
   
-  "PRODUCTS.TITLE": "Nuestros Productos",
-  "PRODUCTS.NO_RESULTS": "No se encontraron productos",
-  "PRODUCTS.PRICE": "Precio",
-  "PRODUCTS.ADD_TO_CART": "Agregar al carrito",
-  
-  "CHECKOUT.TITLE": "Finalizar Compra",
-  "CHECKOUT.TOTAL": "Total",
-  "CHECKOUT.CONFIRM": "Confirmar Pedido",
-
-  "PAGES.HOME.TITLE": "{{communityName}} - Tienda oficial",
-  "PAGES.HOME.DESCRIPTION": "Conseguí productos oficiales de {{communityName}}.",
-  "PAGES.HOME.TITLE_WITH_FEATURED": "{{productName}} y más en {{communityName}}",
-  
-  "PAGES.PRODUCTS.TITLE": "Productos - {{communityName}}",
-  "PAGES.PRODUCTS.DESCRIPTION": "Explorá todos los productos oficiales de {{communityName}}",
-   
-  "ERRORS.NETWORK": "Error de conexión",
-  "ERRORS.GENERAL": "Ha ocurrido un error inesperado"
+  "LISTINGS.SEARCH.PLACEHOLDER": "Buscar camisetas, shorts y más..."
 }

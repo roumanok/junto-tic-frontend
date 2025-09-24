@@ -2,8 +2,7 @@
   min-height: 100vh;
   padding-bottom: 2rem;
 
-  .container {
-    max-width: 1200px;
+  .container {    
     margin: 0 auto;
     padding: 0 1rem;
   }
@@ -39,18 +38,6 @@
       margin-left: auto;
       margin-right: auto;
       line-height: 1.6;
-    }
-
-    .category-meta {
-      .results-count {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        color: #495057;
-        border: 1px solid #dee2e6;
-      }
     }
   }
 }

@@ -2,6 +2,7 @@ import { Component, Input, Inject, PLATFORM_ID, SimpleChanges } from '@angular/c
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { CdnService } from '../../../core/services/cdn.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 export interface GalleryImage {
   id: string;
@@ -14,7 +15,7 @@ export interface GalleryImage {
 @Component({
   selector: 'app-image-gallery',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './image-gallery.component.html',
   styleUrl: './image-gallery.component.css'
 })

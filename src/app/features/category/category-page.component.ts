@@ -1,5 +1,5 @@
 // src/app/features/category/category-page.component.ts
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
@@ -11,10 +11,14 @@ import { ApiService } from '../../core/services/api.service';
 import { CommunityService } from '../../core/services/community.service';
 import { Category } from '../../core/models/category.model';
 import { Listing } from '../../core/models/listing.model';
+import { SeoService } from '../../core/services/seo.service';
+import { I18nService } from '../../core/services/i18n.service';
 
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+
+import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 interface CategoryListingsResponse {
   items: Listing[];
@@ -22,7 +26,9 @@ interface CategoryListingsResponse {
     page: number;
     limit: number;
     total: number;
-    totalPages: number;
+    total_pages: number;
+    has_next: boolean;
+    has_previous: boolean;
   };
 }
 
@@ -31,6 +37,7 @@ interface CategoryListingsResponse {
   standalone: true,
   imports: [
     CommonModule,
+    TranslatePipe,
     BreadcrumbComponent,
     ListingCardComponent,
     PaginationComponent
@@ -49,10 +56,12 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
   currentPage = 1;
   totalPages = 1;
   totalItems = 0;
-  itemsPerPage = 6;
+  itemsPerPage = 12;
   
   private destroy$ = new Subject<void>();
   private isBrowser: boolean;
+  private seo = inject(SeoService);
+  private i18n = inject(I18nService);
 
   constructor(
     private route: ActivatedRoute,
@@ -96,6 +105,7 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
           }),
           switchMap((category: Category) => {
             this.category = category;
+            this.setupSEO();
             this.buildBreadcrumbs();
             return this.loadCategoryListings(category.id, this.currentPage);
           })
@@ -111,8 +121,7 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
       next: (response: CategoryListingsResponse) => {
         this.listings = response.items;
         this.totalItems = response.pagination.total;
-        this.totalPages = response.pagination.totalPages;
-        console.log('Listings response:', response);        
+        this.totalPages = response.pagination.total_pages;        
         this.loading = false;
       },
       error: () => {
@@ -187,5 +196,15 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
 
   trackByListing(index: number, listing: Listing): string {
     return listing.id;
+  }
+
+  private setupSEO(): void {    
+    const communityName = this.i18n.t('COMMUNITY.NAME'); 
+    const categoryName = this.category?.name || '';
+    this.seo.setPageMeta(
+      'PAGES.CATEGORY.TITLE',
+      'PAGES.CATEGORY.DESCRIPTION',
+      { categoryName, communityName }
+    );
   }
 }

@@ -19,7 +19,9 @@ export interface ApiPaginatedResponse<T> {
     page: number;
     limit: number;
     total: number;
-    totalPages: number;
+    total_pages: number;
+    has_next: boolean;
+    has_previous: boolean;
   };
 }
 

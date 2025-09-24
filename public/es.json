@@ -1,12 +1,26 @@
 {
     "COMMUNITY.NAME": "...",
 
+    "COMMUNITY.SOCIAL.WHATSAPP": "#",
+    "COMMUNITY.SOCIAL.INSTAGRAM": "#",
+    "COMMUNITY.SOCIAL.FACEBOOK": "#",
+    "COMMUNITY.SOCIAL.LINKEDIN": "#",
+    "COMMUNITY.SOCIAL.TWITTER": "#",
+    "COMMUNITY.SOCIAL.YOUTUBE": "#",
+
     "COMMON.SAVE": "Guardar",
     "COMMON.CANCEL": "Cancelar",
     "COMMON.DELETE": "Eliminar",
     "COMMON.EDIT": "Editar",
     "COMMON.SEARCH": "Buscar",
     "COMMON.LOADING": "Cargando...",
+    "COMMON.NO_RESULTS": "No se encontraron resultados",
+    "COMMON.VIEW_DETAILS": "Ver detalles",
+    "COMMON.BACK": "Volver",
+    "COMMON.BACK_TO_HOME": "Volver al inicio",
+    "COMMON.RETRY": "Intentar de nuevo",
+    "COMMON.NEXT": "Siguiente",
+    "COMMON.PREVIOUS": "Anterior", 
     
     "HEADER.TITLE": "Junto a TIC",
     "HEADER.SUBTITLE": "Red económica con propósito",
@@ -16,12 +30,18 @@
     "HEADER.MENU.REGISTER": "Registrarse",
     "HEADER.MENU.CATEGORIES": "Categorías",    
     
-    "PRODUCTS.TITLE": "Nuestros Productos",
-    "PRODUCTS.NO_RESULTS": "No se encontraron productos",
-    "PRODUCTS.PRICE": "Precio",
-    "PRODUCTS.ADD_TO_CART": "Agregar al carrito",
-    "PRODUCTS.PURCHASE": "Comprar",
+    "LISTINGS.SEARCH.PLACEHOLDER": "Buscar productos, servicios y más...",
+    "LISTINGS.NO_RESULTS": "No se encontraron productos",
+    "LISTINGS.LOADING_ERROR": "Error al cargar los productos",
+    "LISTINGS.SOLD_BY": "Vendido por",
+    "LISTINGS.STOCK_AVAILABLE": "Stock disponible",
+    "LISTINGS.UNITS": "unidades",
+    "LISTINGS.PRICE": "Precio",
+    "LISTINGS.ADD_TO_CART": "Agregar al carrito",
+    "LISTINGS.PURCHASE": "Comprar",
+    "LISTINGS.GALLERY.NO_IMAGES": "Sin imágenes disponibles",
 
+    "CATEGORY.LOADING_ERROR": "Error al cargar la categoría",
     
     "CHECKOUT.TITLE": "Finalizar Compra",
     "CHECKOUT.TOTAL": "Total",
@@ -30,9 +50,12 @@
     "PAGES.HOME.TITLE": "{{communityName}} - Tienda oficial",
     "PAGES.HOME.DESCRIPTION": "Conseguí productos oficiales de {{communityName}}.",
     "PAGES.HOME.TITLE_WITH_FEATURED": "{{productName}} y más en {{communityName}}",
-    
-    "PAGES.PRODUCTS.TITLE": "Productos - {{communityName}}",
-    "PAGES.PRODUCTS.DESCRIPTION": "Explorá todos los productos oficiales de {{communityName}}",
+
+    "PAGES.LISTING_DETAIL.TITLE": "{{listingTitle}} - {{communityName}}",
+    "PAGES.LISTING_DETAIL.DESCRIPTION": "Detalles del producto",
+
+    "PAGES.CATEGORY.TITLE": "{{categoryName}} - {{communityName}}",
+    "PAGES.CATEGORY.DESCRIPTION": "Productos de la categoría {{categoryTitle}} en {{communityName}}",
     
     "ERRORS.NETWORK": "Error de conexión",
     "ERRORS.GENERAL": "Ha ocurrido un error inesperado"

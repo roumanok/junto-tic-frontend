@@ -44,4 +44,12 @@ export class ListingCardComponent {
     this.viewMore.emit(this.listing);
   }
 
+  get formattedPrice(): string {    
+    return this.listingService.getformattedPrice(this.listing?.price as string);
+  }
+
+  get formattedListPrice(): string {
+    return this.listingService.getformattedPrice(this.listing?.list_price as string);
+  }
+
 }

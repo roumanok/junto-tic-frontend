@@ -19,10 +19,10 @@
       
       <div class="listing-price">
         <span *ngIf="listing.list_price" class="price-original">
-          ${{ listing.list_price }}
+          ${{ formattedListPrice }}
         </span>
         <span class="price-current">
-          ${{ listing.price }}
+          ${{ formattedPrice }}
         </span>
       </div>
 

@@ -52,8 +52,4 @@ export class SeoService {
     );
   }
 
-  private getCommunityName(): string {
-    // Obtener el nombre des la comunidad desde el theme o donde lo tengas
-    return this.theme.state().slug || 'Junto a TIC';
-  }
 }

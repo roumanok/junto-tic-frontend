@@ -1,10 +1,7 @@
 import { Component, OnInit, OnDestroy, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
 import { MegaMenuComponent } from './mega-menu/mega-menu.component';
-import { CategoryService } from 'src/app/core/services/category.service';
-import { Category } from 'src/app/core/models/category.model';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({

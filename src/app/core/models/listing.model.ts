@@ -7,8 +7,8 @@ export interface Listing {
   title?: string;
   description?: string;
   short_description?: string;
-  price?: number;
-  list_price?: number;
+  price?: string;
+  list_price?: string;
   type: 'product' | 'service';
   max_quantity_per_order: number;
   stock_quantity: number;

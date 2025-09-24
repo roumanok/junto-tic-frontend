@@ -8,7 +8,7 @@
   <div *ngIf="loading" class="loading-container">
     <div class="loading-spinner">
       <i class="fas fa-spinner fa-spin"></i>
-      <p>Cargando...</p>
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
     </div>
   </div>
 
@@ -16,10 +16,10 @@
   <div *ngIf="error && !loading" class="error-container">
     <div class="error-message">
       <i class="fas fa-exclamation-triangle"></i>
-      <h2>Error al cargar el listing</h2>
+      <h2>{{ 'LISTING.LOADING_ERROR' | translate }}</h2>
       <p>{{ error }}</p>
       <button class="btn-secondary" (click)="goHome()">
-        Volver al inicio
+        {{ 'COMMON.BACK_TO_HOME' | translate }}
       </button>
     </div>
   </div>
@@ -66,13 +66,13 @@
 
         <div class="listing-seller" *ngIf="listing.advertiser">
           <i class="fas fa-store"></i>
-          Vendido por: <strong>{{ listing.advertiser.name }}</strong>
+          {{ 'LISTINGS.SOLD_BY' | translate }}: <strong>{{ listing.advertiser.name }}</strong>
         </div>
 
         <!-- Stock Info -->
         <div class="stock-info" *ngIf="listing.stock_quantity">
           <i class="fas fa-box"></i>
-          Stock disponible: {{ listing.stock_quantity }} unidades
+          {{ 'LISTINGS.STOCK_AVAILABLE' | translate }}: {{ listing.stock_quantity }} {{ 'LISTINGS.UNITS' | translate }}
         </div>
 
         <!-- Purchase Section -->

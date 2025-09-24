@@ -3,12 +3,12 @@
         <img 
           *ngIf="images.length > 0"
           [src]="getImageUrl(images[currentImageIndex]) | async"
-          [alt]="images[currentImageIndex]?.alt_text || title || 'Imagen del listing'"
+          [alt]="images[currentImageIndex].alt_text || title || 'Listing Image'"
           class="main-image" 
           id="mainImage">
         <div *ngIf="images.length === 0" class="placeholder-image">
           <i class="fas fa-image"></i>
-          <p>Sin imágenes disponibles</p>
+          <p>{{'LISTINGS.GALLERY.NO_IMAGES' | translate}}</p>
         </div>
         <button 
           *ngIf="images.length > 1"
