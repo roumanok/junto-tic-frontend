@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, Input, Output, Inject, EventEmitter, HostListener,PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, Inject, inject, EventEmitter, HostListener, PLATFORM_ID, afterNextRender, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable, Subject, map } from 'rxjs';
 import { CategoryService } from 'src/app/core/services/category.service';
 import { ThemeService } from 'src/app/core/services/theme.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 import { MMCategory, Subcategory, CategoryLink, Category } from 'src/app/core/models/category.model';
 
@@ -22,6 +23,10 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
   transformedCategories$: Observable<MMCategory[]>;
   activeCategory: string | null = null;
   openAccordion: string | null = null;
+
+  public isHydrated = signal(false);
+
+  private authService = inject(AuthService);
   
   private destroy$ = new Subject<void>();
 
@@ -37,6 +42,9 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
     );
     this.cats.all$.subscribe(categories => {
       this.allCategories = categories;      
+    });
+    afterNextRender(() => {
+      this.isHydrated.set(true);
     });
   }
 
@@ -169,6 +177,36 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
       return false;
     }
     return window.innerWidth <= 768;
+  }
+
+    isLoading(): boolean {
+    return this.authService.isLoading();
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  login(): void {
+    console.log('🔐 Iniciando login desde mega-menu...');
+    this.authService.login();
+    this.closeMegaMenu();
+  }
+
+  register(): void {
+    console.log('📝 Iniciando registro desde mega-menu...');
+    this.authService.register();
+    this.closeMegaMenu();
+  }
+
+  logout(): void {
+    console.log('👋 Cerrando sesión desde mega-menu...');
+    this.authService.logout();
+    this.closeMegaMenu();
+  }
+
+  getUsername(): string {
+    return this.authService.getUsername();
   }
 
   @HostListener('document:keydown.escape', ['$event'])

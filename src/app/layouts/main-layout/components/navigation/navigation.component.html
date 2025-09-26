@@ -45,8 +45,25 @@
         
         <!-- User Actions (Desktop only) -->
         <div class="user-actions" *ngIf="!isMobile()">
-          <a routerLink="/login" class="btn-secondary">{{ 'HEADER.MENU.LOGIN' | translate }}</a>
-          <a routerLink="/register" class="btn-primary">{{ 'HEADER.MENU.REGISTER' | translate }}</a>
+          <ng-container *ngIf="isHydrated() && !isLoading()">
+            <!-- Si NO está logueado -->
+            <ng-container *ngIf="!isLoggedIn()">
+              <button (click)="login()" class="btn-secondary">
+                {{ 'HEADER.MENU.LOGIN' | translate }}
+              </button>
+              <button (click)="register()" class="btn-primary">
+                {{ 'HEADER.MENU.REGISTER' | translate }}
+              </button>
+            </ng-container>          
+            
+            <!-- Si está logueado -->
+            <ng-container *ngIf="isLoggedIn()">
+              <span class="user-greeting">{{ 'HEADER.MENU.HELLO' | translate }}, {{ getUsername() }}</span>
+              <button (click)="logout()" class="btn-secondary">
+                {{ 'HEADER.MENU.LOGOUT' | translate }}
+              </button>
+            </ng-container>
+          </ng-container>
         </div>
       </div>
     </nav>

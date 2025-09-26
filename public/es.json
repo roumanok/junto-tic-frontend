@@ -32,6 +32,8 @@
     "HEADER.MENU.HOME": "Inicio",
     "HEADER.MENU.PRODUCTS": "Productos",
     "HEADER.MENU.LOGIN": "Ingresar",
+    "HEADER.MENU.LOGOUT": "Salir",
+    "HEADER.MENU.HELLO": "Hola",
     "HEADER.MENU.REGISTER": "Registrarse",
     "HEADER.MENU.CATEGORIES": "Categorías",   
     "HEADER.MENU.NEWS": "Novedades",

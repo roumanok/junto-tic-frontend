@@ -4,6 +4,12 @@ export const environment = {
   cmDomain: 'tubarrio.com.ar',
   apiUrl: 'https://s.jatic.com.ar/api', 
   cdnUrl: 'https://cdn.jatic.com.ar',
+  auth: {
+    issuer: 'https://a.jatic.com.ar',
+    clientId: 'junto-a-tic-api',
+    realm: 'junto-a-tic',
+    scope: 'openid profile email'
+  },
   googleAnalyticsId: '',
   enableDevTools: true,
   cacheTimeout: 5 * 60 * 1000,

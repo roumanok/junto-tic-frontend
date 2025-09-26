@@ -1,8 +1,9 @@
-import { Component, OnInit, HostListener, Inject, inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, HostListener, Inject, inject, PLATFORM_ID, afterNextRender, signal} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MegaMenuComponent } from './mega-menu/mega-menu.component';
 import { I18nService } from 'src/app/core/services/i18n.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({
@@ -16,15 +17,23 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 export class NavigationComponent implements OnInit {
   showCategoriesDropdown = false;
   showMobileMenu = false;
+  public isHydrated = signal(false);
 
   private i18n = inject(I18nService);
+  private authService = inject(AuthService);
   
   featuredCategories = [
     { name: this.i18n.t('HEADER.MENU.NEWS'), url: '/novedades', active: false },
     { name: this.i18n.t('HEADER.MENU.OFFERS'), url: '/ofertas', active: false }
   ];
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object    
+  ) {
+    afterNextRender(() => {
+      this.isHydrated.set(true);
+    });
+  }
 
   ngOnInit() {
     // Configuración inicial
@@ -99,5 +108,32 @@ export class NavigationComponent implements OnInit {
     if (wasMobile && !isNowMobile) {
       this.closeMegaMenu();
     }
+  }
+
+  isLoading(): boolean {    
+    return this.authService.isLoading();
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  login(): void {
+    console.log('🔐 Iniciando login desde navigation...');
+    this.authService.login();
+  }
+
+  register(): void {
+    console.log('📝 Iniciando registro desde navigation...');
+    this.authService.register();
+  }
+
+  logout(): void {
+    console.log('👋 Cerrando sesión desde navigation...');
+    this.authService.logout();
+  }
+
+  getUsername(): string {
+    return this.authService.getUsername();
   }
 }

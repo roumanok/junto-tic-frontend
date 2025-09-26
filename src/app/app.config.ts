@@ -1,21 +1,26 @@
 import { ApplicationConfig, provideZoneChangeDetection, inject, APP_INITIALIZER, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch  } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
+import { provideOAuthClient } from 'angular-oauth2-oidc';
 import { CommunityService } from './core/services/community.service';
 import { ThemeService } from './core/services/theme.service';
 import { CategoryService } from './core/services/category.service';
+import { AuthService } from './core/services/auth.service';
 import { routes } from './app.routes';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { environment } from '../environments/environment';
 
 
 
 function initApp() {
-  const platformId = inject(PLATFORM_ID);
-  const community  = inject(CommunityService);
-  const theme      = inject(ThemeService);
-  const categories   = inject(CategoryService);
+  const platformId  = inject(PLATFORM_ID);
+  const community   = inject(CommunityService);
+  const theme       = inject(ThemeService);
+  const categories  = inject(CategoryService);
+  const auth        = inject(AuthService);
+
 
   return async () => {
     // 1) Siempre intentá resolver comunidad (SSR y browser)
@@ -40,7 +45,11 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),    
-    provideHttpClient(withFetch()),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor])
+    ),
+    provideOAuthClient(),
     {
       provide: APP_INITIALIZER,
       useFactory: initApp,      
