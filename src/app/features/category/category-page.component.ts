@@ -152,7 +152,7 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
     if (!this.category) return;
 
     this.breadcrumbItems = [
-      { label: 'Inicio', url: '/' }
+      { label: this.i18n.t('COMMON.HOME'), url: '/' }
     ];
 
     // Si la categoría tiene padre, buscarlo

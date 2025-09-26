@@ -6,7 +6,7 @@ import { PLATFORM_ID } from '@angular/core';
 
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
-import { ThemeService } from '../../core/services/theme.service';
+import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 import { CommunityService } from '../../core/services/community.service';
 import { ListingService } from '../../core/services/listing.service';
 import { Listing } from '../../core/models/listing.model';
@@ -23,7 +23,8 @@ import { CarouselComponent } from '../../shared/components/carousel/carousel.com
     HighlightsComponent,
     ListingCardComponent,
     FeaturedCategoriesComponent,
-    CarouselComponent
+    CarouselComponent,
+    TranslatePipe
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

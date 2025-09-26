@@ -8,5 +8,19 @@
   "HEADER.TITLE": "Club Tu Barrio",
   "HEADER.SUBTITLE": "Productos oficiales de Club Tu Barrio",
   
-  "LISTINGS.SEARCH.PLACEHOLDER": "Buscar camisetas, shorts y más..."
+  "SEARCH.PLACEHOLDER": "Buscar camisetas, shorts y más...",
+
+  "PAGES.HOME.HERO.TITLE": "Bienvenido a la tienda oficial de Club Tu Barrio",
+  "PAGES.HOME.HERO.SUBTITLE": "Conseguí productos oficiales del club te tus amores",
+
+  "PAGES.HOME:HIGHLIGHTS.FIRST.ICON": "fa-shipping-fast",
+  "PAGES.HOME:HIGHLIGHTS.FIRST.TITLE": "ENVÍO A TODO EL PAÍS",
+  "PAGES.HOME:HIGHLIGHTS.FIRST.DESCRIPTION": "Envío gratis en compras mayores a $50.000. Retiro gratuito en la sede.",
+  "PAGES.HOME:HIGHLIGHTS.SECOND.ICON": "fa-certificate",
+  "PAGES.HOME:HIGHLIGHTS.SECOND.TITLE": "PRODUCTOS OFICIALES",
+  "PAGES.HOME:HIGHLIGHTS.SECOND.DESCRIPTION": "Productos y servicios con licencia oficial de Club Tu Barrio.",
+  "PAGES.HOME:HIGHLIGHTS.THIRD.ICON": "fa-utensils",
+  "PAGES.HOME:HIGHLIGHTS.THIRD.TITLE": "NUESTRO RESTAURANT",
+  "PAGES.HOME:HIGHLIGHTS.THIRD.DESCRIPTION": "Reservá experiencias gastronómicas únicas en Cantina Tu Barrio."
+
 }

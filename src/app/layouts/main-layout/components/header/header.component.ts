@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ThemeService } from '../../../../core/services/theme.service';
 
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
@@ -14,7 +14,8 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 })
 export class HeaderComponent implements OnInit {  
   constructor(
-    public themeService: ThemeService
+    public themeService: ThemeService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {}  
@@ -23,15 +24,29 @@ export class HeaderComponent implements OnInit {
     let searchTerm = '';
     
     if (input instanceof HTMLInputElement) {
-      searchTerm = input.value;
+      searchTerm = input.value.trim();
     } else if (input.target instanceof HTMLInputElement) {
-      searchTerm = input.target.value;
+      searchTerm = input.target.value.trim();
     }
 
-    if (searchTerm.trim()) {
-      console.log('Searching for:', searchTerm);
-      // TODO: Implementar navegación a página de búsqueda
-      // this.router.navigate(['/buscar'], { queryParams: { q: searchTerm } });
+    if (searchTerm) {
+      // Navegar a la página de búsqueda con el término como parámetro de ruta
+      this.router.navigate(['/buscar', searchTerm]);
+      
+      // Limpiar el campo de búsqueda si es un input
+      if (input instanceof HTMLInputElement) {
+        input.value = '';
+      } else if (input.target instanceof HTMLInputElement) {
+        input.target.value = '';
+      }
     }
   }
+
+  onSearchKeyPress(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.onSearch(event.target as HTMLInputElement);
+    }
+  }
+
 }

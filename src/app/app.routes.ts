@@ -25,6 +25,10 @@ export const routes: Routes = [
       {
         path: 'ofertas',
         loadChildren: () => import('./features/offers/offers.routes').then(m => m.offersRoutes)
+      },
+      {
+        path: 'buscar',
+        loadChildren: () => import('./features/search/search.routes').then(m => m.searchRoutes)
       }
     ]
   },

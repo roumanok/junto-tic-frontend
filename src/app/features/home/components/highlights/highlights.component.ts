@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { I18nService } from 'src/app/core/services/i18n.service';
 
 interface Highlight {
   icon: string;
@@ -16,21 +17,24 @@ interface Highlight {
   styleUrl: './highlights.component.css'
 })
 export class HighlightsComponent {
+
+  private i18n = inject(I18nService);
+
   @Input() highlights: Highlight[] = [
     {
-      icon: 'fa-shipping-fast',
-      title: 'ENVÍO A TODO EL PAÍS',
-      description: 'Envío gratis en compras mayores a $50.000. Retiro gratuito en la comunidad.'
+      icon: this.i18n.t('PAGES.HOME:HIGHLIGHTS.FIRST.ICON'),
+      title: this.i18n.t('PAGES.HOME:HIGHLIGHTS.FIRST.TITLE'),
+      description: this.i18n.t('PAGES.HOME:HIGHLIGHTS.FIRST.DESCRIPTION')
     },
     {
-      icon: 'fa-certificate',
-      title: 'PRODUCTOS OFICIALES',
-      description: 'Productos y servicios con licencia oficial de la comunidad.'
+      icon: this.i18n.t('PAGES.HOME:HIGHLIGHTS.SECOND.ICON'),
+      title: this.i18n.t('PAGES.HOME:HIGHLIGHTS.SECOND.TITLE'),
+      description: this.i18n.t('PAGES.HOME:HIGHLIGHTS.SECOND.DESCRIPTION')
     },
     {
-      icon: 'fa-utensils',
-      title: 'NUESTRO RESTAURANT',
-      description: 'Reservá experiencias gastronómicas únicas en Tu Barrio.'
+      icon: this.i18n.t('PAGES.HOME:HIGHLIGHTS.THIRD.ICON'),
+      title: this.i18n.t('PAGES.HOME:HIGHLIGHTS.THIRD.TITLE'),
+      description: this.i18n.t('PAGES.HOME:HIGHLIGHTS.THIRD.DESCRIPTION')
     }
   ];
 
@@ -39,7 +43,6 @@ export class HighlightsComponent {
   }
 
   onHighlightClick(highlight: Highlight): void {
-    console.log('Highlight clicked:', highlight.title);
-    // Aquí puedes agregar lógica adicional como navegación o analytics
+    console.log('Highlight clicked:', highlight.title);    
   }
 }

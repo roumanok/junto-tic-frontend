@@ -2,12 +2,12 @@
   <!-- Pagination Info -->
   <div class="pagination-info">
     <span class="showing-text">
-      Mostrando {{ startItem }}-{{ endItem }} de {{ totalItems }} resultados
+      {{'PAGINATION.SHOWING' | translate}} {{ startItem }}-{{ endItem }} {{'PAGINATION.OF' | translate}} {{ totalItems }} {{'PAGINATION.RESULTS' | translate}}
     </span>
   </div>
 
   <!-- Pagination Controls -->
-  <nav class="pagination-nav" aria-label="Paginación">
+  <nav class="pagination-nav">
     <ul class="pagination">
       <!-- First Page -->
       <li class="page-item" [class.disabled]="currentPage === 1">
@@ -15,7 +15,7 @@
           class="page-link"
           (click)="onFirst()"
           [disabled]="currentPage === 1"
-          title="Primera página">
+          title="{{'PAGINATION.FIRST' | translate}}">
           <i class="fas fa-angle-double-left"></i>
         </button>
       </li>
@@ -26,7 +26,7 @@
           class="page-link"
           (click)="onPrevious()"
           [disabled]="currentPage === 1"
-          title="Página anterior">
+          title="{{'PAGINATION.PREVIOUS' | translate}}">
           <i class="fas fa-angle-left"></i>
         </button>
       </li>
@@ -71,7 +71,7 @@
           class="page-link"
           (click)="onNext()"
           [disabled]="currentPage === totalPages"
-          title="Página siguiente">
+          title="{{'PAGINATION.NEXT' | translate}}">
           <i class="fas fa-angle-right"></i>
         </button>
       </li>
@@ -82,7 +82,7 @@
           class="page-link"
           (click)="onLast()"
           [disabled]="currentPage === totalPages"
-          title="Última página">
+          title="{{'PAGINATION.LAST' | translate}}">
           <i class="fas fa-angle-double-right"></i>
         </button>
       </li>

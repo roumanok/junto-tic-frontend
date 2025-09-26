@@ -129,13 +129,11 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
     if (!this.listing) return;
 
     this.breadcrumbItems = [
-      { label: 'Inicio', url: '/' }
+      { label: this.i18n.t('COMMON.HOME'), url: '/' }
     ];
 
     if (this.listing.category) {
-      // Si tiene categoría padre
       if (this.listing.category.parent_id) {
-        // Buscar la categoría padre
         this.categoryService.all$.pipe(
           takeUntil(this.destroy$)
         ).subscribe(categories => {
@@ -189,8 +187,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
 
   addToCart(): void {
     if (!this.listing) return;
-
-    // Aquí implementarías la lógica de agregar al carrito
+    
     console.log('Agregando al carrito:', {
       listing: this.listing.id,
       quantity: this.quantity
@@ -204,7 +201,6 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   purchase(): void {
     if (!this.listing) return;
 
-    // Aquí implementarías la lógica de agregar al carrito
     console.log('Iniciando compra:', {
       listing: this.listing.id,
       quantity: this.quantity
@@ -217,8 +213,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
 
   toggleWishlist(): void {
     if (!this.listing) return;
-
-    // Aquí implementarías la lógica de wishlist
+    
     console.log('Toggle wishlist para:', this.listing.id);
 
     if (this.isBrowser) {

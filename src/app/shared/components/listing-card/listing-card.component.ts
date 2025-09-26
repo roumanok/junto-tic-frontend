@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { Listing } from '../../../core/models/listing.model';
 import { CdnService } from '../../../core/services/cdn.service';
 import { ListingService } from 'src/app/core/services/listing.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-listing-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './listing-card.component.html',
   styleUrls: ['./listing-card.component.scss']
 })

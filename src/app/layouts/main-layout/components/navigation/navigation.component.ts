@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, HostListener, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, HostListener, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MegaMenuComponent } from './mega-menu/mega-menu.component';
+import { I18nService } from 'src/app/core/services/i18n.service';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({
@@ -15,11 +16,12 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 export class NavigationComponent implements OnInit {
   showCategoriesDropdown = false;
   showMobileMenu = false;
+
+  private i18n = inject(I18nService);
   
   featuredCategories = [
-    { name: 'Novedades', url: '/novedades', active: false },
-    { name: 'Ofertas', url: '/ofertas', active: false },
-    { name: 'Más Vendidos', url: '/mas-vendidos', active: false }
+    { name: this.i18n.t('HEADER.MENU.NEWS'), url: '/novedades', active: false },
+    { name: this.i18n.t('HEADER.MENU.OFFERS'), url: '/ofertas', active: false }
   ];
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}

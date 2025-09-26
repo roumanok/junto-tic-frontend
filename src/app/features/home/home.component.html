@@ -1,8 +1,8 @@
 <div class="home-page">
   <section class="hero">
     <div class="hero-container">
-      <h1>Bienvenido a la tienda de Tu Barrio</h1>
-      <p>Conseguí productos oficiales de tu club favorito</p>
+      <h1>{{'PAGES.HOME.HERO.TITLE' | translate}}</h1>
+      <p>{{'PAGES.HOME.HERO.SUBTITLE' | translate}}</p>
     </div>
   </section>
 
@@ -12,14 +12,14 @@
   <!-- Featured Categories -->
   <app-featured-categories></app-featured-categories>
 
-  <app-carousel title="Novedades">
+  <app-carousel title="{{'PAGES.HOME.NEWS.TITLE' | translate}}">
     <app-listing-card 
       *ngFor="let listing of newestListings" 
       [listing]="listing">
     </app-listing-card>
   </app-carousel>
 
-  <app-carousel title="Ofertas">
+  <app-carousel title="{{'PAGES.HOME.OFFERS.TITLE' | translate}}">
     <app-listing-card 
       *ngFor="let listing of offerListings" 
       [listing]="listing">

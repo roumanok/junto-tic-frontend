@@ -4,12 +4,13 @@ import { RouterModule } from '@angular/router';
 import { Observable, Subject, map } from 'rxjs';
 import { CategoryService } from 'src/app/core/services/category.service';
 import { ThemeService } from 'src/app/core/services/theme.service';
+import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 import { MMCategory, Subcategory, CategoryLink, Category } from 'src/app/core/models/category.model';
 
 @Component({
   selector: 'app-mega-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe],
   templateUrl: './mega-menu.component.html',
   styleUrls: ['./mega-menu.component.css']
 })
