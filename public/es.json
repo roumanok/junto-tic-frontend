@@ -116,6 +116,15 @@
     "PAGES.OFFERS.TITLE": "Ofertas - {{communityName}}",
     "PAGES.OFFERS.DESCRIPTION": "Productos en oferta en {{communityName}}",
     "PAGES.OFFERS.SECTION_TITLE": "Ofertas",
+
+    "PAGES.LOGIN_REQ.TITLE": "Ingresar o Registrarse - {{communityName}}",
+    "PAGES.LOGIN_REQ.DESCRIPTION": "Para realizar una compra necesitás tener una cuenta en {{communityName}}",
+    "PAGES.LOGIN_REQ.SECTION_TITLE": "Inicio de sesión requerido",
+    "PAGES.LOGIN_REQ.SECTION_DESCRIPTION": "Para realizar una compra necesitás tener una cuenta e iniciar sesión.",
+    "PAGES.LOGIN_REQ.LOGIN": "Iniciar sesión",
+    "PAGES.LOGIN_REQ.REGISTER": "Crear nueva cuenta",
+    "PAGES.LOGIN_REQ.GO_BACK": "Volver",
+
     
     "ERRORS.NETWORK": "Error de conexión",
     "ERRORS.GENERAL": "Ha ocurrido un error inesperado"

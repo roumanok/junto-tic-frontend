@@ -9,9 +9,10 @@ export const authGuard: CanActivateFn = (route, state) => {
   if (authService.isLoggedIn()) {
     return true;
   }
-
-  // Guardar la URL a la que intentaba acceder
-  authService.login(state.url);
+  
+  router.navigate(['/login-required'], {
+    queryParams: { returnUrl: state.url }
+  });
   return false;
 };
 

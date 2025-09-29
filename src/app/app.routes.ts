@@ -29,6 +29,16 @@ export const routes: Routes = [
       {
         path: 'buscar',
         loadChildren: () => import('./features/search/search.routes').then(m => m.searchRoutes)
+      },
+      {
+        path: 'login-required',
+        loadComponent: () => import('./features/login-required/login-required.component')
+          .then(c => c.LoginRequiredComponent)
+      },
+      {
+        path: 'checkout',
+        loadComponent: () => import('./features/checkout/checkout-page.component')
+          .then(c => c.CheckoutPageComponent)
       }
     ]
   },

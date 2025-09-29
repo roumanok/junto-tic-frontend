@@ -12,6 +12,7 @@ import { ListingService } from '../../core/services/listing.service';
 import { Listing } from '../../core/models/listing.model';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
+import { AuthService } from '../../core/services/auth.service';
 
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { ImageGalleryComponent } from '../../shared/components/image-gallery/image-gallery.component';
@@ -47,6 +48,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   private isBrowser: boolean;
   private seo = inject(SeoService);
   private i18n = inject(I18nService);
+  private authService = inject(AuthService);
 
   constructor(
     private route: ActivatedRoute,
@@ -97,6 +99,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
         this.setupSEO();
         this.buildBreadcrumbs();
         this.loadRelatedListings();
+        this.checkPendingPurchase();
       }
       this.loading = false;
     });
@@ -201,13 +204,86 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   purchase(): void {
     if (!this.listing) return;
 
-    console.log('Iniciando compra:', {
+    // ✅ Verificar si el usuario está logueado
+    if (!this.authService.isLoggedIn()) {
+      console.log('🔒 Usuario no logueado, redirigiendo a login-required');
+      
+      // Guardar compra pendiente en sessionStorage
+      if (this.isBrowser) {
+        sessionStorage.setItem('pendingPurchase', JSON.stringify({
+          listingId: this.listing.id,
+          quantity: this.quantity,
+          timestamp: Date.now()
+        }));
+      }
+      
+      // Redirigir a la página de login requerido
+      const currentUrl = this.router.url;
+      this.router.navigate(['/login-required'], {
+        queryParams: { returnUrl: currentUrl }
+      });
+      return;
+    }
+
+    console.log('🛒 Iniciando compra:', {
       listing: this.listing.id,
       quantity: this.quantity
     });
 
-    if (this.isBrowser) {
-      alert(`${this.listing.title} (${this.quantity} unidad${this.quantity > 1 ? 'es' : ''})`);
+    // ✅ ACTUALIZADO: Navegar al checkout pasando los datos del producto via state
+    this.router.navigate(['/checkout'], {
+      state: {
+        product: {
+          id: this.listing.id,
+          title: this.listing.title,
+          price: this.listing.price,
+          image_url: this.listing.images?.[0]?.image_url || '',
+          delivery_methods: this.listing.delivery_methods || [],
+          advertiser_id: this.listing.advertiser?.id,
+          max_quantity_per_order: this.listing.max_quantity_per_order
+        },
+        quantity: this.quantity
+      }
+    });
+  }
+
+  private checkPendingPurchase(): void {
+    if (!this.isBrowser || !this.listing) return;
+
+    const pendingPurchaseStr = sessionStorage.getItem('pendingPurchase');
+    
+    if (pendingPurchaseStr && this.authService.isLoggedIn()) {
+      try {
+        const pendingPurchase = JSON.parse(pendingPurchaseStr);
+        
+        // Verificar que sea el mismo listing y que no haya pasado más de 10 minutos
+        if (pendingPurchase.listingId === this.listing.id) {
+          const timeDiff = Date.now() - pendingPurchase.timestamp;
+          const tenMinutes = 10 * 60 * 1000;
+          
+          if (timeDiff < tenMinutes) {
+            console.log('✅ Compra pendiente encontrada, restaurando cantidad...');
+            
+            // Establecer la cantidad guardada
+            this.quantity = pendingPurchase.quantity;
+            
+            // Limpiar la compra pendiente
+            sessionStorage.removeItem('pendingPurchase');
+            
+            // Mostrar mensaje al usuario (opcional, si tenés un servicio de notificaciones)
+            if (this.isBrowser) {
+              // Podés usar un toast/snackbar aquí si tenés
+              console.log('💡 Sesión iniciada. Presioná "Comprar" para continuar');
+            }
+          } else {
+            // Si pasó mucho tiempo, limpiar
+            sessionStorage.removeItem('pendingPurchase');
+          }
+        }
+      } catch (error) {
+        console.error('Error al procesar compra pendiente:', error);
+        sessionStorage.removeItem('pendingPurchase');
+      }
     }
   }
 

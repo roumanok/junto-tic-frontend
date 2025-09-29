@@ -1,0 +1,218 @@
+<div class="checkout-wrapper">
+  @if (!product()) {
+    <!-- Sin producto -->
+    <div class="empty-state">
+      <i class="fas fa-shopping-cart empty-icon"></i>
+      <h2>No hay producto seleccionado</h2>
+      <p>Por favor selecciona un producto para continuar con la compra.</p>
+      <button class="btn-primary" (click)="goBack()">Volver al inicio</button>
+    </div>
+  } @else {
+    <div class="checkout-container">
+      
+      <!-- COLUMNA IZQUIERDA: Resumen -->
+      <div class="checkout-left">
+        <div class="summary-card">
+          <h2>Resumen de tu compra</h2>
+          
+          <!-- Producto -->
+          <div class="product-item">
+            <img [src]="getCdnUrl(product()!.image_url)" [alt]="product()!.title" class="product-img">
+            <div class="product-details">
+              <h3>{{ product()!.title }}</h3>
+              <p class="product-price">$ {{ product()!.price | number:'1.2-2' }}</p>
+              
+              <!-- Control de cantidad -->
+              <div class="quantity-section">
+                <label>Cantidad</label>
+                <div class="quantity-controls">
+                  <button type="button" class="qty-btn" (click)="decreaseQuantity()" [disabled]="quantity() <= 1">
+                    -
+                  </button>
+                  <input type="number" [value]="quantity()" (change)="updateQuantity($event)" min="1" class="qty-input">
+                  <button type="button" class="qty-btn" (click)="increaseQuantity()">
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Métodos de entrega -->
+          @if (product()!.delivery_methods && product()!.delivery_methods!.length > 0) {
+            <div class="delivery-section">
+              <h4>Método de entrega:</h4>
+              <div class="delivery-methods">
+                @for (method of product()!.delivery_methods; track method.id) {
+                  <label class="delivery-option">
+                    <input type="radio" 
+                           name="delivery_method"
+                           [value]="method.id"
+                           [checked]="selectedDeliveryMethod() === method.id"
+                           (change)="onDeliveryMethodChange(method.id)">
+                    <div class="method-content">
+                      <div class="method-header">
+                        <i class="fas" [ngClass]="method.type === 'pickup' ? 'fa-store' : 'fa-truck'"></i>
+                        <span class="method-name">{{ method.name }}</span>
+                        <span class="method-cost">
+                          {{ getMethodCost(method.cost) === 0 ? 'Retiro gratuito en nuestro local' : ('$ ' + (getMethodCost(method.cost) | number:'1.2-2')) }}
+                        </span>
+                      </div>
+                      @if (method.description) {
+                        <p class="method-desc">{{ method.description }}</p>
+                      }
+                      @if (method.address) {
+                        <p class="method-addr">{{ method.address }}</p>
+                      }
+                    </div>
+                  </label>
+                }
+              </div>
+            </div>
+          }
+
+          <hr class="divider">
+
+          <!-- Totales -->
+          <div class="totals">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span>$ {{ totals()?.subtotal || product()!.price | number:'1.2-2' }}</span>
+            </div>
+            @if (totals()?.shipping && getMethodCost(totals()!.shipping) > 0) {
+              <div class="total-row">
+                <span>Envío:</span>
+                <span>$ {{ totals()!.shipping | number:'1.2-2' }}</span>
+              </div>
+            }
+            <div class="total-row total-final">
+              <span><strong>Total:</strong></span>
+              <span><strong>$ {{ totals()?.total || (getMethodCost(product()!.price) * quantity()) | number:'1.2-2' }}</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: Formulario -->
+      <div class="checkout-right">
+        <div class="data-card">
+          <h2>Datos de la compra</h2>
+          
+          <form [formGroup]="checkoutForm" class="checkout-form">
+            <!-- Nombre y Email -->
+            <div class="form-row">
+              <div class="form-field">
+                <label>Nombre completo*</label>
+                <input type="text" formControlName="customer_name" placeholder="Nombre completo">
+              </div>
+              
+              <div class="form-field">
+                <label>Email</label>
+                <input type="email" formControlName="customer_email" readonly>
+              </div>
+            </div>
+
+            <!-- Tipo y Número de documento -->
+            <div class="form-row">
+              <div class="form-field">
+                <label>Tipo de documento*</label>
+                <select formControlName="customer_identification_type">
+                  <option value="DNI_ARG">DNI</option>
+                  <option value="CUIL_ARG">CUIL</option>
+                  <option value="CUIT_ARG">CUIT</option>
+                  <option value="PASSPORT">Pasaporte</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label>Número de documento*</label>
+                <input type="text" formControlName="customer_identification_number" placeholder="12345678">
+              </div>
+            </div>
+
+            <!-- Teléfono -->
+            <div class="form-field full-width">
+              <label>Teléfono*</label>
+              <input type="tel" formControlName="customer_phone" placeholder="+54 9 11 1234-5678">
+            </div>
+
+            <!-- Dirección -->
+            <div class="form-field full-width">
+              <label>Dirección de entrega*</label>
+              <input type="text" formControlName="delivery_address" placeholder="Calle 123">
+            </div>
+
+            <!-- Depto/Piso y Código Postal -->
+            <div class="form-row">
+              <div class="form-field">
+                <label>Depto/Piso</label>
+                <input type="text" formControlName="delivery_apartment" placeholder="5B">
+              </div>
+
+              <div class="form-field">
+                <label>Código postal</label>
+                <input type="text" formControlName="delivery_postal_code" placeholder="1234">
+              </div>
+            </div>
+
+            <!-- Ciudad y Provincia -->
+            <div class="form-row">
+              <div class="form-field">
+                <label>Ciudad*</label>
+                <input type="text" formControlName="delivery_city" placeholder="Buenos Aires">
+              </div>
+
+              <div class="form-field">
+                <label>Provincia*</label>
+                <input type="text" formControlName="delivery_province" placeholder="Buenos Aires">
+              </div>
+            </div>
+
+            <!-- Notas adicionales -->
+            <div class="form-field full-width">
+              <label>Notas adicionales</label>
+              <textarea formControlName="delivery_notes" rows="3" placeholder="Indicaciones especiales para la entrega"></textarea>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="action-buttons">
+              <button type="button" class="btn-secondary" (click)="goBack()">
+                <i class="fas fa-arrow-left"></i>
+                Seguir Comprando
+              </button>
+              <button type="button" 
+                      class="btn-primary" 
+                      (click)="proceedToPayment()"
+                      [disabled]="!canProceed() || !checkoutForm.valid">
+                <i class="fas fa-credit-card"></i>
+                Continuar al Pago
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estados de carga -->
+    @if (validating() || calculating()) {
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+        <p>{{ validating() ? 'Validando...' : 'Calculando totales...' }}</p>
+      </div>
+    }
+
+    <!-- Errores de validación -->
+    @if (validationErrors().length > 0) {
+      <div class="validation-errors">
+        <div class="error-card">
+          <h3><i class="fas fa-exclamation-triangle"></i> Problemas detectados:</h3>
+          <ul>
+            @for (error of validationErrors(); track error.listing_id) {
+              <li>{{ error.message }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+  }
+</div>

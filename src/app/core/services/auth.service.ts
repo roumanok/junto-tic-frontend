@@ -50,8 +50,12 @@ export class AuthService {
     this.isLoadingSubject$.next(true);
     
     // Cargar discovery document (endpoints de Keycloak)
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {                  
+    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {     
+      this.oauthService.setupAutomaticSilentRefresh();    
+
+      console.log('OAuth configuration loaded, updating auth state...');
       this.updateAuthenticationState();
+
       this.loadUserProfile();              
       this.isLoadingSubject$.next(false);      
     })
@@ -63,7 +67,8 @@ export class AuthService {
     // Suscribirse a eventos de OAuth
     this.oauthService.events
       .pipe(filter(e => ['token_received', 'token_refreshed', 'token_expires'].includes(e.type)))
-      .subscribe(() => {        
+      .subscribe((event: OAuthEvent) => {      
+        console.log('🔄 OAuth Event:', event.type);  
         this.updateAuthenticationState();
         this.loadUserProfile();
       });
@@ -83,8 +88,6 @@ export class AuthService {
         this.userProfileSubject$.next(null);
       });
 
-    // Configurar refresh automático
-    this.oauthService.setupAutomaticSilentRefresh();
   }
 
   /**

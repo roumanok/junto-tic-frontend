@@ -14,17 +14,18 @@ export function getAuthConfig(): AuthConfig {
     
     // URL a la que redirigir después del logout
     postLogoutRedirectUri: origin,
-    
+       
     // ID del cliente configurado en Keycloak
     clientId: environment.auth.clientId,
-    
+      
+    // Tipo de respuesta (code flow con PKCE es lo recomendado)
+    responseType: 'code',
+
     // Alcance (scopes) solicitados
     scope: 'openid profile email',
 
-    requireHttps: environment.production,  // Solo HTTPS en producción
-    
-    // Tipo de respuesta (code flow con PKCE es lo recomendado)
-    responseType: 'code',
+    // Solo HTTPS en producción
+    requireHttps: environment.production,  
     
     // Deshabilitar validación de issuer en modo desarrollo si es necesario
     strictDiscoveryDocumentValidation: false,
@@ -37,30 +38,17 @@ export function getAuthConfig(): AuthConfig {
     
     // Tiempo de espera para silent refresh
     silentRefreshTimeout: 5000,
-    
-    // Timeout para obtener el token
-    timeoutFactor: 0.75,
-    
-    // Session checks
-    sessionChecksEnabled: true,
-    
+       
     // Show debug info
     showDebugInformation: !environment.production,
     
-    // Clear hash after login
+    // Session checks
+    sessionChecksEnabled: true,    
     clearHashAfterLogin: false,
-
     nonceStateSeparator: 'semicolon',
 
     // Configuración para que persista la sesión
     disableAtHashCheck: true
     
-    // Configuración de endpoints personalizados (si tu backend tiene rutas custom)
-    // Si no tienes discovery document, descomentá y configurá manualmente:
-    // loginUrl: 'https://s.jatic.com.ar/auth/login',
-    // tokenEndpoint: 'https://s.jatic.com.ar/auth/token',
-    // userinfoEndpoint: 'https://s.jatic.com.ar/auth/userinfo',
-    // logoutUrl: 'https://s.jatic.com.ar/auth/logout',
-    // revocationEndpoint: 'https://s.jatic.com.ar/auth/revoke',
   };
 }
