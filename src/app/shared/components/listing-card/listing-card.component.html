@@ -11,13 +11,17 @@
           <i class="fas fa-image"></i>
         </div>
       </ng-template>
+      <div class="out-of-stock-badge" *ngIf="!hasStock">
+        <i class="fas fa-times-circle"></i>
+        {{ 'LISTINGS.OUT_OF_STOCK' | translate }}
+      </div>
     </div>
 
     <div class="listing-info">
       <div class="listing-category">{{ listing.category && listing.category.name ? listing.category.name : '' }}</div>
       <h3 class="listing-title">{{ listing.title }}</h3>
       
-      <div class="listing-price">
+      <div class="listing-price" *ngIf="hasStock">
         <span *ngIf="listing.list_price" class="price-original">
           ${{ formattedListPrice }}
         </span>

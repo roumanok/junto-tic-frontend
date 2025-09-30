@@ -45,23 +45,43 @@ export class AuthService {
     // Configurar OAuth
     this.oauthService.configure(getAuthConfig());
 
-    this.oauthService.setStorage(sessionStorage);    
+    this.oauthService.setStorage(localStorage);    
 
     this.isLoadingSubject$.next(true);
+
+    if (isPlatformBrowser(this.platformId)) {
+    window.addEventListener('message', (event) => {
+      console.log('📨 [AUTH-SERVICE] Mensaje recibido:', {
+        origin: event.origin,
+        data: event.data,
+        source: event.source
+      });
+    });
+  }
     
     // Cargar discovery document (endpoints de Keycloak)
     this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {     
-      this.oauthService.setupAutomaticSilentRefresh();    
-
-      console.log('OAuth configuration loaded, updating auth state...');
+      console.log('✅ Discovery document cargado');
+      console.log('🔍 Endpoints:', this.oauthService);
+      this.oauthService.setupAutomaticSilentRefresh();          
+      console.log('✅ Silent refresh configurado');
       this.updateAuthenticationState();
 
       this.loadUserProfile();              
       this.isLoadingSubject$.next(false);      
     })
     .catch((error) => {
-      console.error('Error al cargar OAuth:', error);        
+      console.error('❌ Error al cargar OAuth:', error);
       this.isLoadingSubject$.next(false);
+    });
+
+    // ✅ Escuchar TODOS los eventos OAuth para debugging
+    this.oauthService.events.subscribe((event: OAuthEvent) => {
+      console.log('🔔 OAuth Event:', event.type, event);
+      
+      if (event.type === 'token_refresh_error' || event.type === 'silent_refresh_error') {
+        console.error('💥 Error en refresh:', event);
+      }
     });
 
     // Suscribirse a eventos de OAuth

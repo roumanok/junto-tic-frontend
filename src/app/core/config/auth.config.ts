@@ -22,7 +22,7 @@ export function getAuthConfig(): AuthConfig {
     responseType: 'code',
 
     // Alcance (scopes) solicitados
-    scope: 'openid profile email',
+    scope: 'openid profile email offline_access',
 
     // Solo HTTPS en producción
     requireHttps: environment.production,  
@@ -32,18 +32,23 @@ export function getAuthConfig(): AuthConfig {
     
     // Usar PKCE (Proof Key for Code Exchange) - recomendado para SPAs
     useSilentRefresh: true,
-    
+        
     // URL para silent refresh
     silentRefreshRedirectUri: origin + '/silent-refresh.html',
     
     // Tiempo de espera para silent refresh
     silentRefreshTimeout: 5000,
+
+    // Refresh al 75% del tiempo de vida del token
+    //timeoutFactor: 0.75,  
        
     // Show debug info
     showDebugInformation: !environment.production,
     
     // Session checks
-    sessionChecksEnabled: true,    
+    sessionChecksEnabled: true,  
+    sessionCheckIntervall: 5000,
+    
     clearHashAfterLogin: false,
     nonceStateSeparator: 'semicolon',
 

@@ -188,6 +188,19 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  get maxAvailableQuantity(): number {
+    if (!this.listing) return 1;
+    
+    return Math.min(
+      this.listing.stock_quantity,
+      this.listing.max_quantity_per_order
+    );
+  }
+
+  get hasStock(): boolean {
+    return this.listing ? this.listing.stock_quantity > 0 : false;
+  }  
+
   addToCart(): void {
     if (!this.listing) return;
     
@@ -240,7 +253,8 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
           image_url: this.listing.images?.[0]?.image_url || '',
           delivery_methods: this.listing.delivery_methods || [],
           advertiser_id: this.listing.advertiser?.id,
-          max_quantity_per_order: this.listing.max_quantity_per_order
+          max_quantity_per_order: this.listing.max_quantity_per_order,
+          stock_quantity: this.listing.stock_quantity
         },
         quantity: this.quantity
       }

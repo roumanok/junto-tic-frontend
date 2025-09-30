@@ -40,6 +40,30 @@
       color: #4A90A4;
     }
 
+    .out-of-stock-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #949494;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 8px rgba(43, 43, 43, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 10;
+      letter-spacing: 0.5px;
+    }
+
+    .out-of-stock-badge i {
+      font-size: 0.85rem;
+    }
+
     .listing-info {
       padding: 1.5rem;
       flex: 1;

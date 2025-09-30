@@ -74,17 +74,15 @@
     "LISTINGS.LOADING_ERROR": "Error al cargar los productos",
     "LISTINGS.SOLD_BY": "Vendido por",
     "LISTINGS.STOCK_AVAILABLE": "Stock disponible",
+    "LISTINGS.OUT_OF_STOCK": "SIN STOCK",    
     "LISTINGS.UNITS": "unidades",
     "LISTINGS.PRICE": "Precio",
     "LISTINGS.ADD_TO_CART": "Agregar al carrito",
     "LISTINGS.PURCHASE": "Comprar",
+    "LISTINGS.QUANTITY": "Cantidad",    
     "LISTINGS.GALLERY.NO_IMAGES": "Sin imágenes disponibles",
 
-    "CATEGORY.LOADING_ERROR": "Error al cargar la categoría",
-    
-    "CHECKOUT.TITLE": "Finalizar Compra",
-    "CHECKOUT.TOTAL": "Total",
-    "CHECKOUT.CONFIRM": "Confirmar Pedido",
+    "CATEGORY.LOADING_ERROR": "Error al cargar la categoría",        
 
     "PAGES.HOME.TITLE": "{{communityName}} - Tienda oficial",
     "PAGES.HOME.DESCRIPTION": "Conseguí productos oficiales de {{communityName}}.",
@@ -125,7 +123,9 @@
     "PAGES.LOGIN_REQ.REGISTER": "Crear nueva cuenta",
     "PAGES.LOGIN_REQ.GO_BACK": "Volver",
 
-    
+    "PAGES.CHECKOUT.TITLE": "Realizar compra - {{communityName}}",
+    "PAGES.CHECKOUT.DESCRIPTION": "Realizar compra en {{communityName}}",  
+        
     "ERRORS.NETWORK": "Error de conexión",
     "ERRORS.GENERAL": "Ha ocurrido un error inesperado"
 }

@@ -212,7 +212,7 @@ export class ThemeService {
     console.log('Cargando i18n base desde CDN...');
     console.log('CDN:', cdn);
     console.log('genVersion:', genVersion); 
-    const baseI18n = await this.fetchJSON<Dict<string>>(this.cdnURL(cdn, `gen/i18n/es.json?v`));
+    const baseI18n = await this.fetchJSON<Dict<string>>(this.cdnURL(cdn, `gen/i18n/es.json?v=2`));
     this._state.update(s => ({ ...s, i18n: { ...baseI18n, ...s.i18n } }));    
   }
 

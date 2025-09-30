@@ -46,7 +46,7 @@
         
         <h1 class="listing-title">{{ listing.title }}</h1>
         
-        <div class="listing-price">
+        <div class="listing-price" *ngIf="hasStock">
           <div class="price-original-wrapper">
             <span *ngIf="hasDiscount" class="price-original">
               ${{ formattedListPrice }}
@@ -70,16 +70,22 @@
         </div>
 
         <!-- Stock Info -->
-        <div class="stock-info" *ngIf="listing.stock_quantity">
+        <div class="stock-info" *ngIf="hasStock">
           <i class="fas fa-box"></i>
           {{ 'LISTINGS.STOCK_AVAILABLE' | translate }}: {{ listing.stock_quantity }} {{ 'LISTINGS.UNITS' | translate }}
+        </div>        
+
+        <!-- Sin Stock -->
+        <div class="stock-info no-stock" *ngIf="!hasStock">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ 'LISTINGS.OUT_OF_STOCK' | translate }}
         </div>
 
         <!-- Purchase Section -->
         <div class="purchase-section">
-          <div class="purchase-wrapper">
+          <div class="purchase-wrapper" *ngIf="hasStock">
             <div class="quantity-selector">
-              <span class="quantity-label">Cantidad:</span>
+              <span class="quantity-label">{{ 'LISTINGS.QUANTITY' | translate }}:</span>
               <div class="quantity-controls">
                 <button 
                   class="quantity-btn" 
@@ -92,11 +98,11 @@
                   class="quantity-input" 
                   [(ngModel)]="quantity"
                   [min]="1" 
-                  [max]="listing.max_quantity_per_order">
+                  [max]="maxAvailableQuantity">
                 <button 
                   class="quantity-btn" 
                   (click)="increaseQuantity()"
-                  [disabled]="quantity >= listing.max_quantity_per_order">
+                  [disabled]="quantity >= maxAvailableQuantity">
                   +
                 </button>
               </div>

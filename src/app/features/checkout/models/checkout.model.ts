@@ -11,6 +11,7 @@ export interface CheckoutProduct {
   delivery_methods?: DeliveryMethod[];
   advertiser_id?: string;
   max_quantity_per_order?: number;
+  stock_quantity?: number;
 }
 
 export interface DeliveryMethod {

@@ -144,6 +144,20 @@
   color: #4A90A4;
 }
 
+.stock-info.no-stock {
+  color: #404040;
+}
+
+.stock-info.no-stock i {
+  color: #404040;
+}
+
+.max-quantity-hint {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
 /* Purchase Section */
 .purchase-section {
   background: #f8f9fa;

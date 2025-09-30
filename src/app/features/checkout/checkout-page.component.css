@@ -115,6 +115,12 @@
   font-size: 1rem;
 }
 
+.qty-input.no-spinner::-webkit-outer-spin-button,
+.qty-input.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* Métodos de entrega */
 .delivery-section {
   margin-bottom: 1.5rem;
@@ -161,6 +167,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+}
+
+.method-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .method-name {
@@ -311,7 +323,11 @@
 
 .btn-primary {
   background: linear-gradient(135deg, #4A90A4 0%, #2C5F6F 100%);
-  color: white;
+  color: white;  
+}
+
+.empty-state .btn-primary{
+  margin: 0 auto;
 }
 
 .btn-primary:hover:not(:disabled) {

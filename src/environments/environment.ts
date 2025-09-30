@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
   staging: false,
+  locale: 'es-AR',
   cmDomain: 'tubarrio.com.ar',
   apiUrl: 'https://s.jatic.com.ar/api', 
   cdnUrl: 'https://cdn.jatic.com.ar',

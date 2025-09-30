@@ -20,7 +20,7 @@
             <img [src]="getCdnUrl(product()!.image_url)" [alt]="product()!.title" class="product-img">
             <div class="product-details">
               <h3>{{ product()!.title }}</h3>
-              <p class="product-price">$ {{ product()!.price | number:'1.2-2' }}</p>
+              <p class="product-price">$ {{ getformattedPrice(product()!.price) }}</p>
               
               <!-- Control de cantidad -->
               <div class="quantity-section">
@@ -29,8 +29,13 @@
                   <button type="button" class="qty-btn" (click)="decreaseQuantity()" [disabled]="quantity() <= 1">
                     -
                   </button>
-                  <input type="number" [value]="quantity()" (change)="updateQuantity($event)" min="1" class="qty-input">
-                  <button type="button" class="qty-btn" (click)="increaseQuantity()">
+                  <input type="number" 
+                         [value]="quantity()" 
+                         (change)="updateQuantity($event)" 
+                         [max]="getMaxQuantity()"
+                         min="1" 
+                         class="qty-input no-spinner">
+                  <button type="button" class="qty-btn" (click)="increaseQuantity()" [disabled]="quantity() >= getMaxQuantity()">
                     +
                   </button>
                 </div>
@@ -52,10 +57,12 @@
                            (change)="onDeliveryMethodChange(method.id)">
                     <div class="method-content">
                       <div class="method-header">
-                        <i class="fas" [ngClass]="method.type === 'pickup' ? 'fa-store' : 'fa-truck'"></i>
-                        <span class="method-name">{{ method.name }}</span>
+                        <div class="method-left">
+                          <i class="fas" [ngClass]="method.type === 'pickup' ? 'fa-store' : 'fa-truck'"></i>
+                          <span class="method-name">{{ method.name }}</span>
+                        </div>
                         <span class="method-cost">
-                          {{ getMethodCost(method.cost) === 0 ? 'Retiro gratuito en nuestro local' : ('$ ' + (getMethodCost(method.cost) | number:'1.2-2')) }}
+                          {{ getMethodCost(method.cost) === 0 ? 'GRATIS' : ('$ ' + getformattedPrice(method.cost)) }}
                         </span>
                       </div>
                       @if (method.description) {
@@ -77,17 +84,21 @@
           <div class="totals">
             <div class="total-row">
               <span>Subtotal:</span>
-              <span>$ {{ totals()?.subtotal || product()!.price | number:'1.2-2' }}</span>
+              <span>$ {{ getformattedPrice(totals()?.subtotal || product()!.price) }}</span>
             </div>
-            @if (totals()?.shipping && getMethodCost(totals()!.shipping) > 0) {
-              <div class="total-row">
-                <span>Envío:</span>
-                <span>$ {{ totals()!.shipping | number:'1.2-2' }}</span>
-              </div>
-            }
+            <div class="total-row">
+              <span>Envío:</span>
+              <span>
+                @if (totals()?.shipping && getMethodCost(totals()!.shipping) > 0) {
+                  $ {{ getformattedPrice(totals()!.shipping) }}
+                } @else {
+                  <strong style="color: #4A90A4;">GRATIS</strong>
+                }
+              </span>
+            </div>
             <div class="total-row total-final">
               <span><strong>Total:</strong></span>
-              <span><strong>$ {{ totals()?.total || (getMethodCost(product()!.price) * quantity()) | number:'1.2-2' }}</strong></span>
+              <span><strong>$ {{ getformattedPrice(totals()?.total || (getMethodCost(product()!.price) * quantity()).toString()) }}</strong></span>
             </div>
           </div>
         </div>

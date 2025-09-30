@@ -6,20 +6,51 @@
 </head>
 <body>
     <script>
-        // Procesar el resultado del silent refresh y enviarlo al parent
-        try {
-            if (parent && parent.postMessage) {
+        (function() {
+            console.log('🔄 [SILENT-REFRESH] Página cargada');
+            console.log('🔄 [SILENT-REFRESH] URL completa:', window.location.href);
+            console.log('🔄 [SILENT-REFRESH] Hash:', window.location.hash);
+            console.log('🔄 [SILENT-REFRESH] Search:', window.location.search);
+            console.log('🔄 [SILENT-REFRESH] Origin:', window.location.origin);
+            
+            try {
+                if (!parent) {
+                    console.error('❌ [SILENT-REFRESH] No hay parent window');
+                    return;
+                }
+                
+                if (!parent.postMessage) {
+                    console.error('❌ [SILENT-REFRESH] parent.postMessage no existe');
+                    return;
+                }
+                
                 const hash = window.location.hash;
                 const search = window.location.search;
+                const message = hash || search;
                 
-                // ✅ Usar "*" porque frontend y Keycloak están en dominios diferentes
-                parent.postMessage(hash || search, "*");
+                if (!message) {
+                    console.warn('⚠️ [SILENT-REFRESH] No hay hash ni search para enviar');
+                    return;
+                }
                 
-                console.log('Silent refresh: mensaje enviado con targetOrigin=*');
+                console.log('📤 [SILENT-REFRESH] Enviando mensaje:', message);
+                console.log('📤 [SILENT-REFRESH] Target origin:', window.location.origin);
+                
+                // Enviar con origin específico
+                parent.postMessage(message, window.location.origin);
+                
+                console.log('✅ [SILENT-REFRESH] Mensaje enviado correctamente');
+                
+                // También intentar con "*" como backup
+                setTimeout(function() {
+                    console.log('📤 [SILENT-REFRESH] Reintentando con targetOrigin=*');
+                    parent.postMessage(message, "*");
+                }, 100);
+                
+            } catch (e) {
+                console.error('💥 [SILENT-REFRESH] Error:', e);
             }
-        } catch (e) {
-            console.error('Error en silent refresh:', e);
-        }
+        })();
     </script>
 </body>
 </html>

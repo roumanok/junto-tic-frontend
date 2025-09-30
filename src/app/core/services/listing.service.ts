@@ -6,7 +6,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Listing } from '../models/listing.model';
 import { CommunityService } from './community.service';
-
+import { environment } from 'src/environments/environment';
 
 type FeaturedResponse = { items: Listing[] };
 
@@ -70,7 +70,7 @@ export class ListingService {
   }
 
   getformattedPrice(price: string): string {    
-    return this ? parseInt(price).toLocaleString('es-AR') : '0';
+    return this ? parseInt(price).toLocaleString(environment.locale) : '0';
   }
 
 }

@@ -32,6 +32,10 @@ export class ListingCardComponent {
       : of('placeholder.png');
   }
 
+  get hasStock(): boolean {
+    return this.listing?.stock_quantity > 0;
+  }
+
   onCardClick(): void {    
     const slug = this.listingService.generateSlugWithId(this.listing.title || 'listing', this.listing.id);
     this.router.navigate(['/articulo', slug]);
