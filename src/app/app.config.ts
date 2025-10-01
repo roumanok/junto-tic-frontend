@@ -2,6 +2,7 @@ import { ApplicationConfig, provideZoneChangeDetection, inject, APP_INITIALIZER,
 import { isPlatformBrowser } from '@angular/common';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideOAuthClient } from 'angular-oauth2-oidc';
 import { CommunityService } from './core/services/community.service';
@@ -44,6 +45,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideAnimationsAsync(),
     provideClientHydration(),    
     provideHttpClient(
       withFetch(),

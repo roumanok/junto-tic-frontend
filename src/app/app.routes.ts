@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '../app/core/guards/auth.guard';
+
 
 export const routes: Routes = [
   {
@@ -33,12 +35,18 @@ export const routes: Routes = [
       {
         path: 'login-required',
         loadComponent: () => import('./features/login-required/login-required.component')
-          .then(c => c.LoginRequiredComponent)
+          .then(c => c.LoginRequiredComponent)          
       },
       {
         path: 'checkout',
         loadComponent: () => import('./features/checkout/checkout-page.component')
-          .then(c => c.CheckoutPageComponent)
+          .then(c => c.CheckoutPageComponent),
+          canActivate: [authGuard]
+      },
+      {
+        path: 'auth/callback',  // ✅ IMPORTANTE: Agregar esta ruta
+        loadComponent: () => import('./features/auth-callback/auth-callback.component')
+          .then(c => c.AuthCallbackComponent)
       }
     ]
   },

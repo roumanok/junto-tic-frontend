@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, Inject, inject, PLATFORM_ID, afterNextRender, signal} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { MegaMenuComponent } from './mega-menu/mega-menu.component';
 import { I18nService } from 'src/app/core/services/i18n.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -19,6 +19,7 @@ export class NavigationComponent implements OnInit {
   showMobileMenu = false;
   public isHydrated = signal(false);
 
+  private router = inject(Router);
   private i18n = inject(I18nService);
   private authService = inject(AuthService);
   
@@ -120,7 +121,7 @@ export class NavigationComponent implements OnInit {
 
   login(): void {
     console.log('🔐 Iniciando login desde navigation...');
-    this.authService.login();
+    this.authService.login(this.router.url);
   }
 
   register(): void {

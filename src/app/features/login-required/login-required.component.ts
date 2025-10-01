@@ -26,21 +26,24 @@ export class LoginRequiredComponent implements OnInit {
 
   ngOnInit() {
     // Verificar si el usuario ya está logueado
-    if (this.authService.isLoggedIn()) {
+    if (this.authService.isLoggedIn()) {      
       // Si ya está logueado, redirigir al checkout o a la URL de retorno
       const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/checkout';
+      console.log('🔐 Usuario ya logueado, redirigiendo a:', returnUrl);
       this.router.navigate([returnUrl]);
       return;
     }
     
     // Guardar la URL de retorno
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    console.log('Usuario no logueado, returnUrl:', this.returnUrl);
     this.setupSEO();
   }
 
   login(): void {
-    console.log('🔐 Iniciando login con URL de retorno:', this.returnUrl);
-    this.authService.login(this.returnUrl);
+    const targetUrl = this.returnUrl !== '/' ? this.returnUrl : '/checkout';
+    console.log('🔐 Iniciando login con URL de retorno:', targetUrl);
+    this.authService.login(targetUrl);
   }
 
   register(): void {

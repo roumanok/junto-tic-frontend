@@ -2,9 +2,9 @@
 import { Component, OnInit, OnDestroy, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, of } from 'rxjs';
-import { takeUntil, catchError, switchMap, filter } from 'rxjs/operators';
+import { takeUntil, catchError, switchMap } from 'rxjs/operators';
 
 import { ListingDetailService, ListingDetail } from './services/listing-detail.service';
 import { CategoryService } from '../../core/services/category.service';
@@ -64,14 +64,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (!this.isBrowser) {
       return;
-    }    
-
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.scrollToTop();
-    });
+    }        
 
     this.route.params.pipe(
       takeUntil(this.destroy$),
@@ -108,13 +101,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private scrollToTop(): void {
-    if (this.isBrowser) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }
+  }  
 
   private extractIdFromSlug(slug: string): string {
     // Extraer ID del formato: "{slug}-lid-{id}"

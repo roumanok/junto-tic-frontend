@@ -124,11 +124,13 @@ export class AuthService {
   login(targetUrl?: string): void {
     if (!isPlatformBrowser(this.platformId)) return;
     
-    if (targetUrl) {
-      this.oauthService.initCodeFlow(targetUrl);
-    } else {
-      this.oauthService.initCodeFlow();
+    const urlToReturn = targetUrl || this.router.url;
+        
+    if (urlToReturn && urlToReturn !== '/login' && urlToReturn !== '/login-required') {
+      sessionStorage.setItem('auth_redirect_url', urlToReturn);
     }
+    
+    this.oauthService.initCodeFlow(urlToReturn);
   }
 
   /**

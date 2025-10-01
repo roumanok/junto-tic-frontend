@@ -2,10 +2,13 @@
   @if (!product()) {
     <!-- Sin producto -->
     <div class="empty-state">
-      <i class="fas fa-shopping-cart empty-icon"></i>
+      <mat-icon class="empty-icon">shopping_cart</mat-icon>
       <h2>No hay producto seleccionado</h2>
       <p>Por favor selecciona un producto para continuar con la compra.</p>
-      <button class="btn-primary" (click)="goBack()">Volver al inicio</button>
+      <button mat-raised-button color="primary" (click)="goBack()">
+        <mat-icon>home</mat-icon>
+        Volver al inicio
+      </button>
     </div>
   } @else {
     <div class="checkout-container">
@@ -112,78 +115,130 @@
           <form [formGroup]="checkoutForm" class="checkout-form">
             <!-- Nombre y Email -->
             <div class="form-row">
-              <div class="form-field">
-                <label>Nombre completo*</label>
-                <input type="text" formControlName="customer_name" placeholder="Nombre completo">
-              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Nombre completo</mat-label>
+                <input matInput formControlName="customer_name">
+                <mat-icon matPrefix>person</mat-icon>
+                <mat-error *ngIf="checkoutForm.get('customer_name')?.hasError('required')">
+                  El nombre es requerido
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('customer_name')?.hasError('minlength')">
+                  Mínimo 3 caracteres
+                </mat-error>
+              </mat-form-field>
               
-              <div class="form-field">
-                <label>Email</label>
-                <input type="email" formControlName="customer_email" readonly>
-              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="customer_email" readonly>
+                <mat-icon matPrefix>email</mat-icon>
+              </mat-form-field>
             </div>
+
 
             <!-- Tipo y Número de documento -->
             <div class="form-row">
-              <div class="form-field">
-                <label>Tipo de documento*</label>
-                <select formControlName="customer_identification_type">
-                  <option value="DNI_ARG">DNI</option>
-                  <option value="CUIL_ARG">CUIL</option>
-                  <option value="CUIT_ARG">CUIT</option>
-                  <option value="PASSPORT">Pasaporte</option>
-                </select>
-              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Tipo de documento</mat-label>
+                <mat-select formControlName="customer_identification_type">
+                  <mat-option value="DNI_ARG">DNI</mat-option>
+                  <mat-option value="CUIT_ARG">CUIT/CUIL</mat-option>                  
+                </mat-select>
+                <mat-icon matPrefix>badge</mat-icon>
+              </mat-form-field>
 
-              <div class="form-field">
-                <label>Número de documento*</label>
-                <input type="text" formControlName="customer_identification_number" placeholder="12345678">
-              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Número de documento</mat-label>
+                <input matInput formControlName="customer_identification_number">
+                <mat-icon matPrefix>fingerprint</mat-icon>
+                <mat-error *ngIf="checkoutForm.get('customer_identification_number')?.hasError('required')">
+                  El número de documento es requerido
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('customer_identification_number')?.hasError('pattern')">
+                  Debe contener entre 7 y 11 dígitos
+                </mat-error>
+              </mat-form-field>
             </div>
 
             <!-- Teléfono -->
-            <div class="form-field full-width">
-              <label>Teléfono*</label>
-              <input type="tel" formControlName="customer_phone" placeholder="+54 9 11 1234-5678">
-            </div>
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Teléfono</mat-label>
+              <input matInput formControlName="customer_phone">
+              <mat-icon matPrefix>phone</mat-icon>
+              <mat-error *ngIf="checkoutForm.get('customer_phone')?.hasError('required')">
+                El teléfono es requerido
+              </mat-error>
+              <mat-error *ngIf="checkoutForm.get('customer_phone')?.hasError('pattern')">
+                Formato inválido (ej: +54 9 11 1234-5678)
+              </mat-error>
+            </mat-form-field>
 
             <!-- Dirección -->
-            <div class="form-field full-width">
-              <label>Dirección de entrega*</label>
-              <input type="text" formControlName="delivery_address" placeholder="Calle 123">
-            </div>
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Dirección de entrega</mat-label>
+              <input matInput formControlName="delivery_address">
+              <mat-icon matPrefix>home</mat-icon>
+              <mat-error *ngIf="checkoutForm.get('delivery_address')?.hasError('required')">
+                La dirección es requerida
+              </mat-error>
+              <mat-error *ngIf="checkoutForm.get('delivery_address')?.hasError('minlength')">
+                Mínimo 5 caracteres
+              </mat-error>
+            </mat-form-field>
 
             <!-- Depto/Piso y Código Postal -->
             <div class="form-row">
-              <div class="form-field">
-                <label>Depto/Piso</label>
-                <input type="text" formControlName="delivery_apartment" placeholder="5B">
-              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Depto/Piso</mat-label>
+                <input matInput formControlName="delivery_apartment">
+                 <mat-icon matPrefix>apartment</mat-icon>
+              </mat-form-field>
 
-              <div class="form-field">
-                <label>Código postal</label>
-                <input type="text" formControlName="delivery_postal_code" placeholder="1234">
-              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Código postal</mat-label>
+                <input matInput formControlName="delivery_postal_code">
+                <mat-icon matPrefix>markunread_mailbox</mat-icon>
+                <mat-error *ngIf="checkoutForm.get('delivery_postal_code')?.hasError('pattern')">
+                  Debe ser un código postal válido (4 dígitos)
+                </mat-error>
+              </mat-form-field>
             </div>
 
             <!-- Ciudad y Provincia -->
             <div class="form-row">
-              <div class="form-field">
-                <label>Ciudad*</label>
-                <input type="text" formControlName="delivery_city" placeholder="Buenos Aires">
-              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Ciudad*</mat-label>
+                <input matInput formControlName="delivery_city">
+                <mat-icon matPrefix>location_city</mat-icon>
+                <mat-error *ngIf="checkoutForm.get('delivery_city')?.hasError('required')">
+                  La ciudad es requerida
+                </mat-error>                
+              </mat-form-field>
 
-              <div class="form-field">
-                <label>Provincia*</label>
-                <input type="text" formControlName="delivery_province" placeholder="Buenos Aires">
-              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Provincia*</mat-label>
+                <mat-select formControlName="delivery_province">
+                  <mat-option *ngFor="let province of provinces" [value]="province">
+                    {{ province }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matPrefix>map</mat-icon>
+                <mat-error *ngIf="checkoutForm.get('delivery_province')?.hasError('required')">
+                  La provincia es requerida
+                </mat-error>
+              </mat-form-field>
             </div>
 
             <!-- Notas adicionales -->
-            <div class="form-field full-width">
-              <label>Notas adicionales</label>
-              <textarea formControlName="delivery_notes" rows="3" placeholder="Indicaciones especiales para la entrega"></textarea>
-            </div>
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Notas adicionales</mat-label>
+              <textarea matInput 
+                        formControlName="delivery_notes" 
+                        rows="3"></textarea>
+              <mat-icon matPrefix>note</mat-icon>
+              <mat-error *ngIf="checkoutForm.get('delivery_notes')?.hasError('maxlength')">
+                Máximo 500 caracteres
+              </mat-error>
+            </mat-form-field>
 
             <!-- Botones de acción -->
             <div class="action-buttons">

@@ -9,6 +9,14 @@ import { CdnService } from 'src/app/core/services/cdn.service';
 import { ListingService } from 'src/app/core/services/listing.service';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDividerModule } from '@angular/material/divider';
 import {
   CheckoutProduct,
   CheckoutCalculationResponse,
@@ -18,7 +26,18 @@ import {
 @Component({
   selector: 'app-checkout-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatRadioModule,
+    MatDividerModule
+  ],
   templateUrl: './checkout-page.component.html',
   styleUrls: ['./checkout-page.component.css']
 })
@@ -46,19 +65,56 @@ export class CheckoutPageComponent implements OnInit {
   validationErrors = signal<ValidationError[]>([]);
   totals = signal<CheckoutCalculationResponse | null>(null);
 
+  provinces = [
+    'Buenos Aires',
+    'Ciudad Autónoma de Buenos Aires',
+    'Catamarca',
+    'Chaco',
+    'Chubut',
+    'Córdoba',
+    'Corrientes',
+    'Entre Ríos',
+    'Formosa',
+    'Jujuy',
+    'La Pampa',
+    'La Rioja',
+    'Mendoza',
+    'Misiones',
+    'Neuquén',
+    'Río Negro',
+    'Salta',
+    'San Juan',
+    'San Luis',
+    'Santa Cruz',
+    'Santa Fe',
+    'Santiago del Estero',
+    'Tierra del Fuego',
+    'Tucumán'
+  ];
+
   // Formulario
   checkoutForm = this.fb.group({
-    customer_name: ['', Validators.required],
+    customer_name: ['', [
+      Validators.required, 
+      Validators.minLength(3), 
+      Validators.maxLength(100)
+    ]],
     customer_email: [{ value: '', disabled: true }],
     customer_identification_type: ['DNI_ARG', Validators.required],
-    customer_identification_number: ['', Validators.required],
-    customer_phone: ['', Validators.required],
-    delivery_address: ['', Validators.required],
+    customer_identification_number: ['', [
+      Validators.required, 
+      Validators.pattern(/^\d{7,11}$/)  // DNI/CUIL argentino: 7-11 dígitos
+    ]],
+    customer_phone: ['', [
+      Validators.required, 
+      Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
+    ]],
+    delivery_address: ['', [Validators.required, Validators.minLength(5)]],
     delivery_apartment: [''],
-    delivery_postal_code: [''],
+    delivery_postal_code: ['', Validators.pattern(/^\d{4}$/)],  // CP argentino: 4 dígitos
     delivery_city: ['', Validators.required],
     delivery_province: ['', Validators.required],
-    delivery_notes: ['']
+    delivery_notes: ['', Validators.maxLength(500)]
   });
 
   ngOnInit() {

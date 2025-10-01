@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, Inject, inject, EventEmitter, HostListener, PLATFORM_ID, afterNextRender, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { Observable, Subject, map } from 'rxjs';
 import { CategoryService } from 'src/app/core/services/category.service';
 import { ThemeService } from 'src/app/core/services/theme.service';
@@ -20,6 +20,7 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
   @Input() isOpen = false;
   @Output() closeMenu = new EventEmitter<void>();
 
+  private router = inject(Router);
   transformedCategories$: Observable<MMCategory[]>;
   activeCategory: string | null = null;
   openAccordion: string | null = null;
@@ -189,7 +190,7 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
 
   login(): void {
     console.log('🔐 Iniciando login desde mega-menu...');
-    this.authService.login();
+    this.authService.login(this.router.url);
     this.closeMegaMenu();
   }
 
