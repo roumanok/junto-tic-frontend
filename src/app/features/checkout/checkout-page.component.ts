@@ -9,6 +9,7 @@ import { CdnService } from 'src/app/core/services/cdn.service';
 import { ListingService } from 'src/app/core/services/listing.service';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -29,6 +30,7 @@ import {
   imports: [
     CommonModule, 
     ReactiveFormsModule,
+    TranslatePipe,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -93,25 +95,39 @@ export class CheckoutPageComponent implements OnInit {
   ];
 
   // Formulario
-  checkoutForm = this.fb.group({
-    customer_name: ['', [
-      Validators.required, 
-      Validators.minLength(3), 
-      Validators.maxLength(100)
-    ]],
+  checkoutForm = this.fb.group({    
     customer_email: [{ value: '', disabled: true }],
     customer_identification_type: ['DNI_ARG', Validators.required],
     customer_identification_number: ['', [
       Validators.required, 
       Validators.pattern(/^\d{7,11}$/)  // DNI/CUIL argentino: 7-11 dígitos
     ]],
-    customer_phone: ['', [
+    billing_name: ['', [
+      Validators.required, 
+      Validators.minLength(3), 
+      Validators.maxLength(100)
+    ]],
+    billing_phone: ['', [
+      Validators.required, 
+      Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
+    ]],
+    billing_address: ['', [Validators.required, Validators.minLength(5)]],
+    billing_apartment: [''],
+    billing_postal_code: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],  // CP argentino: 4 dígitos
+    billing_city: ['', Validators.required],
+    billing_province: ['', Validators.required],
+    delivery_name: ['', [
+      Validators.required, 
+      Validators.minLength(3), 
+      Validators.maxLength(100)
+    ]],
+    delivery_phone: ['', [
       Validators.required, 
       Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
     ]],
     delivery_address: ['', [Validators.required, Validators.minLength(5)]],
     delivery_apartment: [''],
-    delivery_postal_code: ['', Validators.pattern(/^\d{4}$/)],  // CP argentino: 4 dígitos
+    delivery_postal_code: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],  // CP argentino: 4 dígitos
     delivery_city: ['', Validators.required],
     delivery_province: ['', Validators.required],
     delivery_notes: ['', Validators.maxLength(500)]

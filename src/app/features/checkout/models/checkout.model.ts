@@ -58,13 +58,20 @@ export interface CheckoutCalculationResponse {
 }
 
 export interface CreateOrderRequest {
-  items: CheckoutItem[];
-  delivery_method_id: string;
-  customer_name: string;
+  items: CheckoutItem[];    
   customer_identification_type: string;
   customer_identification_number: string;
   customer_email: string;
-  customer_phone: string;
+  billing_name: string;
+  billing_phone: string;
+  billing_address: string;
+  billing_apartment?: string;
+  billing_postal_code?: string;
+  billing_city: string;
+  billing_province: string;
+  delivery_method_id: string;
+  delivery_name: string;
+  delivery_phone: string;
   delivery_address: string;
   delivery_apartment?: string;
   delivery_postal_code?: string;

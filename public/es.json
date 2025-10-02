@@ -1,6 +1,5 @@
 {
     "COMMUNITY.NAME": "...",
-
     "COMMUNITY.SOCIAL.WHATSAPP": "#",
     "COMMUNITY.SOCIAL.INSTAGRAM": "#",
     "COMMUNITY.SOCIAL.FACEBOOK": "#",
@@ -26,6 +25,9 @@
     "COMMON.RETRY": "Intentar de nuevo",
     "COMMON.NEXT": "Siguiente",
     "COMMON.PREVIOUS": "Anterior", 
+
+    "ERRORS.NETWORK": "Error de conexión",
+    "ERRORS.GENERAL": "Ha ocurrido un error inesperado",
     
     "HEADER.TITLE": "Junto a TIC",
     "HEADER.SUBTITLE": "Red económica con propósito",
@@ -125,7 +127,65 @@
 
     "PAGES.CHECKOUT.TITLE": "Realizar compra - {{communityName}}",
     "PAGES.CHECKOUT.DESCRIPTION": "Realizar compra en {{communityName}}",  
-        
-    "ERRORS.NETWORK": "Error de conexión",
-    "ERRORS.GENERAL": "Ha ocurrido un error inesperado"
+    "PAGES.CHECKOUT.NO_PRODUCT": "No hay producto selccionado",  
+    "PAGES:CHECKOUT.NO_PRODUCT_DESC": "Por favor selecciona un producto para continuar con la compra.",
+    "PAGES.CHECKOUT.SUMMARY": "Resumen de tu compra",
+    "PAGES.CHECKOUT.QUANTITY": "Cantidad",
+    "PAGES.CHECKOUT.DELIVERY_METHOD": "Método de entrega",
+    "PAGES.CHECKOUT.FREE": "GRATIS",
+    "PAGES.CHECKOUT.SUBTOTAL": "Subtotal",
+    "PAGES.CHECKOUT.SHIPPING": "Envío",
+    "PAGES.CHECKOUT.TOTAL": "Total",
+    "PAGES.CHECKOUT.CONTACT_DATA": "Datos de contacto",
+    "PAGES.CHECKOUT.CUSTOMER_EMAIL": "Correo electrónico",
+    "PAGES.CHECKOUT.DELIVERY_DATA": "Datos de entrega",
+    "PAGES.CHECKOUT.DELIVERY_NAME": "Nombre completo de quien recibe",
+    "PAGES.CHECKOUT.DELIVERY_NAME_REQUIRED": "Por favor ingresa el nombre completo",
+    "PAGES.CHECKOUT.DELIVERY_NAME_MIN_LENGTH": "Mínimo 3 caracteres",        
+    "PAGES.CHECKOUT.DELIVERY_PHONE": "Teléfono",
+    "PAGES.CHECKOUT.DELIVERY_PHONE_REQUIRED": "Por favor ingresa tu teléfono",
+    "PAGES.CHECKOUT.DELIVERY_PHONE_PATTERN": "Formato inválido (ej: +54 9 11 1234-5678)",
+    "PAGES.CHECKOUT.DELIVERY_ADDRESS": "Dirección de entrega",
+    "PAGES.CHECKOUT.DELIVERY_ADDRESS_REQUIRED": "Por favor ingresa tu dirección",
+    "PAGES.CHECKOUT.DELIVERY_ADDRESS_MIN_LENGTH": "Mínimo 5 caracteres",
+    "PAGES.CHECKOUT.DELIVERY_APARTMENT": "Depto/Piso",
+    "PAGES.CHECKOUT.DELIVERY_POSTAL_CODE": "Código postal",
+    "PAGES.CHECKOUT.DELIVERY_POSTAL_CODE_REQUIRED": "Por favor ingresa tu código postal",
+    "PAGES.CHECKOUT.DELIVERY_POSTAL_CODE_PATTERN": "Debe ser un código postal válido (4 dígitos)",    
+    "PAGES.CHECKOUT.DELIVERY_CITY": "Ciudad",
+    "PAGES.CHECKOUT.DELIVERY_CITY_REQUIRED": "Por favor ingresa una ciudad",    
+    "PAGES.CHECKOUT.DELIVERY_PROVINCE": "Provincia",
+    "PAGES.CHECKOUT.DELIVERY_PROVINCE_REQUIRED": "Por favor selecciona una provincia",
+    "PAGES.CHECKOUT.DELIVERY_NOTES": "Notas sobre la entrega",
+    "PAGES.CHECKOUT.DELIVERY_NOTES_MAX_LENGTH": "Máximo 500 caracteres",
+    "PAGES.CHECKOUT.BILLING_DATA": "Datos de facturación",
+    "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_TYPE": "Tipo de documento",
+    "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_TYPE_DNI": "DNI",
+    "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_TYPE_CUIT": "CUIT / CUIL",
+    "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_NUMBER": "Número de documento",
+    "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_NUMBER_REQUIRED": "Por favor ingresa tu número de documento",
+    "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_NUMBER_PATTERN": "Debe contener entre 7 y 11 dígitos",    
+    "PAGES.CHECKOUT.BILLING_INHERITS": "Mis datos de facturación y entrega son los mismos",    
+    "PAGES.CHECKOUT.BILLING_NAME": "Nombre completo",
+    "PAGES.CHECKOUT.BILLING_NAME_REQUIRED": "Por favor ingresa tu nombre completo",
+    "PAGES.CHECKOUT.BILLING_NAME_MIN_LENGTH": "Mínimo 3 caracteres",            
+    "PAGES.CHECKOUT.BILLING_PHONE": "Teléfono",
+    "PAGES.CHECKOUT.BILLING_PHONE_REQUIRED": "Por favor ingresa tu teléfono",
+    "PAGES.CHECKOUT.BILLING_PHONE_PATTERN": "Formato inválido (ej: +54 9 11 1234-5678)",
+    "PAGES.CHECKOUT.BILLING_ADDRESS": "Dirección",
+    "PAGES.CHECKOUT.BILLING_ADDRESS_REQUIRED": "Por favor ingresa tu dirección",
+    "PAGES.CHECKOUT.BILLING_ADDRESS_MIN_LENGTH": "Mínimo 3 caracteres",
+    "PAGES.CHECKOUT.BILLING_APARTMENT": "Depto/Piso",
+    "PAGES.CHECKOUT.BILLING_POSTAL_CODE": "Código postal",
+    "PAGES.CHECKOUT.BILLING_POSTAL_CODE_REQUIRED": "Por favor ingresa tu código postal",
+    "PAGES.CHECKOUT.BILLING_POSTAL_CODE_PATTERN": "Debe ser un código postal válido (4 dígitos)",    
+    "PAGES.CHECKOUT.BILLING_CITY": "Ciudad",
+    "PAGES.CHECKOUT.BILLING_CITY_REQUIRED": "Por favor ingresa una ciudad",    
+    "PAGES.CHECKOUT.BILLING_PROVINCE": "Provincia",
+    "PAGES.CHECKOUT.BILLING_PROVINCE_REQUIRED": "Por favor selecciona una provincia"
+
+
+    
+
+                
 }
