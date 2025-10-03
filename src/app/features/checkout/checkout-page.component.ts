@@ -112,9 +112,13 @@ export class CheckoutPageComponent implements OnInit {
       Validators.minLength(3), 
       Validators.maxLength(100)
     ]],
-    billing_phone: ['', [
-      Validators.required, 
-      Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
+    billing_phone_area_code: ['', [
+      Validators.required,
+      Validators.pattern(/^\d{2,4}$/)  // 2-4 dígitos para código de área
+    ]],
+    billing_phone_number: ['', [
+      Validators.required,
+      Validators.pattern(/^\d{6,8}$/)  // 6-8 dígitos para número
     ]],
     billing_address: ['', [Validators.required, Validators.minLength(5)]],
     billing_apartment: [''],
@@ -126,9 +130,13 @@ export class CheckoutPageComponent implements OnInit {
       Validators.minLength(3), 
       Validators.maxLength(100)
     ]],
-    delivery_phone: ['', [
-      Validators.required, 
-      Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
+    delivery_phone_area_code: ['', [
+      Validators.required,
+      Validators.pattern(/^\d{2,4}$/)
+    ]],
+    delivery_phone_number: ['', [
+      Validators.required,
+      Validators.pattern(/^\d{6,8}$/)
     ]],
     delivery_address: ['', [Validators.required, Validators.minLength(5)]],
     delivery_apartment: [''],
@@ -349,9 +357,13 @@ export class CheckoutPageComponent implements OnInit {
       Validators.minLength(3), 
       Validators.maxLength(100)
     ]);
-    this.checkoutForm.get('billing_phone')?.setValidators([
-      Validators.required, 
-      Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
+    this.checkoutForm.get('billing_phone_area_code')?.setValidators([
+      Validators.required,
+      Validators.pattern(/^\d{2,4}$/)
+    ]);
+    this.checkoutForm.get('billing_phone_number')?.setValidators([
+      Validators.required,
+      Validators.pattern(/^\d{6,8}$/)
     ]);
     this.checkoutForm.get('billing_address')?.setValidators([
       Validators.required, 
@@ -365,7 +377,7 @@ export class CheckoutPageComponent implements OnInit {
     ]);
     
     // Actualizar validez de todos
-    ['billing_name', 'billing_phone', 'billing_address', 'billing_city', 
+    ['billing_name', 'billing_phone_area_code', 'billing_phone_number', 'billing_address', 'billing_city', 
     'billing_province', 'billing_postal_code'].forEach(field => {
       this.checkoutForm.get(field)?.updateValueAndValidity();
     });
@@ -389,7 +401,8 @@ export class CheckoutPageComponent implements OnInit {
     const form = this.checkoutForm;
     form.patchValue({
       billing_name: form.get('delivery_name')?.value,
-      billing_phone: form.get('delivery_phone')?.value,
+      billing_phone_area_code: form.get('delivery_phone_area_code')?.value,
+      billing_phone_number: form.get('delivery_phone_number')?.value,
       billing_address: form.get('delivery_address')?.value,
       billing_apartment: form.get('delivery_apartment')?.value,
       billing_postal_code: form.get('delivery_postal_code')?.value,
@@ -401,7 +414,8 @@ export class CheckoutPageComponent implements OnInit {
   private clearBillingFields() {
     this.checkoutForm.patchValue({
       billing_name: '',
-      billing_phone: '',
+      billing_phone_area_code: '',
+      billing_phone_number: '',
       billing_address: '',
       billing_apartment: '',
       billing_postal_code: '',
@@ -412,7 +426,7 @@ export class CheckoutPageComponent implements OnInit {
 
   private updateValidatorsForPickup() {
     const deliveryFields = [
-      'delivery_name', 'delivery_phone', 'delivery_address',
+      'delivery_name', 'delivery_phone_area_code', 'delivery_phone_number', 'delivery_address',
       'delivery_city', 'delivery_province', 'delivery_postal_code'
     ];
     
@@ -429,9 +443,13 @@ export class CheckoutPageComponent implements OnInit {
       Validators.minLength(3), 
       Validators.maxLength(100)
     ]);
-    this.checkoutForm.get('delivery_phone')?.setValidators([
-      Validators.required, 
-      Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
+    this.checkoutForm.get('delivery_phone_area_code')?.setValidators([
+      Validators.required,
+      Validators.pattern(/^\d{2,4}$/)
+    ]);
+    this.checkoutForm.get('delivery_phone_number')?.setValidators([
+      Validators.required,
+      Validators.pattern(/^\d{6,8}$/)
     ]);
     this.checkoutForm.get('delivery_address')?.setValidators([
       Validators.required, 
@@ -445,7 +463,7 @@ export class CheckoutPageComponent implements OnInit {
     ]);
     
     // Actualizar validez
-    ['delivery_name', 'delivery_phone', 'delivery_address', 'delivery_city', 'delivery_province', 'delivery_postal_code']
+    ['delivery_name', 'delivery_phone_area_code', 'delivery_phone_number', 'delivery_address', 'delivery_city', 'delivery_province', 'delivery_postal_code']
       .forEach(field => this.checkoutForm.get(field)?.updateValueAndValidity());
   }
 

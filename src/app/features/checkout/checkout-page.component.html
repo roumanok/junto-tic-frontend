@@ -141,17 +141,33 @@
               </div>
 
               <!-- Teléfono -->
-              <mat-form-field appearance="outline" class="form-field full-width">
-                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_PHONE' | translate }}</mat-label>
-                <input matInput formControlName="delivery_phone" autocomplete="tel">
-                <mat-icon matPrefix>phone</mat-icon>
-                <mat-error *ngIf="checkoutForm.get('delivery_phone')?.hasError('required')">
-                  {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_REQUIRED' | translate }}
-                </mat-error>
-                <mat-error *ngIf="checkoutForm.get('delivery_phone')?.hasError('pattern')">
-                  {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_PATTERN' | translate }}
-                </mat-error>
-              </mat-form-field>
+              <div class="phone-group" style="display: grid; grid-template-columns: 100px 100px 1fr; gap: 0.5rem;">
+                <mat-form-field appearance="outline" class="form-field">                  
+                  <input matInput value="{{ 'PAGES.CHECKOUT.DELIVERY_PHONE_COUNTRY_CODE' | translate }}" readonly disabled="true">
+                  <mat-icon matPrefix>phone</mat-icon>                  
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_PHONE_AREA_CODE' | translate }}</mat-label>
+                  <input matInput formControlName="delivery_phone_area_code" placeholder="11" required maxlength="4" autocomplete="tel-area-code">
+                  <mat-error *ngIf="checkoutForm.get('delivery_phone_area_code')?.hasError('required')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_AREA_CODE_REQUIRED' | translate }}
+                  </mat-error>
+                  <mat-error *ngIf="checkoutForm.get('delivery_phone_area_code')?.hasError('pattern')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_AREA_CODE_PATTERN' | translate }}
+                  </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_PHONE_NUMBER' | translate }}</mat-label>
+                  <input matInput formControlName="delivery_phone_number" required maxlength="8" autocomplete="tel-local">
+                  <mat-error *ngIf="checkoutForm.get('delivery_phone_number')?.hasError('required')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_NUMBER_REQUIRED' | translate }}
+                  </mat-error>
+                  <mat-error *ngIf="checkoutForm.get('delivery_phone_number')?.hasError('pattern')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_NUMBER_PATTERN' | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
 
               <!-- Dirección -->
               <mat-form-field appearance="outline" class="form-field full-width">
@@ -278,17 +294,33 @@
               </div>
 
               <!-- Teléfono -->
-              <mat-form-field appearance="outline" class="form-field full-width">
-                <mat-label>{{ 'PAGES.CHECKOUT.BILLING_PHONE' | translate }}</mat-label>
-                <input matInput formControlName="billing_phone" autocomplete="tel">
-                <mat-icon matPrefix>phone</mat-icon>
-                <mat-error *ngIf="checkoutForm.get('billing_phone')?.hasError('required')">
-                  {{ 'PAGES.CHECKOUT.BILLING_PHONE_REQUIRED' | translate }}
-                </mat-error>
-                <mat-error *ngIf="checkoutForm.get('billing_phone')?.hasError('pattern')">
-                  {{ 'PAGES.CHECKOUT.BILLING_PHONE_PATTERN' | translate }}
-                </mat-error>
-              </mat-form-field>
+              <div class="phone-group" style="display: grid; grid-template-columns: 100px 100px 1fr; gap: 0.5rem;">
+                <mat-form-field appearance="outline" class="form-field">                  
+                  <input matInput value="{{ 'PAGES.CHECKOUT.BILLING_PHONE_COUNTRY_CODE' | translate }}" readonly disabled="true">
+                  <mat-icon matPrefix>phone</mat-icon>                  
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'PAGES.CHECKOUT.BILLING_PHONE_AREA_CODE' | translate }}</mat-label>
+                  <input matInput formControlName="billing_phone_area_code" placeholder="11" required maxlength="4" autocomplete="tel-area-code">
+                  <mat-error *ngIf="checkoutForm.get('billing_phone_area_code')?.hasError('required')">
+                    {{ 'PAGES.CHECKOUT.BILLING_PHONE_AREA_CODE_REQUIRED' | translate }}
+                  </mat-error>
+                  <mat-error *ngIf="checkoutForm.get('billing_phone_area_code')?.hasError('pattern')">
+                    {{ 'PAGES.CHECKOUT.BILLING_PHONE_AREA_CODE_PATTERN' | translate }}
+                  </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'PAGES.CHECKOUT.BILLING_PHONE_NUMBER' | translate }}</mat-label>
+                  <input matInput formControlName="billing_phone_number" required maxlength="8" autocomplete="tel-local">
+                  <mat-error *ngIf="checkoutForm.get('delivery_phone_number')?.hasError('required')">
+                    {{ 'PAGES.CHECKOUT.BILLING_PHONE_NUMBER_REQUIRED' | translate }}
+                  </mat-error>
+                  <mat-error *ngIf="checkoutForm.get('billing_phone_number')?.hasError('pattern')">
+                    {{ 'PAGES.CHECKOUT.BILLING_PHONE_NUMBER_PATTERN' | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
 
               <!-- Dirección -->
               <mat-form-field appearance="outline" class="form-field full-width">
