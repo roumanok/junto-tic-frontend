@@ -75,6 +75,7 @@ export class AuthService {
       this.isLoadingSubject$.next(false);
     });
 
+    /*
     // ✅ Escuchar TODOS los eventos OAuth para debugging
     this.oauthService.events.subscribe((event: OAuthEvent) => {
       console.log('🔔 OAuth Event:', event.type, event);
@@ -83,7 +84,7 @@ export class AuthService {
         console.error('💥 Error en refresh:', event);
       }
     });
-
+    */
     // Suscribirse a eventos de OAuth
     this.oauthService.events
       .pipe(filter(e => ['token_received', 'token_refreshed', 'token_expires'].includes(e.type)))

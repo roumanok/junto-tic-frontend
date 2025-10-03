@@ -219,6 +219,10 @@
   color: #333;
 }
 
+.total-row .free {
+  color: #4A90A4;
+}
+
 .total-final {
   margin-top: 1rem;
   padding-top: 1rem;

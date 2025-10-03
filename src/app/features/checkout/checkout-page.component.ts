@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
   CheckoutProduct,
   CheckoutCalculationResponse,
@@ -38,7 +39,8 @@ import {
     MatButtonModule,
     MatIconModule,
     MatRadioModule,
-    MatDividerModule
+    MatDividerModule,
+    MatCheckboxModule
   ],
   templateUrl: './checkout-page.component.html',
   styleUrls: ['./checkout-page.component.css']
@@ -66,6 +68,9 @@ export class CheckoutPageComponent implements OnInit {
   calculating = signal(false);
   validationErrors = signal<ValidationError[]>([]);
   totals = signal<CheckoutCalculationResponse | null>(null);
+  sameAsDelivery = signal(true);
+  isPickupMethod = signal(false);
+  formValid = signal(false);
 
   provinces = [
     'Buenos Aires',
@@ -159,6 +164,38 @@ export class CheckoutPageComponent implements OnInit {
         console.warn('⚠️ No hay datos de producto');
       }
     }
+
+    if (this.selectedDeliveryMethod()) {
+      this.checkIfPickup();
+    }
+
+    if (this.sameAsDelivery()) {
+      this.removeBillingValidators();
+    }
+    
+    this.checkoutForm.statusChanges.subscribe(status => {
+      this.formValid.set(status === 'VALID');
+    });
+
+    const pendingCheckout = sessionStorage.getItem('pendingCheckout');
+    if (pendingCheckout && this.authService.isAuthenticated()) {
+      try {
+        const saved = JSON.parse(pendingCheckout);
+        
+        // Verificar que no haya expirado (30 minutos)
+        const thirtyMinutes = 30 * 60 * 1000;
+        if (Date.now() - saved.timestamp < thirtyMinutes) {
+          console.log('✅ Restaurando checkout pendiente');
+          this.loadProductData(saved.product, saved.quantity);
+          this.selectedDeliveryMethod.set(saved.selectedMethod);
+          this.checkoutForm.patchValue(saved.formData);
+          sessionStorage.removeItem('pendingCheckout');
+        }
+      } catch (e) {
+        console.error('Error restaurando checkout:', e);
+      }
+    }
+
     this.setupSEO();
   }
 
@@ -270,7 +307,146 @@ export class CheckoutPageComponent implements OnInit {
   onDeliveryMethodChange(methodId: string) {
     console.log('📦 Método seleccionado:', methodId);
     this.selectedDeliveryMethod.set(methodId);
+    this.checkIfPickup();
     this.calculateTotals();
+  }
+
+  /**
+   * Verifica si el método seleccionado es pickup
+  */
+  private checkIfPickup() {
+    const methods = this.product()?.delivery_methods;
+    const selectedMethod = methods?.find(m => m.id === this.selectedDeliveryMethod());
+    
+    const isPickup = selectedMethod?.type === 'pickup';
+    this.isPickupMethod.set(isPickup);
+    
+    console.log('🚚 Método es pickup?', isPickup);
+    
+    if (isPickup) {
+      this.updateValidatorsForPickup();
+    } else {
+      this.updateValidatorsForDelivery();
+    }
+  }
+
+  private removeBillingValidators() {
+    const billingFields = [
+      'billing_name', 'billing_phone', 'billing_address',
+      'billing_city', 'billing_province', 'billing_postal_code'
+    ];
+    
+    billingFields.forEach(field => {
+      const control = this.checkoutForm.get(field);
+      control?.clearValidators();
+      control?.updateValueAndValidity();
+    });
+  }
+
+  private restoreBillingValidators(){
+    this.checkoutForm.get('billing_name')?.setValidators([
+      Validators.required, 
+      Validators.minLength(3), 
+      Validators.maxLength(100)
+    ]);
+    this.checkoutForm.get('billing_phone')?.setValidators([
+      Validators.required, 
+      Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
+    ]);
+    this.checkoutForm.get('billing_address')?.setValidators([
+      Validators.required, 
+      Validators.minLength(5)
+    ]);
+    this.checkoutForm.get('billing_city')?.setValidators(Validators.required);
+    this.checkoutForm.get('billing_province')?.setValidators(Validators.required);
+    this.checkoutForm.get('billing_postal_code')?.setValidators([
+      Validators.required, 
+      Validators.pattern(/^\d{4}$/)
+    ]);
+    
+    // Actualizar validez de todos
+    ['billing_name', 'billing_phone', 'billing_address', 'billing_city', 
+    'billing_province', 'billing_postal_code'].forEach(field => {
+      this.checkoutForm.get(field)?.updateValueAndValidity();
+    });
+  }
+
+  toggleSameAsDelivery(checked: boolean) {
+    this.sameAsDelivery.set(checked);
+    
+    if (checked) {
+      // Copiar datos
+      this.copyDeliveryToBilling();
+      this.removeBillingValidators();      
+    } else {
+      // Limpiar campos
+      this.clearBillingFields();      
+      this.restoreBillingValidators();
+    }
+  }
+
+  private copyDeliveryToBilling() {
+    const form = this.checkoutForm;
+    form.patchValue({
+      billing_name: form.get('delivery_name')?.value,
+      billing_phone: form.get('delivery_phone')?.value,
+      billing_address: form.get('delivery_address')?.value,
+      billing_apartment: form.get('delivery_apartment')?.value,
+      billing_postal_code: form.get('delivery_postal_code')?.value,
+      billing_city: form.get('delivery_city')?.value,
+      billing_province: form.get('delivery_province')?.value
+    });
+  }
+
+  private clearBillingFields() {
+    this.checkoutForm.patchValue({
+      billing_name: '',
+      billing_phone: '',
+      billing_address: '',
+      billing_apartment: '',
+      billing_postal_code: '',
+      billing_city: '',
+      billing_province: ''
+    });
+  }
+
+  private updateValidatorsForPickup() {
+    const deliveryFields = [
+      'delivery_name', 'delivery_phone', 'delivery_address',
+      'delivery_city', 'delivery_province', 'delivery_postal_code'
+    ];
+    
+    deliveryFields.forEach(field => {
+      const control = this.checkoutForm.get(field);
+      control?.clearValidators();
+      control?.updateValueAndValidity();
+    });
+  }
+
+  private updateValidatorsForDelivery() {    
+    this.checkoutForm.get('delivery_name')?.setValidators([
+      Validators.required, 
+      Validators.minLength(3), 
+      Validators.maxLength(100)
+    ]);
+    this.checkoutForm.get('delivery_phone')?.setValidators([
+      Validators.required, 
+      Validators.pattern(/^[\d\s\+\-()]{10,20}$/)
+    ]);
+    this.checkoutForm.get('delivery_address')?.setValidators([
+      Validators.required, 
+      Validators.minLength(5)
+    ]);
+    this.checkoutForm.get('delivery_city')?.setValidators(Validators.required);
+    this.checkoutForm.get('delivery_province')?.setValidators(Validators.required);
+    this.checkoutForm.get('delivery_postal_code')?.setValidators([
+      Validators.required, 
+      Validators.pattern(/^\d{4}$/)
+    ]);
+    
+    // Actualizar validez
+    ['delivery_name', 'delivery_phone', 'delivery_address', 'delivery_city', 'delivery_province', 'delivery_postal_code']
+      .forEach(field => this.checkoutForm.get(field)?.updateValueAndValidity());
   }
 
   updateQuantity(event: Event) {
@@ -322,22 +498,52 @@ export class CheckoutPageComponent implements OnInit {
     return Math.min(maxPerOrder, stock);
   }
 
+  redirectToLogin(): void{
+    console.log('🔒 Usuario no autenticado, redirigiendo a login-required');
+    
+    // Guardar el estado actual del checkout en sessionStorage
+    if (this.isBrowser) {
+      sessionStorage.setItem('pendingCheckout', JSON.stringify({
+        product: this.product(),
+        quantity: this.quantity(),
+        formData: this.checkoutForm.getRawValue(),
+        selectedMethod: this.selectedDeliveryMethod(),
+        timestamp: Date.now()
+      }));
+    }
+    
+    // Redirigir a login-required
+    this.router.navigate(['/login-required'], {
+      queryParams: { returnUrl: '/checkout' }
+    });
+  }
+
   proceedToPayment() {
-    if (!this.canProceed() || !this.checkoutForm.valid) {
+    if (!this.canProceed() || !this.formValid()) {
       alert('⚠️ Por favor completa todos los campos requeridos');
       return;
     }
 
+    if (!this.authService.isAuthenticated()) {
+      this.redirectToLogin();
+      return;
+    }
+
+
     const prod = this.product();
     if (!prod) return;
 
+    if (this.sameAsDelivery() && !this.isPickupMethod()) {
+      this.copyDeliveryToBilling();
+    }
+
     const formData = this.checkoutForm.getRawValue();
-    
+
     const orderData = {
       items: [{ listing_id: prod.id, quantity: this.quantity() }],
       delivery_method_id: this.selectedDeliveryMethod()!,
       ...formData
-    };
+    };    
 
     console.log('💳 Creando orden:', orderData);
 
@@ -347,6 +553,9 @@ export class CheckoutPageComponent implements OnInit {
 
         // ✅ Limpiar sessionStorage al completar la orden
         this.clearCheckoutFromSession();
+        if (this.isBrowser) {
+          sessionStorage.removeItem('pendingCheckout');
+        }
 
         // Redirigir a la pasarela de pago
         if (response.payment_url) {

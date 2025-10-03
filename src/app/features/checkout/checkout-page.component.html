@@ -95,7 +95,7 @@
                 @if (totals()?.shipping && getMethodCost(totals()!.shipping) > 0) {
                   $ {{ getformattedPrice(totals()!.shipping) }}
                 } @else {
-                  <strong style="color: #4A90A4;">{{ 'PAGES.CHECKOUT.FREE' | translate }}</strong>
+                  <strong class="free">{{ 'PAGES.CHECKOUT.FREE' | translate }}</strong>
                 }
               </span>
             </div>
@@ -122,105 +122,109 @@
               </mat-form-field>
             </div>
 
-            <h2>{{ 'PAGES.CHECKOUT.DELIVERY_DATA' | translate }}</h2>
+            @if (!isPickupMethod()) {
 
-            <div class="form-row">
+              <h2>{{ 'PAGES.CHECKOUT.DELIVERY_DATA' | translate }}</h2>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field full-width">
+                  <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_NAME' | translate }}</mat-label>
+                  <input matInput formControlName="delivery_name" autocomplete="name">
+                  <mat-icon matPrefix>person</mat-icon>
+                  <mat-error *ngIf="checkoutForm.get('delivery_name')?.hasError('required')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_NAME_REQUIRED' | translate }}
+                  </mat-error>
+                  <mat-error *ngIf="checkoutForm.get('delivery_name')?.hasError('minlength')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_NAME_MIN_LENGTH' | translate }}                  
+                  </mat-error>
+                </mat-form-field>              
+              </div>
+
+              <!-- Teléfono -->
               <mat-form-field appearance="outline" class="form-field full-width">
-                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_NAME' | translate }}</mat-label>
-                <input matInput formControlName="delivery_name">
-                <mat-icon matPrefix>person</mat-icon>
-                <mat-error *ngIf="checkoutForm.get('delivery_name')?.hasError('required')">
-                  {{ 'PAGES.CHECKOUT.DELIVERY_NAME_REQUIRED' | translate }}
+                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_PHONE' | translate }}</mat-label>
+                <input matInput formControlName="delivery_phone" autocomplete="tel">
+                <mat-icon matPrefix>phone</mat-icon>
+                <mat-error *ngIf="checkoutForm.get('delivery_phone')?.hasError('required')">
+                  {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_REQUIRED' | translate }}
                 </mat-error>
-                <mat-error *ngIf="checkoutForm.get('delivery_name')?.hasError('minlength')">
-                  {{ 'PAGES.CHECKOUT.DELIVERY_NAME_MIN_LENGTH' | translate }}                  
-                </mat-error>
-              </mat-form-field>              
-            </div>
-
-            <!-- Teléfono -->
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_PHONE' | translate }}</mat-label>
-              <input matInput formControlName="delivery_phone">
-              <mat-icon matPrefix>phone</mat-icon>
-              <mat-error *ngIf="checkoutForm.get('delivery_phone')?.hasError('required')">
-                {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_REQUIRED' | translate }}
-              </mat-error>
-              <mat-error *ngIf="checkoutForm.get('delivery_phone')?.hasError('pattern')">
-                {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_PATTERN' | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Dirección -->
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_ADDRESS' | translate }}</mat-label>
-              <input matInput formControlName="delivery_address">
-              <mat-icon matPrefix>home</mat-icon>
-              <mat-error *ngIf="checkoutForm.get('delivery_address')?.hasError('required')">
-                {{ 'PAGES.CHECKOUT.DELIVERY_ADDRESS_REQUIRED' | translate }}
-              </mat-error>
-              <mat-error *ngIf="checkoutForm.get('delivery_address')?.hasError('minlength')">
-                {{ 'PAGES.CHECKOUT.DELIVERY_ADDRESS_MIN_LENGTH' | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Depto/Piso y Código Postal -->
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_APARTMENT' | translate }}</mat-label>
-                <input matInput formControlName="delivery_apartment">
-                 <mat-icon matPrefix>apartment</mat-icon>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_POSTAL_CODE' | translate }}</mat-label>
-                <input matInput formControlName="delivery_postal_code">
-                <mat-icon matPrefix>markunread_mailbox</mat-icon>
-                <mat-error *ngIf="checkoutForm.get('delivery_postal_code')?.hasError('required')">
-                  {{ 'PAGES.CHECKOUT.DELIVERY_POSTAL_CODE_REQUIRED' | translate }}
-                </mat-error>
-                <mat-error *ngIf="checkoutForm.get('delivery_postal_code')?.hasError('pattern')">
-                  {{ 'PAGES.CHECKOUT.DELIVERY_POSTAL_CODE_PATTERN' | translate }}                  
+                <mat-error *ngIf="checkoutForm.get('delivery_phone')?.hasError('pattern')">
+                  {{ 'PAGES.CHECKOUT.DELIVERY_PHONE_PATTERN' | translate }}
                 </mat-error>
               </mat-form-field>
-            </div>
 
-            <!-- Ciudad y Provincia -->
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_CITY' | translate }}</mat-label>
-                <input matInput formControlName="delivery_city">
-                <mat-icon matPrefix>location_city</mat-icon>
-                <mat-error *ngIf="checkoutForm.get('delivery_city')?.hasError('required')">
-                  {{ 'PAGES.CHECKOUT.DELIVERY_CITY_REQUIRED' | translate }}
-                </mat-error>                
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_PROVINCE' | translate }}</mat-label>
-                <mat-select formControlName="delivery_province">
-                  <mat-option *ngFor="let province of provinces" [value]="province">
-                    {{ province }}
-                  </mat-option>
-                </mat-select>
-                <mat-icon matPrefix>map</mat-icon>
-                <mat-error *ngIf="checkoutForm.get('delivery_province')?.hasError('required')">
-                  {{ 'PAGES.CHECKOUT.DELIVERY_PROVINCE_REQUIRED' | translate }}
+              <!-- Dirección -->
+              <mat-form-field appearance="outline" class="form-field full-width">
+                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_ADDRESS' | translate }}</mat-label>
+                <input matInput formControlName="delivery_address" autocomplete="street-address">
+                <mat-icon matPrefix>home</mat-icon>
+                <mat-error *ngIf="checkoutForm.get('delivery_address')?.hasError('required')">
+                  {{ 'PAGES.CHECKOUT.DELIVERY_ADDRESS_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('delivery_address')?.hasError('minlength')">
+                  {{ 'PAGES.CHECKOUT.DELIVERY_ADDRESS_MIN_LENGTH' | translate }}
                 </mat-error>
               </mat-form-field>
-            </div>
 
-            <!-- Notas adicionales -->
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_NOTES' | translate }}</mat-label>
-              <textarea matInput 
-                        formControlName="delivery_notes" 
-                        rows="3"></textarea>
-              <mat-icon matPrefix>note</mat-icon>
-              <mat-error *ngIf="checkoutForm.get('delivery_notes')?.hasError('maxlength')">
-                {{ 'PAGES.CHECKOUT.DELIVERY_NOTES_MAX_LENGTH' | translate }}                
-              </mat-error>
-            </mat-form-field>
+              <!-- Depto/Piso y Código Postal -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_APARTMENT' | translate }}</mat-label>
+                  <input matInput formControlName="delivery_apartment" autocomplete="address-line2">
+                  <mat-icon matPrefix>apartment</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_POSTAL_CODE' | translate }}</mat-label>
+                  <input matInput formControlName="delivery_postal_code" autocomplete="postal-code">
+                  <mat-icon matPrefix>markunread_mailbox</mat-icon>
+                  <mat-error *ngIf="checkoutForm.get('delivery_postal_code')?.hasError('required')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_POSTAL_CODE_REQUIRED' | translate }}
+                  </mat-error>
+                  <mat-error *ngIf="checkoutForm.get('delivery_postal_code')?.hasError('pattern')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_POSTAL_CODE_PATTERN' | translate }}                  
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <!-- Ciudad y Provincia -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_CITY' | translate }}</mat-label>
+                  <input matInput formControlName="delivery_city" autocomplete="address-level2">
+                  <mat-icon matPrefix>location_city</mat-icon>
+                  <mat-error *ngIf="checkoutForm.get('delivery_city')?.hasError('required')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_CITY_REQUIRED' | translate }}
+                  </mat-error>                
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_PROVINCE' | translate }}</mat-label>
+                  <mat-select formControlName="delivery_province">
+                    <mat-option *ngFor="let province of provinces" [value]="province">
+                      {{ province }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matPrefix>map</mat-icon>
+                  <mat-error *ngIf="checkoutForm.get('delivery_province')?.hasError('required')">
+                    {{ 'PAGES.CHECKOUT.DELIVERY_PROVINCE_REQUIRED' | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <!-- Notas adicionales -->
+              <mat-form-field appearance="outline" class="form-field full-width">
+                <mat-label>{{ 'PAGES.CHECKOUT.DELIVERY_NOTES' | translate }}</mat-label>
+                <textarea matInput 
+                          formControlName="delivery_notes" 
+                          rows="3"></textarea>
+                <mat-icon matPrefix>note</mat-icon>
+                <mat-error *ngIf="checkoutForm.get('delivery_notes')?.hasError('maxlength')">
+                  {{ 'PAGES.CHECKOUT.DELIVERY_NOTES_MAX_LENGTH' | translate }}                
+                </mat-error>
+              </mat-form-field>
+
+            }
 
             <h2>{{ 'PAGES.CHECKOUT.BILLING_DATA' | translate }}</h2>
 
@@ -247,12 +251,22 @@
                 </mat-error>
               </mat-form-field>
             </div>      
-            
-            <div class="billing_fields">
+
+            @if (!isPickupMethod()) {
+              <div class="form-field full-width checkbox-section">
+                <mat-checkbox 
+                  [checked]="sameAsDelivery()"
+                  (change)="toggleSameAsDelivery($event.checked)">
+                  {{ 'PAGES.CHECKOUT.BILLING_INHERITS' | translate }}
+                </mat-checkbox>
+              </div>
+            }
+
+            @if (!sameAsDelivery() || isPickupMethod()) {            
               <div class="form-row">
                 <mat-form-field appearance="outline" class="form-field full-width">
                   <mat-label>{{ 'PAGES.CHECKOUT.BILLING_NAME' | translate }}</mat-label>
-                  <input matInput formControlName="billing_name">
+                  <input matInput formControlName="billing_name" autocomplete="name">
                   <mat-icon matPrefix>person</mat-icon>
                   <mat-error *ngIf="checkoutForm.get('billing_name')?.hasError('required')">
                     {{ 'PAGES.CHECKOUT.BILLING_NAME_REQUIRED' | translate }}
@@ -266,7 +280,7 @@
               <!-- Teléfono -->
               <mat-form-field appearance="outline" class="form-field full-width">
                 <mat-label>{{ 'PAGES.CHECKOUT.BILLING_PHONE' | translate }}</mat-label>
-                <input matInput formControlName="billing_phone">
+                <input matInput formControlName="billing_phone" autocomplete="tel">
                 <mat-icon matPrefix>phone</mat-icon>
                 <mat-error *ngIf="checkoutForm.get('billing_phone')?.hasError('required')">
                   {{ 'PAGES.CHECKOUT.BILLING_PHONE_REQUIRED' | translate }}
@@ -279,7 +293,7 @@
               <!-- Dirección -->
               <mat-form-field appearance="outline" class="form-field full-width">
                 <mat-label>{{ 'PAGES.CHECKOUT.BILLING_ADDRESS' | translate }}</mat-label>
-                <input matInput formControlName="billing_address">
+                <input matInput formControlName="billing_address" autocomplete="street-address">
                 <mat-icon matPrefix>home</mat-icon>
                 <mat-error *ngIf="checkoutForm.get('billing_address')?.hasError('required')">
                   {{ 'PAGES.CHECKOUT.BILLING_ADDRESS_REQUIRED' | translate }}
@@ -293,13 +307,13 @@
               <div class="form-row">
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>{{ 'PAGES.CHECKOUT.BILLING_APARTMENT' | translate }}</mat-label>
-                  <input matInput formControlName="billing_apartment">
+                  <input matInput formControlName="billing_apartment" autocomplete="address-line2">
                   <mat-icon matPrefix>apartment</mat-icon>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>{{ 'PAGES.CHECKOUT.BILLING_POSTAL_CODE' | translate }}</mat-label>
-                  <input matInput formControlName="billing_postal_code">
+                  <input matInput formControlName="billing_postal_code" autocomplete="postal-code">
                   <mat-icon matPrefix>markunread_mailbox</mat-icon>
                   <mat-error *ngIf="checkoutForm.get('billing_postal_code')?.hasError('required')">
                     {{ 'PAGES.CHECKOUT.BILLING_POSTAL_CODE_REQUIRED' | translate }}
@@ -314,7 +328,7 @@
               <div class="form-row">
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-label>{{ 'PAGES.CHECKOUT.BILLING_CITY' | translate }}</mat-label>
-                  <input matInput formControlName="billing_city">
+                  <input matInput formControlName="billing_city" autocomplete="address-level2">
                   <mat-icon matPrefix>location_city</mat-icon>
                   <mat-error *ngIf="checkoutForm.get('billing_city')?.hasError('required')">
                     {{ 'PAGES.CHECKOUT.BILLING_CITY_REQUIRED' | translate }}
@@ -333,22 +347,21 @@
                     {{ 'PAGES.CHECKOUT.BILLING_PROVINCE_REQUIRED' | translate }}
                   </mat-error>
                 </mat-form-field>
-              </div>
-           
-            </div>
+              </div>            
+            }
 
             <!-- Botones de acción -->
             <div class="action-buttons">
               <button type="button" class="btn-secondary" (click)="goBack()">
                 <i class="fas fa-arrow-left"></i>
-                Seguir Comprando
+                {{ 'PAGES.CHECKOUT.CONTINUE_SHOPPING' | translate }}
               </button>
               <button type="button" 
                       class="btn-primary" 
                       (click)="proceedToPayment()"
-                      [disabled]="!canProceed() || !checkoutForm.valid">
+                      [disabled]="!canProceed() || !formValid()">
                 <i class="fas fa-credit-card"></i>
-                Continuar al Pago
+                {{ 'PAGES.CHECKOUT.CONTINUE_PAYMENT' | translate }}
               </button>
             </div>
           </form>
@@ -360,7 +373,7 @@
     @if (validating() || calculating()) {
       <div class="loading-overlay">
         <div class="spinner"></div>
-        <p>{{ validating() ? 'Validando...' : 'Calculando totales...' }}</p>
+        <p>{{ validating() ? ('PAGES.CHECKOUT.VALIDATING' | translate) : ('PAGES.CHECKOUT.CALCULATING_TOTALS' | translate) }}</p>
       </div>
     }
 
@@ -368,7 +381,7 @@
     @if (validationErrors().length > 0) {
       <div class="validation-errors">
         <div class="error-card">
-          <h3><i class="fas fa-exclamation-triangle"></i> Problemas detectados:</h3>
+          <h3><i class="fas fa-exclamation-triangle"></i> {{ 'PAGES.CHECKOUT.DETECTED_ISSUES' | translate }}:</h3>
           <ul>
             @for (error of validationErrors(); track error.listing_id) {
               <li>{{ error.message }}</li>

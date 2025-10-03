@@ -63,7 +63,8 @@ export interface CreateOrderRequest {
   customer_identification_number: string;
   customer_email: string;
   billing_name: string;
-  billing_phone: string;
+  billing_phone_area_code: number;
+  billing_phone_number: number;  
   billing_address: string;
   billing_apartment?: string;
   billing_postal_code?: string;
@@ -71,7 +72,8 @@ export interface CreateOrderRequest {
   billing_province: string;
   delivery_method_id: string;
   delivery_name: string;
-  delivery_phone: string;
+  delivery_phone_area_code: number;  
+  delivery_phone_number: number;  
   delivery_address: string;
   delivery_apartment?: string;
   delivery_postal_code?: string;
