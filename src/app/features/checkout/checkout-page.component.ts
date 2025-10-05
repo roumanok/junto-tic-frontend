@@ -99,51 +99,81 @@ export class CheckoutPageComponent implements OnInit {
     'Tucumán'
   ];
 
-  // Formulario
-  checkoutForm = this.fb.group({    
-    customer_email: [{ value: '', disabled: true }],
-    customer_identification_type: ['DNI_ARG', Validators.required],
-    customer_identification_number: ['', [
-      Validators.required, 
-      Validators.pattern(/^\d{7,11}$/)  // DNI/CUIL argentino: 7-11 dígitos
-    ]],
-    billing_name: ['', [
-      Validators.required, 
-      Validators.minLength(3), 
-      Validators.maxLength(100)
-    ]],
-    billing_phone_area_code: ['', [
+  private readonly FIELD_VALIDATORS = {
+    name: [
       Validators.required,
-      Validators.pattern(/^\d{2,4}$/)  // 2-4 dígitos para código de área
-    ]],
-    billing_phone_number: ['', [
-      Validators.required,
-      Validators.pattern(/^\d{6,8}$/)  // 6-8 dígitos para número
-    ]],
-    billing_address: ['', [Validators.required, Validators.minLength(5)]],
-    billing_apartment: [''],
-    billing_postal_code: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],  // CP argentino: 4 dígitos
-    billing_city: ['', Validators.required],
-    billing_province: ['', Validators.required],
-    delivery_name: ['', [
-      Validators.required, 
-      Validators.minLength(3), 
+      Validators.minLength(3),
       Validators.maxLength(100)
-    ]],
-    delivery_phone_area_code: ['', [
+    ],
+    phone_area_code: [
       Validators.required,
       Validators.pattern(/^\d{2,4}$/)
-    ]],
-    delivery_phone_number: ['', [
+    ],
+    phone_number: [
       Validators.required,
       Validators.pattern(/^\d{6,8}$/)
-    ]],
-    delivery_address: ['', [Validators.required, Validators.minLength(5)]],
+    ],
+    address: [
+      Validators.required,
+      Validators.minLength(5)
+    ],
+    postal_code: [
+      Validators.required,
+      Validators.pattern(/^\d{4}$/)
+    ],
+    city: [Validators.required],
+    province: [Validators.required],
+    identification_type: [Validators.required],
+    identification_number: [
+      Validators.required,
+      Validators.pattern(/^\d{7,11}$/)
+    ],
+    notes: [Validators.maxLength(500)]
+  };
+
+  private readonly BILLING_FIELDS = [
+    'billing_name',
+    'billing_phone_area_code',
+    'billing_phone_number',
+    'billing_address',
+    'billing_apartment',
+    'billing_postal_code',
+    'billing_city',
+    'billing_province'
+  ];
+
+  private readonly DELIVERY_FIELDS = [
+    'delivery_name',
+    'delivery_phone_area_code',
+    'delivery_phone_number',
+    'delivery_address',
+    'delivery_apartment',
+    'delivery_postal_code',
+    'delivery_city',
+    'delivery_province'
+  ];
+
+  checkoutForm = this.fb.group({    
+    customer_identification_type: ['DNI_ARG', this.FIELD_VALIDATORS.identification_type],
+    customer_identification_number: ['', this.FIELD_VALIDATORS.identification_number],
+    customer_email: [{ value: '', disabled: true }],        
+    billing_name: ['', this.FIELD_VALIDATORS.name],
+    billing_phone_area_code: ['', this.FIELD_VALIDATORS.phone_area_code],
+    billing_phone_number: ['', this.FIELD_VALIDATORS.phone_number],
+    billing_address: ['', this.FIELD_VALIDATORS.address],
+    billing_apartment: [''],
+    billing_postal_code: ['', this.FIELD_VALIDATORS.postal_code],
+    billing_city: ['', this.FIELD_VALIDATORS.city],
+    billing_province: ['', this.FIELD_VALIDATORS.province],
+    delivery_name: ['', this.FIELD_VALIDATORS.name],
+    delivery_phone_area_code: ['', this.FIELD_VALIDATORS.phone_area_code],
+    delivery_phone_number: ['', this.FIELD_VALIDATORS.phone_number],
+    delivery_address: ['', this.FIELD_VALIDATORS.address],
     delivery_apartment: [''],
-    delivery_postal_code: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],  // CP argentino: 4 dígitos
-    delivery_city: ['', Validators.required],
-    delivery_province: ['', Validators.required],
-    delivery_notes: ['', Validators.maxLength(500)]
+    delivery_postal_code: ['', this.FIELD_VALIDATORS.postal_code],
+    delivery_city: ['', this.FIELD_VALIDATORS.city],
+    delivery_province: ['', this.FIELD_VALIDATORS.province],
+    delivery_notes: ['', this.FIELD_VALIDATORS.notes]
   });
 
   ngOnInit() {
@@ -205,6 +235,107 @@ export class CheckoutPageComponent implements OnInit {
     }
 
     this.setupSEO();
+  }
+    
+  private setFieldsValidators(fields: string[], shouldSetValidators: boolean) {
+    fields.forEach(field => {
+      const control = this.checkoutForm.get(field);
+      if (!control) return;
+
+      if (shouldSetValidators) {
+        const fieldType = this.getFieldType(field);
+        const validators = this.FIELD_VALIDATORS[fieldType as keyof typeof this.FIELD_VALIDATORS];
+        
+        if (validators) {
+          control.setValidators(validators);
+        }
+      } else {
+        control.clearValidators();
+      }
+      
+      control.updateValueAndValidity();
+    });
+  }
+
+  private getFieldType(fieldName: string): string {
+    if (fieldName.includes('_name')) return 'name';
+    if (fieldName.includes('_phone_area_code')) return 'phone_area_code';
+    if (fieldName.includes('_phone_number')) return 'phone_number';
+    if (fieldName.includes('_address') && !fieldName.includes('apartment')) return 'address';
+    if (fieldName.includes('_postal_code')) return 'postal_code';
+    if (fieldName.includes('_city')) return 'city';
+    if (fieldName.includes('_province')) return 'province';
+    if (fieldName.includes('_notes')) return 'notes';
+    return '';
+  }
+
+  private updateValidatorsForPickup() {
+    console.log('🚚 Modo pickup: deshabilitando validators de delivery');
+    this.setFieldsValidators(this.DELIVERY_FIELDS, false);
+  }
+
+  private updateValidatorsForDelivery() {
+    console.log('📦 Modo delivery: habilitando validators de delivery');
+    this.setFieldsValidators(this.DELIVERY_FIELDS, true);
+  }
+
+  private removeBillingValidators() {
+    console.log('🔓 Removiendo validators de billing (mismo que delivery)');
+    this.setFieldsValidators(this.BILLING_FIELDS, false);
+  }
+
+  private restoreBillingValidators() {
+    console.log('🔒 Restaurando validators de billing');
+    this.setFieldsValidators(this.BILLING_FIELDS, true);
+  }  
+
+  toggleSameAsDelivery(checked: boolean) {
+    this.sameAsDelivery.set(checked);
+    
+    if (checked) {
+      this.copyDeliveryToBilling();
+      this.removeBillingValidators();
+    } else {
+      this.clearBillingFields();
+      this.restoreBillingValidators();
+    }
+  }
+  
+  private copyDeliveryToBilling() {
+    const form = this.checkoutForm;
+    const mapping: { [key: string]: string } = {
+      'billing_name': 'delivery_name',
+      'billing_phone_area_code': 'delivery_phone_area_code',
+      'billing_phone_number': 'delivery_phone_number',
+      'billing_address': 'delivery_address',
+      'billing_apartment': 'delivery_apartment',
+      'billing_postal_code': 'delivery_postal_code',
+      'billing_city': 'delivery_city',
+      'billing_province': 'delivery_province'
+    };
+
+    const values: any = {};
+    Object.entries(mapping).forEach(([billing, delivery]) => {
+      values[billing] = form.get(delivery)?.value;
+    });
+
+    form.patchValue(values);
+  }
+  
+  private clearBillingFields() {
+    const values: any = {};
+    this.BILLING_FIELDS.forEach(field => {
+      values[field] = '';
+    });
+    this.checkoutForm.patchValue(values);
+  }
+
+  private clearDeliveryFields() {    
+    const values: any = {};
+    this.DELIVERY_FIELDS.forEach(field => {
+      values[field] = '';
+    });
+    this.checkoutForm.patchValue(values);
   }
 
   private loadProductData(product: CheckoutProduct, quantity: number) {
@@ -319,9 +450,6 @@ export class CheckoutPageComponent implements OnInit {
     this.calculateTotals();
   }
 
-  /**
-   * Verifica si el método seleccionado es pickup
-  */
   private checkIfPickup() {
     const methods = this.product()?.delivery_methods;
     const selectedMethod = methods?.find(m => m.id === this.selectedDeliveryMethod());
@@ -332,139 +460,11 @@ export class CheckoutPageComponent implements OnInit {
     console.log('🚚 Método es pickup?', isPickup);
     
     if (isPickup) {
+      this.clearDeliveryFields();
       this.updateValidatorsForPickup();
     } else {
       this.updateValidatorsForDelivery();
     }
-  }
-
-  private removeBillingValidators() {
-    const billingFields = [
-      'billing_name', 'billing_phone', 'billing_address',
-      'billing_city', 'billing_province', 'billing_postal_code'
-    ];
-    
-    billingFields.forEach(field => {
-      const control = this.checkoutForm.get(field);
-      control?.clearValidators();
-      control?.updateValueAndValidity();
-    });
-  }
-
-  private restoreBillingValidators(){
-    this.checkoutForm.get('billing_name')?.setValidators([
-      Validators.required, 
-      Validators.minLength(3), 
-      Validators.maxLength(100)
-    ]);
-    this.checkoutForm.get('billing_phone_area_code')?.setValidators([
-      Validators.required,
-      Validators.pattern(/^\d{2,4}$/)
-    ]);
-    this.checkoutForm.get('billing_phone_number')?.setValidators([
-      Validators.required,
-      Validators.pattern(/^\d{6,8}$/)
-    ]);
-    this.checkoutForm.get('billing_address')?.setValidators([
-      Validators.required, 
-      Validators.minLength(5)
-    ]);
-    this.checkoutForm.get('billing_city')?.setValidators(Validators.required);
-    this.checkoutForm.get('billing_province')?.setValidators(Validators.required);
-    this.checkoutForm.get('billing_postal_code')?.setValidators([
-      Validators.required, 
-      Validators.pattern(/^\d{4}$/)
-    ]);
-    
-    // Actualizar validez de todos
-    ['billing_name', 'billing_phone_area_code', 'billing_phone_number', 'billing_address', 'billing_city', 
-    'billing_province', 'billing_postal_code'].forEach(field => {
-      this.checkoutForm.get(field)?.updateValueAndValidity();
-    });
-  }
-
-  toggleSameAsDelivery(checked: boolean) {
-    this.sameAsDelivery.set(checked);
-    
-    if (checked) {
-      // Copiar datos
-      this.copyDeliveryToBilling();
-      this.removeBillingValidators();      
-    } else {
-      // Limpiar campos
-      this.clearBillingFields();      
-      this.restoreBillingValidators();
-    }
-  }
-
-  private copyDeliveryToBilling() {
-    const form = this.checkoutForm;
-    form.patchValue({
-      billing_name: form.get('delivery_name')?.value,
-      billing_phone_area_code: form.get('delivery_phone_area_code')?.value,
-      billing_phone_number: form.get('delivery_phone_number')?.value,
-      billing_address: form.get('delivery_address')?.value,
-      billing_apartment: form.get('delivery_apartment')?.value,
-      billing_postal_code: form.get('delivery_postal_code')?.value,
-      billing_city: form.get('delivery_city')?.value,
-      billing_province: form.get('delivery_province')?.value
-    });
-  }
-
-  private clearBillingFields() {
-    this.checkoutForm.patchValue({
-      billing_name: '',
-      billing_phone_area_code: '',
-      billing_phone_number: '',
-      billing_address: '',
-      billing_apartment: '',
-      billing_postal_code: '',
-      billing_city: '',
-      billing_province: ''
-    });
-  }
-
-  private updateValidatorsForPickup() {
-    const deliveryFields = [
-      'delivery_name', 'delivery_phone_area_code', 'delivery_phone_number', 'delivery_address',
-      'delivery_city', 'delivery_province', 'delivery_postal_code'
-    ];
-    
-    deliveryFields.forEach(field => {
-      const control = this.checkoutForm.get(field);
-      control?.clearValidators();
-      control?.updateValueAndValidity();
-    });
-  }
-
-  private updateValidatorsForDelivery() {    
-    this.checkoutForm.get('delivery_name')?.setValidators([
-      Validators.required, 
-      Validators.minLength(3), 
-      Validators.maxLength(100)
-    ]);
-    this.checkoutForm.get('delivery_phone_area_code')?.setValidators([
-      Validators.required,
-      Validators.pattern(/^\d{2,4}$/)
-    ]);
-    this.checkoutForm.get('delivery_phone_number')?.setValidators([
-      Validators.required,
-      Validators.pattern(/^\d{6,8}$/)
-    ]);
-    this.checkoutForm.get('delivery_address')?.setValidators([
-      Validators.required, 
-      Validators.minLength(5)
-    ]);
-    this.checkoutForm.get('delivery_city')?.setValidators(Validators.required);
-    this.checkoutForm.get('delivery_province')?.setValidators(Validators.required);
-    this.checkoutForm.get('delivery_postal_code')?.setValidators([
-      Validators.required, 
-      Validators.pattern(/^\d{4}$/)
-    ]);
-    
-    // Actualizar validez
-    ['delivery_name', 'delivery_phone_area_code', 'delivery_phone_number', 'delivery_address', 'delivery_city', 'delivery_province', 'delivery_postal_code']
-      .forEach(field => this.checkoutForm.get(field)?.updateValueAndValidity());
   }
 
   updateQuantity(event: Event) {
