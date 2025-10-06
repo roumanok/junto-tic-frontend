@@ -25,6 +25,8 @@
     "COMMON.RETRY": "Intentar de nuevo",
     "COMMON.NEXT": "Siguiente",
     "COMMON.PREVIOUS": "Anterior", 
+    "COMMON.ORDER": "Orden",
+    "COMMON.MY_ORDERS": "Mis compras",
 
     "ERRORS.NETWORK": "Error de conexión",
     "ERRORS.GENERAL": "Ha ocurrido un error inesperado",
@@ -124,6 +126,18 @@
     "PAGES.LOGIN_REQ.LOGIN": "Iniciar sesión",
     "PAGES.LOGIN_REQ.REGISTER": "Crear nueva cuenta",
     "PAGES.LOGIN_REQ.GO_BACK": "Volver",
+
+    "PAGES.ORDER_DETAIL.TITLE": "Orden #{{orderId}} - {{communityName}}",
+    "PAGES.ORDER_DETAIL.DESCRIPTION": "Tu compra en {{communityName}}",      
+    "PAGES.ORDER_DETAIL.STATUS": "Estado",
+    "PAGES.ORDER_DETAIL.STATUS_PENDING": "Pendiente",
+    "PAGES.ORDER_DETAIL.STATUS_PROCESSING": "En proceso",
+    "PAGES.ORDER_DETAIL.STATUS_SHIPPED": "Enviado",
+    "PAGES.ORDER_DETAIL.STATUS_DELIVERED": "Entregado",
+    "PAGES.ORDER_DETAIL.STATUS_CANCELED": "Cancelado",
+    "PAGES.ORDER_DETAIL.STATUS_REFUNDED": "Reembolsado",
+    "PAGES.ORDER_DETAIL.ORDER_DATE": "Fecha de compra",
+
 
     "PAGES.CHECKOUT.TITLE": "Realizar compra - {{communityName}}",
     "PAGES.CHECKOUT.DESCRIPTION": "Realizar compra en {{communityName}}",  

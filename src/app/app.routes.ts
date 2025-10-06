@@ -47,6 +47,10 @@ export const routes: Routes = [
         path: 'auth/callback',  // ✅ IMPORTANTE: Agregar esta ruta
         loadComponent: () => import('./features/auth-callback/auth-callback.component')
           .then(c => c.AuthCallbackComponent)
+      },
+      {
+        path: 'orden',
+        loadChildren: () => import('./features/order-detail/order-detail.routes').then(m => m.orderDetailRoutes)
       }
     ]
   },

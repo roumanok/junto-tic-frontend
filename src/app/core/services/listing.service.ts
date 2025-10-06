@@ -69,8 +69,8 @@ export class ListingService {
     return `${baseSlug}-lid-${id}`;
   }
 
-  getformattedPrice(price: string): string {    
-    return this ? parseInt(price).toLocaleString(environment.locale) : '0';
+  getformattedPrice(price: string | number): string {    
+    return this ? parseInt(price as string).toLocaleString(environment.locale) : '0';
   }
 
 }

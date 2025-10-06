@@ -1,0 +1,191 @@
+<!-- src/app/features/orders/order-detail-page.component.html -->
+<div class="order-detail-page">
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando detalles de la orden...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error() && !loading()" class="error-container">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h3>Error al cargar la orden</h3>
+    <p>{{ error() }}</p>
+    <button class="btn btn-primary" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i> Volver a Mis Compras
+    </button>
+  </div>
+
+  <!-- Order Detail -->
+  <div *ngIf="order() && !loading()" class="order-detail-container">
+    
+    <!-- Header -->
+    <div class="order-header">
+      <div class="order-header-left">
+        <h1>Orden #{{ order()!.id }}</h1>
+        <p class="order-date">
+          <i class="far fa-calendar"></i>
+          Realizada el {{ formatDate(order()!.created_at) }}
+        </p>
+      </div>
+      <div class="order-header-right">        
+        <button class="btn btn-outline" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i> {{ 'COMMON.MY_ORDERS' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Cards -->
+    <div class="status-cards">
+      <div class="status-card" [ngClass]="getStatusClass(order()!.status)">
+        <div class="status-icon">
+          <i class="fas fa-box"></i>
+        </div>
+        <div class="status-info">
+          <span class="status-label">Estado de la orden</span>
+          <span class="status-value">{{ getStatusLabel(order()!.status) }}</span>
+        </div>
+      </div>
+
+      <div class="status-card" [ngClass]="getPaymentStatusClass(order()!.payment_status)">
+        <div class="status-icon">
+          <i class="fas fa-credit-card"></i>
+        </div>
+        <div class="status-info">
+          <span class="status-label">Estado del pago</span>
+          <span class="status-value">{{ getPaymentStatusLabel(order()!.payment_status) }}</span>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div class="status-icon">
+          <i class="fas fa-truck"></i>
+        </div>
+        <div class="status-info">
+          <span class="status-label">Método de entrega</span>
+          <span class="status-value">{{ getDeliveryMethodLabel(order()!.delivery_method_type) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="order-content">
+      
+      <div class="order-info-wrapper">
+      <!-- Items -->
+      <div class="order-section">
+        <h2><i class="fas fa-shopping-bag"></i> Productos</h2>
+        <div class="order-items">
+          <div 
+            *ngFor="let item of order()!.items" 
+            class="order-item"
+            (click)="goToListing(item.listing_id)"
+          >
+            <div class="item-image">
+              <img 
+                [src]="getCdnUrl(item.listing_image_url)" 
+                [alt]="item.listing_title"
+              />
+            </div>
+            <div class="item-details">
+              <h3>{{ item.listing_title }}</h3>
+              <p class="item-seller">
+                <i class="fas fa-store"></i> {{ item.advertiser_name }}
+              </p>
+              <div class="item-pricing">
+                <span class="item-quantity">Cantidad: {{ item.quantity }}</span>
+                <span class="item-unit-price">{{ formatPrice(item.unit_price) }} c/u</span>
+              </div>
+            </div>
+            <div class="item-total">
+              <span class="total-label">Subtotal</span>
+              <span class="total-value">{{ formatPrice(item.total_price) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>      
+
+      <!-- Order Summary -->
+      <div class="order-section order-summary">
+        <h2><i class="fas fa-calculator"></i> Resumen de la orden</h2>
+        <div class="summary-details">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>{{ formatPrice(order()!.subtotal) }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Envío</span>
+            <span>{{ formatPrice(order()!.delivery_cost) }}</span>
+          </div>
+          <div class="summary-row summary-total">
+            <span>Total</span>
+            <span>{{ formatPrice(order()!.total) }}</span>
+          </div>
+          <div *ngIf="order()!.paid_at" class="summary-row paid-info">
+            <i class="fas fa-check-circle"></i>
+            <span>Pagado el {{ formatDate(order()!.paid_at) }}</span>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- Delivery Information -->
+      <div class="order-section">
+        <h2>
+          <i class="fas fa-{{ order()!.delivery_method_type === 'delivery' ? 'shipping-fast' : 'store' }}"></i>
+          Información de entrega
+        </h2>
+        <div class="info-grid">
+          <div class="info-block">
+            <h3>Datos de contacto</h3>
+            <p><strong>Nombre:</strong> {{ order()!.delivery_name }}</p>
+            <p><strong>Teléfono:</strong> ({{ order()!.delivery_phone_area_code }}){{ order()!.delivery_phone_number }}</p>
+          </div>
+          <div *ngIf="order()!.delivery_method_type === 'delivery'" class="info-block">
+            <h3>Dirección de entrega</h3>
+            <p>{{ order()!.delivery_address }}</p>
+            <p *ngIf="order()!.delivery_apartment">{{ order()!.delivery_apartment }}</p>
+            <p>{{ order()!.delivery_city }}, {{ order()!.delivery_province }}</p>
+            <p>CP: {{ order()!.delivery_postal_code }}</p>
+            <p *ngIf="order()!.delivery_notes" class="delivery-notes">
+              <strong>Notas:</strong> {{ order()!.delivery_notes }}
+            </p>
+          </div>
+          <div *ngIf="order()!.delivery_method_type === 'pickup'" class="info-block">
+            <h3>Retiro en local</h3>
+            <p class="pickup-info">
+              <i class="fas fa-info-circle"></i>
+              Esta orden será retirado en el local del vendedor.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Billing Information -->
+      <div class="order-section">
+        <h2><i class="fas fa-file-invoice"></i> Información de facturación</h2>
+        <div class="info-grid">
+          <div class="info-block">
+            <h3>Datos del cliente</h3>
+            <p><strong>Nombre:</strong> {{ order()!.billing_name }}</p>
+            <p><strong>Teléfono:</strong> ({{ order()!.billing_phone_area_code }}){{ order()!.billing_phone_number }}</p>
+            <p><strong>Tipo de documento:</strong>{{ order()!.customer_identification_type }}</p>
+            <p><strong>Número de documento:</strong>{{ order()!.customer_identification_number }}</p>
+          </div>
+          <div class="info-block">
+            <h3>Dirección de facturación</h3>
+            <p>{{ order()!.billing_address }}</p>
+            <p *ngIf="order()!.billing_apartment">{{ order()!.billing_apartment }}</p>
+            <p>{{ order()!.billing_city }}, {{ order()!.billing_province }}</p>
+            <p>CP: {{ order()!.billing_postal_code }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
