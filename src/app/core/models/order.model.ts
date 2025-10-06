@@ -44,5 +44,27 @@ export interface OrderItem {
   advertiser_name: string;
 }
 
+export interface Order {
+  id: string;
+  total: string;
+  delivery_method_type: string;
+  created_at: string;
+  status: string;
+  payment_status: string;
+  items: any[];
+}
+
+export interface OrdersResponse {
+  orders: Order[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+    has_next: boolean;
+    has_previous: boolean;
+  };
+}
+
 export type OrderStatus = 'pending' | 'processing' | 'delivered' | 'cancelled';
 export type PaymentStatus = 'pending' | 'issued' | 'in_process' | 'approved' | 'rejected' | 'cancelled' | 'refunded' | 'deferred' | 'objected' | 'review' | 'validate' | 'overdue';

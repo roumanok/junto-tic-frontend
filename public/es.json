@@ -26,6 +26,7 @@
     "COMMON.NEXT": "Siguiente",
     "COMMON.PREVIOUS": "Anterior", 
     "COMMON.ORDER": "Orden",
+    "COMMON.MY_ACCOUNT": "Mi cuenta",
     "COMMON.MY_ORDERS": "Mis compras",
 
     "ERRORS.NETWORK": "Error de conexión",
@@ -127,6 +128,10 @@
     "PAGES.LOGIN_REQ.REGISTER": "Crear nueva cuenta",
     "PAGES.LOGIN_REQ.GO_BACK": "Volver",
 
+    "PAGES.MY_ORDERS.TITLE": "Mis compras - {{communityName}}",
+    "PAGES.MY_ORDERS.DESCRIPTION": "Tus compras en {{communityName}}",      
+    "PAGES.MY_ORDERS.SECTION_TITLE": "Mis compras",
+
     "PAGES.ORDER_DETAIL.TITLE": "Orden #{{orderId}} - {{communityName}}",
     "PAGES.ORDER_DETAIL.DESCRIPTION": "Tu compra en {{communityName}}",      
     "PAGES.ORDER_DETAIL.STATUS": "Estado",
@@ -137,7 +142,6 @@
     "PAGES.ORDER_DETAIL.STATUS_CANCELED": "Cancelado",
     "PAGES.ORDER_DETAIL.STATUS_REFUNDED": "Reembolsado",
     "PAGES.ORDER_DETAIL.ORDER_DATE": "Fecha de compra",
-
 
     "PAGES.CHECKOUT.TITLE": "Realizar compra - {{communityName}}",
     "PAGES.CHECKOUT.DESCRIPTION": "Realizar compra en {{communityName}}",  

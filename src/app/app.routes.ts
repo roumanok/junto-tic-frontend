@@ -51,6 +51,10 @@ export const routes: Routes = [
       {
         path: 'orden',
         loadChildren: () => import('./features/order-detail/order-detail.routes').then(m => m.orderDetailRoutes)
+      },
+      {
+        path: 'mi-cuenta/mis-compras',
+        loadChildren: () => import('./features/my-orders/my-orders.routes').then(m => m.myOrdersRoutes)
       }
     ]
   },

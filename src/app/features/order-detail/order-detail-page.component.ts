@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subject, switchMap, catchError, tap, takeUntil } from 'rxjs';
+import { Subject, switchMap, catchError, tap, takeUntil, combineLatest } from 'rxjs';
 import { of } from 'rxjs';
 
 import { OrdersService } from '../../core/services/order.service';
-import { OrderDetail } from '../../core/models/order-detail.model';
+import { OrderDetail } from '../../core/models/order.model';
 import { ListingService } from '../../core/services/listing.service';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
@@ -31,6 +31,8 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
   order = signal<OrderDetail | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
+  paymentStatusMessage = signal<{ type: 'success' | 'error' | 'warning' | null, text: string } | null>(null);
+
   breadcrumbItems: BreadcrumbItem[] = [];
   
   private destroy$ = new Subject<void>();
@@ -49,8 +51,7 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  ngOnInit(): void {
-    this.setupSEO();
+  ngOnInit(): void {    
     this.buildBreadcrumbs();    
     this.loadOrderDetail();
   }
@@ -61,17 +62,31 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
   }
 
   private loadOrderDetail(): void {
-    this.route.params.pipe(
+    combineLatest([
+      this.route.params,
+      this.route.queryParams
+    ]).pipe(
       takeUntil(this.destroy$),
       tap(() => {
         this.loading.set(true);
         this.error.set(null);
       }),
-      switchMap((params) => {        
-        const orderId = params['order_id'];        
+      switchMap(([params, queryParams]) => {    
+        this.checkPaymentStatus(queryParams);
+
+        const orderId = queryParams['external_transaction_id'] || params['order_id'];
+        
+        console.log('🔍 Buscando orden:', {
+          fromQueryParams: queryParams['external_transaction_id'],
+          fromParams: params['order_id'],
+          paymentStatus: queryParams['status'],
+          orderId
+        });
+        
         if (!orderId) {
           throw new Error('No se encontró el ID de la orden');
         }
+        
         return this.ordersService.getOrderDetail(orderId);
       }),
       catchError((err) => {
@@ -81,17 +96,93 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
         return of(null);
       })
     ).subscribe((response) => {
-      if (response) {        
+      if (response) {
+        console.log('📦 Orden cargada:', response);       
         this.order.set(response);
         this.updateBreadcrumbsWithOrder(response);
+        this.setupSEO();
       }
       this.loading.set(false);
     });
   }
 
+  private checkPaymentStatus(queryParams: any): void {
+    const status = queryParams['status'];
+    
+    if (!status) {
+      this.paymentStatusMessage.set(null);
+      return;
+    }
+
+    switch (status.toLowerCase()) {
+      case 'pending':
+      case 'issued':
+      case 'in_process':
+        this.paymentStatusMessage.set({
+          type: 'warning',
+          text: 'El pago está pendiente o en proceso'
+        });
+        break;
+      case 'approved':
+        this.paymentStatusMessage.set({
+          type: 'success',
+          text: '¡Pago exitoso! Gracias por tu compra'
+        });
+        break;      
+      case 'rejected':
+        this.paymentStatusMessage.set({
+          type: 'error',
+          text: 'El pago fue rechazado'
+        });
+        break;
+      case 'cancelled':
+      case 'overdue':
+        this.paymentStatusMessage.set({
+          type: 'error',
+          text: 'El pago fue cancelado'
+        });
+        break;
+      case 'refunded':
+        this.paymentStatusMessage.set({
+          type: 'error',
+          text: 'El pago fue devuelto'
+        });
+        break;      
+      case 'deferred':
+        this.paymentStatusMessage.set({
+          type: 'warning',
+          text: 'El pago se encuentra diferido'
+        });
+        break;        
+      case 'objected':
+        this.paymentStatusMessage.set({
+          type: 'warning',
+          text: 'El pago se encuentra objetado'
+        });
+        break;                
+      case 'review':
+        this.paymentStatusMessage.set({
+          type: 'warning',
+          text: 'El pago se realizó y está siendo revisado por la entidad'
+        });
+        break;
+      case 'validate':
+        this.paymentStatusMessage.set({
+          type: 'warning',
+          text: 'El pago se realizó pero debe ser validado'
+        });
+        break;        
+      
+      default:
+        this.paymentStatusMessage.set(null);
+        break;
+    }
+  }
+
   private buildBreadcrumbs(): void {
     this.breadcrumbItems = [
       { label: this.i18n.t('COMMON.HOME'), url: '/' },
+      { label: this.i18n.t('COMMON.MY_ACCOUNT'), url: '/mi-cuenta/' },
       { label: this.i18n.t('COMMON.MY_ORDERS'), url: '/mi-cuenta/mis-compras' },
       { label: this.i18n.t('COMMON.ORDER'), url: '' }
     ];
@@ -109,7 +200,7 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
 
   private setupSEO(): void {
     const communityName = this.i18n.t('COMMUNITY.NAME');
-    const orderId = this.route.snapshot.params['order_id'];
+    const orderId = this.order()?.id;
     this.seo.setPageMeta(
       'PAGES.ORDER_DETAIL.TITLE',
       'PAGES.ORDER_DETAIL.DESCRIPTION',
@@ -193,10 +284,5 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
   goToListing(listingId: string): void {
     this.router.navigate(['/articulo', listingId]);
   }
-
-  printOrder(): void {
-    if (this.isBrowser) {
-      window.print();
-    }
-  }
+  
 }
