@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener, Inject, inject, PLATFORM_ID, afterNextRender, signal} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { MegaMenuComponent } from './mega-menu/mega-menu.component';
 import { I18nService } from 'src/app/core/services/i18n.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -17,8 +18,10 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 export class NavigationComponent implements OnInit {
   showCategoriesDropdown = false;
   showMobileMenu = false;
+  showAccountDropdown = false;
   public isHydrated = signal(false);
 
+  private destroy$ = new Subject<void>();
   private router = inject(Router);
   private i18n = inject(I18nService);
   private authService = inject(AuthService);
@@ -36,30 +39,36 @@ export class NavigationComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    // Configuración inicial
-  }
+  ngOnInit() {}
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }  
 
   toggleCategoriesDropdown() {
+    if (this.isMobile()) return;    
+    this.showCategoriesDropdown = !this.showCategoriesDropdown;
+    this.showAccountDropdown = false;
+  }
+
+  toggleAccountDropdown() {
     if (this.isMobile()) return;
     
-    this.showCategoriesDropdown = !this.showCategoriesDropdown;
-    
-    if (this.showCategoriesDropdown) {
-      this.showMobileMenu = false;
-    }
+    this.showAccountDropdown = !this.showAccountDropdown;
+    this.showCategoriesDropdown = false; 
   }
 
   toggleMobileMenu() {
-    if (!this.isMobile()) return;
-    
     this.showMobileMenu = !this.showMobileMenu;
-    this.showCategoriesDropdown = this.showMobileMenu;
+    this.showCategoriesDropdown = true;
+    this.showAccountDropdown = false;
   }
-
+  
   closeMegaMenu() {
     this.showCategoriesDropdown = false;
     this.showMobileMenu = false;
+    this.showAccountDropdown = false;
   }
 
   isMobile(): boolean {
@@ -70,39 +79,35 @@ export class NavigationComponent implements OnInit {
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
-
-    if (!isPlatformBrowser(this.platformId)) return;    
+  onClickOutside(event: MouseEvent) {
+    if (!isPlatformBrowser(this.platformId)) return;
 
     const target = event.target as HTMLElement;
-    const dropdown = document.querySelector('.categories-dropdown');
-    const mobileToggle = document.querySelector('.mobile-menu-toggle');
-    
-    const isClickInside = dropdown?.contains(target);
-    const isClickOnMobileToggle = mobileToggle?.contains(target);
+    const isClickInside = target.closest('.dropdown-menu') || target.closest('.account-dropdown-menu');
+    const isClickOnMobileToggle = target.closest('.mobile-menu-toggle');
     const isClickOnCategoriesBtn = target.closest('.categories-btn');
-    
-    if (this.showCategoriesDropdown && 
+    const isClickOnAccountBtn = target.closest('.account-btn');
+
+    if ((this.showCategoriesDropdown || this.showAccountDropdown) && 
         !isClickInside && 
         !isClickOnMobileToggle && 
-        !isClickOnCategoriesBtn) {
+        !isClickOnCategoriesBtn &&
+        !isClickOnAccountBtn) {
       this.closeMegaMenu();
     }
   }
 
   @HostListener('document:keydown.escape', ['$event'])
   onEscapeKey(event: KeyboardEvent) {
-    if (this.showCategoriesDropdown || this.showMobileMenu) {
+    if (this.showCategoriesDropdown || this.showMobileMenu || this.showAccountDropdown) {
       this.closeMegaMenu();
     }
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Cerrar menús al cambiar de mobile a desktop y viceversa
     const wasMobile = this.showMobileMenu;
     const isNowMobile = this.isMobile();
     
@@ -136,5 +141,30 @@ export class NavigationComponent implements OnInit {
 
   getUsername(): string {
     return this.authService.getUsername();
+  }
+
+  hasRole(role: string): boolean {
+    const roles = this.authService.getUserRoles();
+    return roles.includes(role);
+  }
+
+  navigateToMyOrders(): void {
+    this.router.navigate(['/mi-cuenta/mis-compras']);
+    this.closeMegaMenu();
+  }
+
+  navigateToSell(): void {
+    this.router.navigate(['/vender']);
+    this.closeMegaMenu();
+  }
+
+  navigateToMySales(): void {
+    this.router.navigate(['/mi-cuenta/mis-ventas']);
+    this.closeMegaMenu();
+  }
+
+  navigateToMyListings(): void {
+    this.router.navigate(['/mi-cuenta/mis-articulos']);
+    this.closeMegaMenu();
   }
 }

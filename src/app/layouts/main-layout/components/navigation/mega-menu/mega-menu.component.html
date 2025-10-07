@@ -14,30 +14,69 @@
       <div class="mega-grid" #megaGrid>
         <!-- Left Panel: Categories -->
         <aside class="mega-left">
-          <!-- Mobile User Actions -->
-          <div class="mega-mobile-user-actions">
-            <ng-container *ngIf="isHydrated() && !isLoading()">
-              <!-- Si NO está logueado -->
-              <ng-container *ngIf="!isLoggedIn()">
-                <button (click)="login()" class="btn-secondary">
-                  {{'HEADER.MENU.LOGIN' | translate}}
-                </button>
-                <button (click)="register()" class="btn-primary">
-                  {{'HEADER.MENU.REGISTER' | translate}}
-                </button>
-              </ng-container>
-              
-              <!-- Si está logueado -->
-              <ng-container *ngIf="isLoggedIn()">
-                <div class="user-greeting-mobile">{{'HEADER.MENU.HELLO' | translate}}, {{ getUsername() }}</div>
-                <button (click)="logout()" class="btn-secondary">
-                  {{'HEADER.MENU.LOGOUT' | translate}}
-                </button>
-              </ng-container>
-            </ng-container>
+          <!-- Mobile User Section (Si está logueado) -->
+          <div class="mega-mobile-user-section" *ngIf="isHydrated() && !isLoading() && isLoggedIn()">
+            <div class="user-greeting-mobile">
+              <i class="fas fa-user-circle"></i>
+              {{ 'HEADER.MENU.HELLO' | translate }}, {{ getUsername() }}
+            </div>
           </div>
-          
-          <div class="mega-mobile-categories-title">{{'HEADER.MENU.CATEGORIES' | translate}}</div>
+
+          <!-- Mobile User Actions (Si NO está logueado) -->
+          <div class="mega-mobile-user-actions" *ngIf="isHydrated() && !isLoading() && !isLoggedIn()">
+            <button (click)="login()" class="btn-secondary">
+              {{'HEADER.MENU.LOGIN' | translate}}
+            </button>
+            <button (click)="register()" class="btn-primary">
+              {{'HEADER.MENU.REGISTER' | translate}}
+            </button>
+          </div>
+
+          <!-- Mi Cuenta Section (Mobile) - Solo si está logueado -->
+          <div class="mega-mobile-account-section" *ngIf="isHydrated() && !isLoading() && isLoggedIn()">
+            <div class="account-section-title">
+              <i class="fas fa-user-circle"></i>
+              {{ 'HEADER.MENU.MY_ACCOUNT' | translate }}
+            </div>
+            
+            <ul class="account-menu-mobile">
+              <li (click)="navigateToMyOrders()">
+                <i class="fas fa-shopping-bag"></i>
+                <span>{{ 'HEADER.MENU.MY_ORDERS' | translate }}</span>
+                <i class="fas fa-chevron-right arrow"></i>
+              </li>
+              
+              <li *ngIf="hasRole('consumer')" (click)="navigateToSell()">
+                <i class="fas fa-store"></i>
+                <span>{{ 'HEADER.MENU.SELL' | translate }}</span>
+                <i class="fas fa-chevron-right arrow"></i>
+              </li>
+              
+              <li *ngIf="hasRole('advertiser')" (click)="navigateToMySales()">
+                <i class="fas fa-chart-line"></i>
+                <span>{{ 'HEADER.MENU.MY_SALES' | translate }}</span>
+                <i class="fas fa-chevron-right arrow"></i>
+              </li>
+              
+              <li *ngIf="hasRole('advertiser')" (click)="navigateToMyListings()">
+                <i class="fas fa-box"></i>
+                <span>{{ 'HEADER.MENU.MY_LISTINGS' | translate }}</span>
+                <i class="fas fa-chevron-right arrow"></i>
+              </li>
+              
+              <li class="logout-item" (click)="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>{{ 'HEADER.MENU.LOGOUT' | translate }}</span>
+                <i class="fas fa-chevron-right arrow"></i>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Categorías Title (Mobile) -->
+          <div class="mega-mobile-categories-title">
+            <i class="fas fa-th-large"></i>
+            {{'HEADER.MENU.CATEGORIES' | translate}}
+          </div>          
           
           <ul class="mega-parents" #megaParents>
             <li 

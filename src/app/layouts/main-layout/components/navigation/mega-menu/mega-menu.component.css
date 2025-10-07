@@ -51,6 +51,8 @@
 }
 
 .mega-mobile-user-actions,
+.mega-mobile-user-section,
+.mega-mobile-account-section,
 .mega-mobile-categories-title {
   display: none;
 }
@@ -289,12 +291,95 @@
     margin-left: auto;
   }
 
+  /* ===== MOBILE USER ACTIONS ===== */
   .mega-mobile-user-actions {
     display: flex;
-    margin-top: 20px;
-    width: 100%;
-    justify-content: center;
-    gap: 10px;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid #eef1f4;
+  }
+
+  .mega-mobile-user-actions button {
+    flex: 1;
+  }
+
+  /* ===== MOBILE ACCOUNT SECTION ===== */
+  .mega-mobile-account-section {
+    display: block;
+    border-bottom: 8px solid #f1f5f9;
+  }
+
+  .account-section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #2f3a45;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .account-section-title i {
+    font-size: 1.3rem;
+    color: #4A90A4;
+  }
+
+  .account-menu-mobile {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+  }
+
+  .account-menu-mobile li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .account-menu-mobile li:hover {
+    background: #f8fafc;
+  }
+
+  .account-menu-mobile li:active {
+    background: #e9f2f6;
+  }
+
+  .account-menu-mobile li i:first-child {
+    width: 24px;
+    font-size: 1.1rem;
+    color: #4A90A4;
+  }
+
+  .account-menu-mobile li span {
+    flex: 1;
+    font-weight: 500;
+    color: #2f3a45;
+  }
+
+  .account-menu-mobile li .arrow {
+    width: auto;
+    font-size: 0.9rem;
+    color: #94a3b8;
+  }
+
+  .account-menu-mobile li.logout-item {
+    color: #D73027;
+    border-top: 2px solid #f1f5f9;
+    margin-top: 8px;
+  }
+
+  .account-menu-mobile li.logout-item i {
+    color: #D73027;
+  }
+
+  .account-menu-mobile li.logout-item:hover {
+    background: #fef2f2;
   }
 
   .mega-mobile-categories-title {

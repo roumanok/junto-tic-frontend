@@ -49,9 +49,7 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-    // Configuración inicial
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.destroy$.next();
@@ -180,7 +178,7 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
     return window.innerWidth <= 768;
   }
 
-    isLoading(): boolean {
+  isLoading(): boolean {
     return this.authService.isLoading();
   }
 
@@ -208,6 +206,31 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
 
   getUsername(): string {
     return this.authService.getUsername();
+  }
+
+  hasRole(role: string): boolean {
+    const roles = this.authService.getUserRoles();
+    return roles.includes(role);
+  }
+
+  navigateToMyOrders(): void {
+    this.router.navigate(['/mi-cuenta/mis-compras']);
+    this.closeMegaMenu();
+  }
+
+  navigateToSell(): void {
+    this.router.navigate(['/vender']);
+    this.closeMegaMenu();
+  }
+
+  navigateToMySales(): void {
+    this.router.navigate(['/mi-cuenta/mis-ventas']);
+    this.closeMegaMenu();
+  }
+
+  navigateToMyListings(): void {
+    this.router.navigate(['/mi-cuenta/mis-articulos']);
+    this.closeMegaMenu();
   }
 
   @HostListener('document:keydown.escape', ['$event'])

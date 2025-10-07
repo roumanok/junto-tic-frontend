@@ -28,6 +28,8 @@
     "COMMON.ORDER": "Orden",
     "COMMON.MY_ACCOUNT": "Mi cuenta",
     "COMMON.MY_ORDERS": "Mis compras",
+    "COMMON.MY_SALES": "Mis ventas",
+    "COMMON.MY_LISTINGS": "Mis artículos",
 
     "ERRORS.NETWORK": "Error de conexión",
     "ERRORS.GENERAL": "Ha ocurrido un error inesperado",
@@ -43,6 +45,11 @@
     "HEADER.MENU.CATEGORIES": "Categorías",   
     "HEADER.MENU.NEWS": "Novedades",
     "HEADER.MENU.OFFERS": "Ofertas",
+    "HEADER.MENU.MY_ACCOUNT": "Mi cuenta",
+    "HEADER.MENU.MY_ORDERS": "Mis compras",
+    "HEADER.MENU.SELL": "Vender",
+    "HEADER.MENU.MY_SALES": "Mis ventas",
+    "HEADER.MENU.MY_LISTINGS": "Mis artículos",
     
     "SEARCH.TITLE": "Resultados de búsqueda",
     "SEARCH.TITLE_WITH_TERM": "{{searchTerm}} - {{communityName}}",

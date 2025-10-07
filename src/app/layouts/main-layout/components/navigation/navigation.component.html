@@ -56,12 +56,64 @@
               </button>
             </ng-container>          
             
-            <!-- Si está logueado -->
+            <!-- Si está logueado - Menú Mi Cuenta -->
             <ng-container *ngIf="isLoggedIn()">
-              <span class="user-greeting">{{ 'HEADER.MENU.HELLO' | translate }}, {{ getUsername() }}</span>
-              <button (click)="logout()" class="btn-secondary">
-                {{ 'HEADER.MENU.LOGOUT' | translate }}
-              </button>
+              <span class="user-greeting">¡{{ 'HEADER.MENU.HELLO' | translate }}, {{ getUsername() }}!</span>
+              
+              <!-- Dropdown Mi Cuenta -->
+              <div class="account-dropdown" [class.active]="showAccountDropdown">
+                <button 
+                  class="account-btn" 
+                  (click)="toggleAccountDropdown()"
+                >
+                  <i class="fas fa-user-circle"></i> {{ 'HEADER.MENU.MY_ACCOUNT' | translate }}
+                  <span class="dropdown-arrow">
+                    <i class="fas fa-chevron-down" [class.rotated]="showAccountDropdown"></i>
+                  </span>
+                </button>
+                
+                <!-- Account Dropdown Menu -->
+                <div class="account-dropdown-menu" [class.active]="showAccountDropdown">
+                  <ul class="account-menu-list">
+                    <li>
+                      <a (click)="navigateToMyOrders()">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>{{ 'HEADER.MENU.MY_ORDERS' | translate }}</span>
+                      </a>
+                    </li>
+                    
+                    <li *ngIf="hasRole('consumer')">
+                      <a (click)="navigateToSell()">
+                        <i class="fas fa-store"></i>
+                        <span>{{ 'HEADER.MENU.SELL' | translate }}</span>
+                      </a>
+                    </li>
+                    
+                    <li *ngIf="hasRole('advertiser')">
+                      <a (click)="navigateToMySales()">
+                        <i class="fas fa-chart-line"></i>
+                        <span>{{ 'HEADER.MENU.MY_SALES' | translate }}</span>
+                      </a>
+                    </li>
+                    
+                    <li *ngIf="hasRole('advertiser')">
+                      <a (click)="navigateToMyListings()">
+                        <i class="fas fa-box"></i>
+                        <span>{{ 'HEADER.MENU.MY_LISTINGS' | translate }}</span>
+                      </a>
+                    </li>
+                    
+                    <li class="divider"></li>
+                    
+                    <li>
+                      <a (click)="logout()" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>{{ 'HEADER.MENU.LOGOUT' | translate }}</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </ng-container>
           </ng-container>
         </div>
