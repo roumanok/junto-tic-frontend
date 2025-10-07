@@ -40,7 +40,7 @@
     <!-- Header -->
     <div class="order-header">
       <div class="order-header-left">
-        <h1>Orden #{{ order()!.id }}</h1>
+        <h1>Orden #{{ order()!.public_id }}</h1>
         <p class="order-date">
           <i class="far fa-calendar"></i>
           Realizada el {{ formatDate(order()!.created_at) }}
@@ -188,7 +188,7 @@
             <h3>Datos del cliente</h3>
             <p><strong>Nombre:</strong> {{ order()!.billing_name }}</p>
             <p><strong>Teléfono:</strong> ({{ order()!.billing_phone_area_code }}){{ order()!.billing_phone_number }}</p>
-            <p><strong>Tipo de documento:</strong>{{ order()!.customer_identification_type }}</p>
+            <p><strong>Tipo de documento:</strong>{{ getCustomerIdentificationTypeLabel(order()!.customer_identification_type) }}</p>
             <p><strong>Número de documento:</strong>{{ order()!.customer_identification_number }}</p>
           </div>
           <div class="info-block">

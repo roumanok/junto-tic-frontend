@@ -1,5 +1,6 @@
 export interface OrderDetail {
   id: string;
+  public_id: string;
   customer_id: string;
   community_id: string;
   subtotal: string;
@@ -46,6 +47,7 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
+  public_id: string;
   total: string;
   delivery_method_type: string;
   created_at: string;

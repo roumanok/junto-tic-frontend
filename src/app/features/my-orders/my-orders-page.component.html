@@ -33,9 +33,9 @@
   <div *ngIf="!loading() && !error() && orders().length === 0" class="empty-state">
     <i class="fas fa-shopping-bag"></i>
     <h3>Aún no realizaste ninguna compra</h3>
-    <p>Cuando realices tu primera compra, aparecerá aquí</p>
+    <p>Cuando realices tu primera compra, aparecerá acá</p>
     <a routerLink="/" class="btn btn-primary">
-      <i class="fas fa-store"></i> Ir a la tienda
+      Ir a la tienda
     </a>
   </div>
 
@@ -52,9 +52,9 @@
         <!-- Order Header -->
         <div class="order-card-header">
           <div class="order-info">
+            <span class="order-title">{{'COMMON.ORDER' | translate}}</span>
             <span class="order-id">
-              <i class="fas fa-hashtag"></i>
-              {{ order.id }}
+              <i class="fas fa-hashtag"></i>{{ order.public_id }}
             </span>
             <span class="order-date">
               <i class="far fa-calendar"></i>
@@ -84,7 +84,7 @@
                 *ngFor="let item of order.items" 
                 class="order-items"
               >     
-                <div class="order-item">{{ item.listing_title }}</div>
+                <div class="order-item">{{ item.quantity }} &times; {{ item.listing_title }}</div>
               </div>
             </div>
             <div class="detail-item">

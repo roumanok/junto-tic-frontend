@@ -192,7 +192,7 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
     // Actualizar el último breadcrumb con el ID de la orden
     if (this.breadcrumbItems.length > 0) {
       this.breadcrumbItems[this.breadcrumbItems.length - 1] = {
-        label: this.i18n.t('COMMON.ORDER') + ' #'+order.id,
+        label: this.i18n.t('COMMON.ORDER') + ' #'+order.public_id,
         url: ''
       };
     }
@@ -252,6 +252,14 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
     const labels: { [key: string]: string } = {
       'pickup': 'Retiro en local',
       'delivery': 'Envío a domicilio'
+    };
+    return labels[type] || type;
+  }
+
+  getCustomerIdentificationTypeLabel(type: string): string {
+    const labels: { [key: string]: string } = {
+      'DNI_ARG': this.i18n.t('COMMON.DNI'),
+      'CUIT_ARG': this.i18n.t('COMMON.CUIT')      
     };
     return labels[type] || type;
   }

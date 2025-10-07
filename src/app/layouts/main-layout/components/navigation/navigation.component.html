@@ -82,7 +82,7 @@
                       </a>
                     </li>
                     
-                    <li *ngIf="hasRole('consumer')">
+                    <li *ngIf="hasRole('consumer') && !hasRole('advertiser')">
                       <a (click)="navigateToSell()">
                         <i class="fas fa-store"></i>
                         <span>{{ 'HEADER.MENU.SELL' | translate }}</span>

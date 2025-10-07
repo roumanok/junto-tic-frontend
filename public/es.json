@@ -30,6 +30,8 @@
     "COMMON.MY_ORDERS": "Mis compras",
     "COMMON.MY_SALES": "Mis ventas",
     "COMMON.MY_LISTINGS": "Mis artículos",
+    "COMMON.DNI": "DNI",
+    "COMMON.CUIT": "CUIT / CUIL",
 
     "ERRORS.NETWORK": "Error de conexión",
     "ERRORS.GENERAL": "Ha ocurrido un error inesperado",
@@ -169,8 +171,6 @@
     "PAGES.CHECKOUT.CONTACT_DATA": "Datos de contacto",
     "PAGES.CHECKOUT.CUSTOMER_EMAIL": "Correo electrónico",
     "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_TYPE": "Tipo de documento",
-    "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_TYPE_DNI": "DNI",
-    "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_TYPE_CUIT": "CUIT / CUIL",
     "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_NUMBER": "Número de documento",
     "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_NUMBER_REQUIRED": "Por favor ingresa tu número de documento",
     "PAGES.CHECKOUT.CUSTOMER_IDENTIFICATION_NUMBER_PATTERN": "Debe contener entre 7 y 11 dígitos",     

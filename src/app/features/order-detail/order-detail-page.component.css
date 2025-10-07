@@ -177,7 +177,7 @@
   }
   
   .order-detail-page .order-header-right .btn {
-    flex: 1;
+    margin: 0 auto;
   }
 }
 
@@ -305,6 +305,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 2vw;        
+    margin-bottom: 30px;
 }
 
 /* Order Section */
@@ -422,6 +423,10 @@
   .order-detail-page .order-item .item-details .item-pricing {
     flex-direction: column;
     gap: 0.25rem;
+  }
+
+  .order-detail-page .order-info-wrapper {    
+    grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));              
   }
 }
 
@@ -590,26 +595,4 @@
 
 .order-detail-page .btn i {
   font-size: 0.9rem;
-}
-
-/* Print Styles */
-@media print {
-  .order-detail-page .order-header-right,
-  .order-detail-page app-breadcrumb {
-    display: none;
-  }
-
-  .order-detail-page .order-item {
-    cursor: default;
-  }
-  
-  .order-detail-page .order-item:hover {
-    background: #f8f9fa;
-    transform: none;
-  }
-
-  .order-detail-page .order-detail-container {
-    box-shadow: none;
-    border: 1px solid #dee2e6;
-  }
 }
