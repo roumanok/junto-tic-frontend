@@ -34,19 +34,16 @@ export const routes: Routes = [
       },
       {
         path: 'login-required',
-        loadComponent: () => import('./features/login-required/login-required.component')
-          .then(c => c.LoginRequiredComponent)          
+        loadComponent: () => import('./features/login-required/login-required.component').then(c => c.LoginRequiredComponent)          
       },
       {
         path: 'checkout',
-        loadComponent: () => import('./features/checkout/checkout-page.component')
-          .then(c => c.CheckoutPageComponent),
+        loadComponent: () => import('./features/checkout/checkout-page.component').then(c => c.CheckoutPageComponent),
           canActivate: [authGuard]
       },
       {
-        path: 'auth/callback',  // ✅ IMPORTANTE: Agregar esta ruta
-        loadComponent: () => import('./features/auth-callback/auth-callback.component')
-          .then(c => c.AuthCallbackComponent)
+        path: 'auth/callback',
+        loadComponent: () => import('./features/auth-callback/auth-callback.component').then(c => c.AuthCallbackComponent)
       },
       {
         path: 'orden',
@@ -55,6 +52,11 @@ export const routes: Routes = [
       {
         path: 'mi-cuenta/mis-compras',
         loadChildren: () => import('./features/my-orders/my-orders.routes').then(m => m.myOrdersRoutes)
+      },
+      {
+        path: 'mi-cuenta/mis-articulos',
+        loadChildren: () => import('./features/my-listings/my-listings.routes').then(m => m.myListingsRoutes),
+        canActivate: [authGuard]
       }
     ]
   },

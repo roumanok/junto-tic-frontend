@@ -46,6 +46,8 @@
         
         <h1 class="listing-title">{{ listing.title }}</h1>
         
+        <div class="listing-inactive-msg" *ngIf="!listing.is_active">{{ 'LISTINGS.INACTIVE_MSG' | translate }}</div>
+
         <div class="listing-price" *ngIf="hasStock">
           <div class="price-original-wrapper">
             <span *ngIf="hasDiscount" class="price-original">

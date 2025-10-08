@@ -45,8 +45,8 @@ export class ApiService {
     return this.http.put<ApiResponse<T>>(`${this.baseUrl}${endpoint}`, body);
   }
 
-  delete<T>(endpoint: string): Observable<ApiResponse<T>> {
-    return this.http.delete<ApiResponse<T>>(`${this.baseUrl}${endpoint}`);
+  delete<T>(endpoint: string): Observable<T> {
+    return this.http.delete<T>(`${this.baseUrl}${endpoint}`);
   }
 
   getSimple<T>(endpoint: string, params?: HttpParams): Observable<ApiSimpleResponse<T>> {

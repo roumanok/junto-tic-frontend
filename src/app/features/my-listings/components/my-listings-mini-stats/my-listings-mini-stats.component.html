@@ -1,0 +1,71 @@
+<div class="mini-stats-container">
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <span>{{ error() }}</span>
+      <button mat-icon-button (click)="refresh()" matTooltip="{{'COMMON.RETRY' | translate}}">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  } @else {
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <!-- Total -->
+      <mat-card class="stat-card total">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>inventory_2</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ getformattedNumber(stats()?.total_listings || 0) }}</h3>
+            <p>{{ 'PAGES.MY_LISTINGS.STATS.TOTAL' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Activas -->
+      <mat-card class="stat-card active">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ getformattedNumber(stats()?.active_listings || 0) }}</h3>
+            <p>{{ 'PAGES.MY_LISTINGS.STATS.ACTIVE' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Stock Bajo -->
+      <mat-card class="stat-card warning" [class.alert]="hasLowStock()">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>warning</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ getformattedNumber(stats()?.low_stock_count || 0) }}</h3>
+            <p>{{ 'PAGES.MY_LISTINGS.STATS.LOW_STOCK' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Sin Stock -->
+      <mat-card class="stat-card danger" [class.alert]="hasNoStock()">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>remove_shopping_cart</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ getformattedNumber(stats()?.out_of_stock_listings || 0) }}</h3>
+            <p>{{ 'PAGES.MY_LISTINGS.STATS.OUT_OF_STOCK' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

@@ -95,6 +95,7 @@
     "LISTINGS.PURCHASE": "Comprar",
     "LISTINGS.QUANTITY": "Cantidad",    
     "LISTINGS.GALLERY.NO_IMAGES": "Sin imágenes disponibles",
+    "LISTINGS.INACTIVE_MSG" : "Artículo inactivo",
 
     "CATEGORY.LOADING_ERROR": "Error al cargar la categoría",        
 
@@ -220,10 +221,15 @@
     "PAGES.CHECKOUT.BILLING_CITY": "Ciudad",
     "PAGES.CHECKOUT.BILLING_CITY_REQUIRED": "Por favor ingresa una ciudad",    
     "PAGES.CHECKOUT.BILLING_PROVINCE": "Provincia",
-    "PAGES.CHECKOUT.BILLING_PROVINCE_REQUIRED": "Por favor selecciona una provincia"
+    "PAGES.CHECKOUT.BILLING_PROVINCE_REQUIRED": "Por favor selecciona una provincia",
 
-
-    
+    "PAGES.MY_LISTINGS.TITLE": "Mis artículos - {{communityName}}",
+    "PAGES.MY_LISTINGS.DESCRIPTION": "Tus artículos en {{communityName}}",
+    "PAGES.MY_LISTINGS.SECTION_TITLE": "Mis artículos",
+    "PAGES.MY_LISTINGS.STATS.TOTAL": "Total",
+    "PAGES.MY_LISTINGS.STATS.ACTIVE": "Activos",
+    "PAGES.MY_LISTINGS.STATS.LOW_STOCK": "Stock bajo",
+    "PAGES.MY_LISTINGS.STATS.OUT_OF_STOCK": "Sin stock" 
 
                 
 }

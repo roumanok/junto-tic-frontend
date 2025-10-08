@@ -15,6 +15,7 @@ export interface ListingDetail {
   type: 'product' | 'service';
   max_quantity_per_order: number;
   stock_quantity: number;
+  is_active: boolean;
   is_featured: boolean;
   created_at: string;
   updated_at: string;
