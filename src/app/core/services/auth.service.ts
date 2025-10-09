@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { OAuthService, AuthConfig, OAuthEvent } from 'angular-oauth2-oidc';
 import { BehaviorSubject, Observable, filter, map } from 'rxjs';
 import { getAuthConfig } from '../config/auth.config';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface UserProfile {
   sub?: string;
@@ -22,6 +23,7 @@ export class AuthService {
   private oauthService = inject(OAuthService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private snackBar = inject(MatSnackBar);
   
   private isAuthenticatedSubject$ = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject$.asObservable();
@@ -262,6 +264,20 @@ export class AuthService {
     const isAuth = this.isAuthenticated();
     this.isAuthenticatedSubject$.next(isAuth);
     console.log('Estado de autenticación actualizado:', isAuth);
+  }
+
+  checkAdvertiserAccess(): void {
+    if (!this.hasAdvertiserRole()) {
+      this.snackBar.open('No tienes permisos para acceder a esta sección', 'Cerrar', {
+        duration: 4000
+      });
+      this.router.navigate(['/']);
+    }
+  }
+
+  hasAdvertiserRole(): boolean {
+    const roles = this.getUserRoles();
+    return roles?.includes('advertiser') || false;
   }
 
 }

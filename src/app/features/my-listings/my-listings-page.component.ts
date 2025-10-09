@@ -73,13 +73,7 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['image', 'title', 'price', 'stock', 'sales', 'status', 'actions'];
 
   ngOnInit() {
-    if (!this.hasAdvertiserRole()) {
-      this.snackBar.open('No tienes permisos para acceder a esta sección', 'Cerrar', {
-        duration: 3000
-      });
-      this.router.navigate(['/']);
-      return;
-    }
+    this.authService.checkAdvertiserAccess();
     this.buildBreadcrumbs();
     this.loadMyListings();
   }
@@ -87,10 +81,6 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-  
-  private hasAdvertiserRole(): boolean {
-    return this.authService.getUserRoles().includes('advertiser');
   }
   
   private loadMyListings() {

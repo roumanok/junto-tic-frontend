@@ -229,7 +229,15 @@
     "PAGES.MY_LISTINGS.STATS.TOTAL": "Total",
     "PAGES.MY_LISTINGS.STATS.ACTIVE": "Activos",
     "PAGES.MY_LISTINGS.STATS.LOW_STOCK": "Stock bajo",
-    "PAGES.MY_LISTINGS.STATS.OUT_OF_STOCK": "Sin stock" 
+    "PAGES.MY_LISTINGS.STATS.OUT_OF_STOCK": "Sin stock",
+
+    "PAGES.MY_SALES.TITLE" : "Mis ventas - {{communityName}}",
+    "PAGES.MY_SALES.DESCRIPTION" : "Tus ventas en {{communityName}}",
+    "PAGES.MY_SALES.SECTION_TITLE" : "Mis ventas",
+    "PAGES.MY_SALES.STATS.TOTAL_SALES" : "Ventas",
+    "PAGES.MY_SALES.STATS.ESTIMATED_REVENUE" : "Ingresos estimados",
+    "PAGES.MY_SALES.STATS.INVENTORY_VALUE" : "Valor de inventario",
+    "PAGES.MY_SALES.STATS.AVERAGE_PRICE" : "Ticket promedio"
 
                 
 }

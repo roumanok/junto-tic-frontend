@@ -1,0 +1,118 @@
+.mini-stats-container {
+  margin-bottom: 24px;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.error-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background-color: #ffebee;
+  border-radius: 8px;
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  span {
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  mat-card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px !important;
+  }
+
+  .stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    flex-shrink: 0;
+
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+      color: white;
+    }
+  }
+
+  &.sales .stat-icon {
+    background: #4A90A4;
+  }
+
+  &.revenue .stat-icon {
+    background: #11993e;
+  }
+
+  &.inventory .stat-icon {
+    background: #ffc002;
+  }
+
+  &.average .stat-icon {
+    background: #9b59b6;
+  }
+
+  .stat-info {
+    flex: 1;
+
+    h3 {
+      margin: 0 0 4px 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: #2c3e50;
+      line-height: 1;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #2c3e50;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}

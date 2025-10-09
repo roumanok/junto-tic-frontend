@@ -184,7 +184,7 @@ export class MyOrdersPageComponent implements OnInit, OnDestroy {
   }
 
   viewOrderDetail(orderId: string): void {
-    this.router.navigate(['/orden', orderId]);
+    this.router.navigate(['/mi-cuenta/mis-compras/orden', orderId]);
   }
 
   onPageChange(page: number): void {

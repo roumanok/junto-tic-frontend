@@ -1,0 +1,71 @@
+<div class="mini-stats-container">
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <span>{{ error() }}</span>
+      <button mat-icon-button (click)="refresh()" matTooltip="{{'COMMON.RETRY' | translate}}">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  } @else {
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <!-- Total de Ventas -->
+      <mat-card class="stat-card sales">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>shopping_cart</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ getformattedNumber(stats()?.total_sales || 0) }}</h3>
+            <p>{{ 'PAGES.MY_SALES.STATS.TOTAL_SALES' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Ingresos Estimados -->
+      <mat-card class="stat-card revenue">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>attach_money</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>${{ getformattedPrice(stats()?.estimated_revenue || 0) }}</h3>
+            <p>{{ 'PAGES.MY_SALES.STATS.ESTIMATED_REVENUE' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Valor de Inventario -->
+      <mat-card class="stat-card inventory">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>inventory</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>${{ getformattedPrice(stats()?.inventory_value || 0) }}</h3>
+            <p>{{ 'PAGES.MY_SALES.STATS.INVENTORY_VALUE' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Ticket Promedio -->
+      <mat-card class="stat-card average">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>analytics</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>${{ getformattedPrice(stats()?.average_price || 0) }}</h3>
+            <p>{{ 'PAGES.MY_SALES.STATS.AVERAGE_PRICE' | translate }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

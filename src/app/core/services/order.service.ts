@@ -42,4 +42,37 @@ export class OrdersService {
       })
     );
   }
+
+  /**
+   * Obtener listado de ventas del anunciante
+   */
+  getMySales(page: number = 1, limit: number = 10): Observable<any> {
+    const params = new HttpParams()
+              .set('page', page)
+              .set('limit', limit);
+    return this.apiService.getSimple<any>('/my-sales/', params).pipe(
+      tap((response) => {
+        console.log('📋 Sales loaded:', response);
+      }),
+      catchError((error) => {
+        console.error('Error getting my sales:', error);
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Obtener detalle completo de una venta
+   */
+  getSaleDetail(orderId: string): Observable<OrderDetail> {
+    return this.apiService.getSimple<OrderDetail>(`/my-sales/${orderId}`).pipe(
+      tap((response) => {
+        console.log('✅ Sale detail loaded:', response);
+      }),
+      catchError((error) => {
+        console.error('Error getting sale detail:', error);
+        throw error;
+      })
+    );
+  }  
 }

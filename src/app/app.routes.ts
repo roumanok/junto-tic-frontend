@@ -46,16 +46,17 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth-callback/auth-callback.component').then(c => c.AuthCallbackComponent)
       },
       {
-        path: 'orden',
-        loadChildren: () => import('./features/order-detail/order-detail.routes').then(m => m.orderDetailRoutes)
-      },
-      {
         path: 'mi-cuenta/mis-compras',
         loadChildren: () => import('./features/my-orders/my-orders.routes').then(m => m.myOrdersRoutes)
       },
       {
         path: 'mi-cuenta/mis-articulos',
         loadChildren: () => import('./features/my-listings/my-listings.routes').then(m => m.myListingsRoutes),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'mi-cuenta/mis-ventas',
+        loadChildren: () => import('./features/my-sales/my-sales.routes').then(m => m.mySalesRoutes),
         canActivate: [authGuard]
       }
     ]

@@ -14,13 +14,7 @@
       <div class="mega-grid" #megaGrid>
         <!-- Left Panel: Categories -->
         <aside class="mega-left">
-          <!-- Mobile User Section (Si está logueado) -->
-          <div class="mega-mobile-user-section" *ngIf="isHydrated() && !isLoading() && isLoggedIn()">
-            <div class="user-greeting-mobile">
-              <i class="fas fa-user-circle"></i>
-              {{ 'HEADER.MENU.HELLO' | translate }}, {{ getUsername() }}
-            </div>
-          </div>
+          <!-- Mobile User Section (Si está logueado) -->          
 
           <!-- Mobile User Actions (Si NO está logueado) -->
           <div class="mega-mobile-user-actions" *ngIf="isHydrated() && !isLoading() && !isLoggedIn()">
@@ -36,7 +30,7 @@
           <div class="mega-mobile-account-section" *ngIf="isHydrated() && !isLoading() && isLoggedIn()">
             <div class="account-section-title">
               <i class="fas fa-user-circle"></i>
-              {{ 'HEADER.MENU.MY_ACCOUNT' | translate }}
+              {{ 'HEADER.MENU.MY_ACCOUNT' | translate }} - {{ getUsername() }}
             </div>
             
             <ul class="account-menu-mobile">

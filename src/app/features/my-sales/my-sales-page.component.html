@@ -1,0 +1,137 @@
+<div class="my-sales-page">
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="header-info">
+        <h1 class="page-title">
+          {{ 'PAGES.MY_SALES.SECTION_TITLE' | translate }}
+        </h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini Stats -->
+  <app-my-sales-mini-stats></app-my-sales-mini-stats>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando tus ventas...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error() && !loading()" class="error-container">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h3>Error al cargar las ventas</h3>
+    <p>{{ error() }}</p>
+    <button class="btn btn-primary" (click)="loadSales()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading() && !error() && sales().length === 0" class="empty-state">
+    <i class="fas fa-receipt"></i>
+    <h3>Aún no tienes ventas</h3>
+    <p>Cuando realices tu primera venta, aparecerá acá</p>
+    <a routerLink="/mi-cuenta/mis-articulos" class="btn btn-primary">
+      Ver mis artículos
+    </a>
+  </div>
+
+  <!-- Sales List -->
+  <div *ngIf="!loading() && !error() && sales().length > 0" class="sales-container">  
+
+    <!-- Sales Grid -->
+    <div class="sales-grid">
+      <div 
+        *ngFor="let sale of sales()" 
+        class="sale-card"
+        (click)="viewOrderDetail(sale.id)"
+      >
+        <!-- Sale Header -->
+        <div class="sale-card-header">
+          <div class="sale-info">
+            <span class="sale-title">{{ 'COMMON.ORDER' | translate }}</span>
+            <span class="sale-id">
+              <i class="fas fa-hashtag"></i>{{ sale.public_id }}
+            </span>
+            <span class="sale-date">
+              <i class="far fa-calendar"></i>
+              {{ formatDate(sale.created_at) }}
+            </span>
+          </div>
+          <div class="sale-status">
+            <button class="btn btn-primary btn-sm">
+              <i class="fas fa-eye"></i>
+              Ver detalle
+            </button>
+            <span class="status-badge" [ngClass]="getStatusClass(sale.status)">
+              {{ getStatusLabel(sale.status) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Sale Body -->
+        <div class="sale-card-body">
+          <div class="sale-details">
+            <div class="detail-item">
+              <div class="detail-title">
+                <i class="fas fa-user"></i>
+                <span>Cliente</span>
+              </div>
+              <div class="sale-customer">{{ sale.customer_name }}</div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-title">
+                <i class="fas fa-box"></i>
+                <span>Productos</span>
+              </div>
+              <div 
+                *ngFor="let item of sale.items" 
+                class="sale-items"
+              >
+                <div class="sale-item">{{ item.quantity }} × {{ item.listing_title }}</div>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-title">
+                <i class="fas fa-credit-card"></i>
+                <span>Estado del pago</span>
+              </div>
+              <span 
+                class="payment-status" 
+                [ngClass]="'payment-' + sale.payment_status.toLowerCase()"
+              >
+                {{ getPaymentStatusLabel(sale.payment_status) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="sale-total">
+            <span class="total-label">Total</span>
+            <span class="total-value">${{ formatPrice(sale.total) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <mat-paginator
+        [length]="totalItems()"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        [pageIndex]="currentPage() - 1"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</div>
