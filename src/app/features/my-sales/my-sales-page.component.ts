@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { OrdersService } from '../../core/services/order.service';
 import { BreadcrumbComponent, BreadcrumbItem } from 'src/app/shared/components/breadcrumb/breadcrumb.component';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 import { ListingService } from 'src/app/core/services/listing.service';
+import { CdnService } from 'src/app/core/services/cdn.service';
 import { I18nService } from 'src/app/core/services/i18n.service';
 import { SeoService } from 'src/app/core/services/seo.service';
 import { MySalesMiniStatsComponent } from './components/my-sales-mini-stats/my-sales-mini-stats.component';
@@ -22,7 +23,9 @@ interface Sale {
   status: string;
   payment_status: string;
   customer_name: string;
-  items: any[];
+  first_item_title: string;
+  first_item_quantity: number;
+  first_item_image: string;
 }
 
 interface SalesResponse {
@@ -44,7 +47,7 @@ interface SalesResponse {
     CommonModule,
     RouterModule,
     MatSnackBarModule,
-    MatPaginatorModule,
+    PaginationComponent,
     BreadcrumbComponent,
     TranslatePipe,
     MySalesMiniStatsComponent
@@ -66,6 +69,7 @@ export class MySalesPageComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private ordersService = inject(OrdersService);
   private listingService = inject(ListingService);
+  private cdnService = inject(CdnService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private i18n = inject(I18nService);
@@ -174,10 +178,33 @@ export class MySalesPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['/mi-cuenta/mis-ventas/orden', orderId]);
   }
 
-  onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex + 1);
-    this.pageSize = event.pageSize;
+  getCdnUrl(imagePath?: string): string {
+    if (!imagePath) return '/placeholder-product.png';
+    return this.cdnService.getCdnUrl(imagePath);
+  }
+
+  getDeliveryMethodLabel(type: string): string {
+    const labels: { [key: string]: string } = {
+      'pickup': 'Retiro en local',
+      'delivery': 'Envío a domicilio'
+    };
+    return labels[type] || type;
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
     this.loadSales();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  onPageSizeChange(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPage.set(1);
+    this.loadSales();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalItems() / this.pageSize);
   }
 }

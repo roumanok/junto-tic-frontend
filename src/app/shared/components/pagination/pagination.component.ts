@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.css']
 })
@@ -15,8 +16,11 @@ export class PaginationComponent implements OnChanges {
   @Input() totalItems = 0;
   @Input() itemsPerPage = 20;
   @Input() maxVisiblePages = 5;
+  @Input() pageSizeOptions: number[] = [10, 20, 50, 100];
+  @Input() showPageSizeSelector = false;
   
   @Output() pageChange = new EventEmitter<number>();
+  @Output() pageSizeChange = new EventEmitter<number>();
 
   visiblePages: number[] = [];
 
@@ -80,6 +84,10 @@ export class PaginationComponent implements OnChanges {
     if (this.currentPage !== this.totalPages) {
       this.pageChange.emit(this.totalPages);
     }
+  }
+
+  onPageSizeChange(newSize: number): void {
+    this.pageSizeChange.emit(newSize);
   }
 
   get showFirst(): boolean {

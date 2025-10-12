@@ -30,3 +30,151 @@ body {
     padding: 0;
     box-sizing: border-box;
 }
+
+/* ========================================
+   ESTILOS DE IMPRESIÓN - SALE DETAIL
+   ======================================== */
+
+@media print {
+  /* Ocultar elementos que no deben imprimirse */
+  body.printing-order app-breadcrumb,
+  body.printing-order .payment-status-alert,
+  body.printing-order .order-header-right,
+  body.printing-order .btn,
+  body.printing-order .btn-change-status,
+  body.printing-order app-header,
+  body.printing-order app-footer,
+  body.printing-order app-navigation,
+  body.printing-order .mega-menu {
+    display: none !important;
+  }
+
+  /* Ajustar el contenedor para impresión */
+  body.printing-order .order-detail-page {
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  body.printing-order .order-detail-container {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Ajustar header para impresión */
+  body.printing-order .order-header {
+    padding: 20px !important;
+    border-bottom: 2px solid #000 !important;
+    background: white !important;
+  }
+
+  body.printing-order .order-header h1 {
+    font-size: 24px !important;
+    color: #000 !important;
+  }
+
+  /* Status cards en impresión */
+  body.printing-order .status-cards {
+    padding: 20px !important;
+    background: white !important;
+    page-break-inside: avoid;
+  }
+
+  body.printing-order .status-card {
+    border: 1px solid #333 !important;
+    page-break-inside: avoid;
+    background: #f8f9fa !important;
+  }
+
+  body.printing-order .status-card .status-icon,
+  body.printing-order .status-card .status-label,
+  body.printing-order .status-card .status-value {
+    color: #000 !important;
+  }
+
+  /* Contenido de la orden */
+  body.printing-order .order-content {
+    padding: 20px !important;
+  }
+
+  body.printing-order .order-section {
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+
+  body.printing-order .order-section h2 {
+    color: #000 !important;
+    border-bottom: 2px solid #000 !important;
+    padding-bottom: 10px !important;
+  }
+
+  /* Items de la orden */
+  body.printing-order .order-item {
+    border: 1px solid #ddd !important;
+    margin-bottom: 10px !important;
+    cursor: default !important;
+    page-break-inside: avoid;
+    background: white !important;
+  }
+
+  body.printing-order .order-item:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  body.printing-order .order-item img {
+    max-width: 80px !important;
+    max-height: 80px !important;
+  }
+
+  /* Información del cliente y envío */
+  body.printing-order .customer-section,
+  body.printing-order .delivery-section,
+  body.printing-order .info-card {
+    page-break-inside: avoid;
+    background: #f8f9fa !important;
+    border: 1px solid #333 !important;
+  }
+
+  body.printing-order .info-card h3,
+  body.printing-order .info-label,
+  body.printing-order .info-value {
+    color: #000 !important;
+  }
+
+  /* Resumen de precios */
+  body.printing-order .order-summary {
+    page-break-inside: avoid;
+    border: 2px solid #000 !important;
+    background: white !important;
+  }
+
+  body.printing-order .order-summary h3 {
+    color: #000 !important;
+    border-bottom: 2px solid #000 !important;
+  }
+
+  body.printing-order .summary-row,
+  body.printing-order .summary-total {
+    color: #000 !important;
+  }
+
+  /* Ajustar tamaño de página */
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
+
+  /* Footer de impresión */
+  body.printing-order .order-detail-container::after {
+    content: "Documento generado desde la plataforma";
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    font-size: 11px;
+    color: #666 !important;
+  }
+}

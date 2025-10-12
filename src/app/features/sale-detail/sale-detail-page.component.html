@@ -46,7 +46,10 @@
           Realizada el {{ formatDate(order()!.created_at) }}
         </p>
       </div>
-      <div class="order-header-right">        
+      <div class="order-header-right">
+        <button class="btn btn-secondary" (click)="printOrder()">
+          <i class="fas fa-print"></i> Imprimir
+        </button>
         <button class="btn btn-primary" (click)="goBack()">
           <i class="fas fa-arrow-left"></i> {{ 'COMMON.MY_SALES' | translate }}
         </button>
@@ -55,14 +58,25 @@
 
     <!-- Status Cards -->
     <div class="status-cards">
-      <div class="status-card" [ngClass]="getStatusClass(order()!.status)">
-        <div class="status-icon">
-          <i class="fas fa-box"></i>
+      <div class="status-card status-card-with-button" [ngClass]="getStatusClass(order()!.status)">
+        <div class="status-content">
+          <div class="status-icon">
+            <i class="fas fa-box"></i>
+          </div>
+          <div class="status-info">
+            <span class="status-label">Estado de la orden</span>
+            <span class="status-value">{{ getStatusLabel(order()!.status) }}</span>
+          </div>
         </div>
-        <div class="status-info">
-          <span class="status-label">Estado de la orden</span>
-          <span class="status-value">{{ getStatusLabel(order()!.status) }}</span>
-        </div>
+        <button 
+          *ngIf="canChangeStatus()"
+          class="btn-change-status"
+          (click)="openChangeStatusDialog(); $event.stopPropagation()"
+          matTooltip="Cambiar estado de la orden"
+        >
+          <i class="fas fa-edit"></i>
+          Cambiar estado
+        </button>
       </div>
 
       <div class="status-card" [ngClass]="getPaymentStatusClass(order()!.payment_status)">
@@ -155,16 +169,16 @@
           Información de entrega
         </h2>
         <div class="info-grid">
-          <div class="info-block">
+          <div *ngIf="order()!.delivery_method_type === 'delivery'" class="info-block">
             <h3>Datos de contacto</h3>
-            <p><strong>Nombre:</strong> {{ order()!.delivery_name }}</p>
+            <p class="capitalize"><strong>Nombre:</strong> {{ order()!.delivery_name }}</p>
             <p><strong>Teléfono:</strong> ({{ order()!.delivery_phone_area_code }}){{ order()!.delivery_phone_number }}</p>
           </div>
           <div *ngIf="order()!.delivery_method_type === 'delivery'" class="info-block">
             <h3>Dirección de entrega</h3>
-            <p>{{ order()!.delivery_address }}</p>
+            <p class="capitalize">{{ order()!.delivery_address }}</p>
             <p *ngIf="order()!.delivery_apartment">{{ order()!.delivery_apartment }}</p>
-            <p>{{ order()!.delivery_city }}, {{ order()!.delivery_province }}</p>
+            <p class="capitalize">{{ order()!.delivery_city }}, {{ order()!.delivery_province }}</p>
             <p>CP: {{ order()!.delivery_postal_code }}</p>
             <p *ngIf="order()!.delivery_notes" class="delivery-notes">
               <strong>Notas:</strong> {{ order()!.delivery_notes }}
@@ -172,8 +186,7 @@
           </div>
           <div *ngIf="order()!.delivery_method_type === 'pickup'" class="info-block">
             <h3>Retiro en local</h3>
-            <p class="pickup-info">
-              <i class="fas fa-info-circle"></i>
+            <p class="pickup-info">              
               Esta orden será retirado en el local del vendedor.
             </p>
           </div>
@@ -186,16 +199,16 @@
         <div class="info-grid">
           <div class="info-block">
             <h3>Datos del cliente</h3>
-            <p><strong>Nombre:</strong> {{ order()!.billing_name }}</p>
+            <p class="capitalize"><strong>Nombre:</strong> {{ order()!.billing_name }}</p>
             <p><strong>Teléfono:</strong> ({{ order()!.billing_phone_area_code }}){{ order()!.billing_phone_number }}</p>
             <p><strong>Tipo de documento:</strong>{{ getCustomerIdentificationTypeLabel(order()!.customer_identification_type) }}</p>
             <p><strong>Número de documento:</strong>{{ order()!.customer_identification_number }}</p>
           </div>
           <div class="info-block">
             <h3>Dirección de facturación</h3>
-            <p>{{ order()!.billing_address }}</p>
+            <p class="capitalize">{{ order()!.billing_address }}</p>
             <p *ngIf="order()!.billing_apartment">{{ order()!.billing_apartment }}</p>
-            <p>{{ order()!.billing_city }}, {{ order()!.billing_province }}</p>
+            <p class="capitalize">{{ order()!.billing_city }}, {{ order()!.billing_province }}</p>
             <p>CP: {{ order()!.billing_postal_code }}</p>
           </div>
         </div>

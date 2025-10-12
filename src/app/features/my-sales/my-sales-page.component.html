@@ -63,6 +63,13 @@
               <i class="far fa-calendar"></i>
               {{ formatDate(sale.created_at) }}
             </span>
+            <span 
+                class="payment-status" 
+                [ngClass]="'payment-' + sale.payment_status.toLowerCase()"
+              >
+              <i class="fas fa-credit-card"></i>
+               Pago: {{ getPaymentStatusLabel(sale.payment_status) }}
+              </span>
           </div>
           <div class="sale-status">
             <button class="btn btn-primary btn-sm">
@@ -91,47 +98,48 @@
                 <i class="fas fa-box"></i>
                 <span>Productos</span>
               </div>
-              <div 
-                *ngFor="let item of sale.items" 
-                class="sale-items"
-              >
-                <div class="sale-item">{{ item.quantity }} × {{ item.listing_title }}</div>
+              <div class="sale-items">
+                <div class="sale-item">
+                  <img 
+                    *ngIf="sale.first_item_image" 
+                    [src]="getCdnUrl(sale.first_item_image)" 
+                    alt="{{ sale.first_item_title }}" 
+                    class="item-image"
+                  />
+                  <div class="item-info">{{ sale.first_item_quantity }} × {{ sale.first_item_title }}</div>
+                </div>
               </div>
             </div>
 
             <div class="detail-item">
               <div class="detail-title">
-                <i class="fas fa-credit-card"></i>
-                <span>Estado del pago</span>
+                <i class="fas fa-shipping-fast"></i>
+                <span>Método de entrega</span>
               </div>
-              <span 
-                class="payment-status" 
-                [ngClass]="'payment-' + sale.payment_status.toLowerCase()"
-              >
-                {{ getPaymentStatusLabel(sale.payment_status) }}
-              </span>
+              <span class="delivery-value">{{ getDeliveryMethodLabel(sale.delivery_method_type) }}</span>
             </div>
-          </div>
-
-          <div class="sale-total">
-            <span class="total-label">Total</span>
-            <span class="total-value">${{ formatPrice(sale.total) }}</span>
+            <div class="detail-item">
+              <div class="detail-title">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Total</span>
+              </div>               
+              <span class="total-value">{{ formatPrice(sale.total) }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-container">
-      <mat-paginator
-        [length]="totalItems()"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 25, 50]"
-        [pageIndex]="currentPage() - 1"
-        (page)="onPageChange($event)"
-        showFirstLastButtons
-      >
-      </mat-paginator>
-    </div>
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages"
+      [totalItems]="totalItems()"
+      [itemsPerPage]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      [showPageSizeSelector]="true"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    ></app-pagination>
   </div>
 </div>

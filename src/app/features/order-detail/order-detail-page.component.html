@@ -155,16 +155,16 @@
           Información de entrega
         </h2>
         <div class="info-grid">
-          <div class="info-block">
+          <div *ngIf="order()!.delivery_method_type === 'delivery'" class="info-block">
             <h3>Datos de contacto</h3>
-            <p><strong>Nombre:</strong> {{ order()!.delivery_name }}</p>
+            <p class="capitalize"><strong>Nombre:</strong> {{ order()!.delivery_name }}</p>
             <p><strong>Teléfono:</strong> ({{ order()!.delivery_phone_area_code }}){{ order()!.delivery_phone_number }}</p>
           </div>
           <div *ngIf="order()!.delivery_method_type === 'delivery'" class="info-block">
             <h3>Dirección de entrega</h3>
-            <p>{{ order()!.delivery_address }}</p>
+            <p class="capitalize">{{ order()!.delivery_address }}</p>
             <p *ngIf="order()!.delivery_apartment">{{ order()!.delivery_apartment }}</p>
-            <p>{{ order()!.delivery_city }}, {{ order()!.delivery_province }}</p>
+            <p class="capitalize">{{ order()!.delivery_city }}, {{ order()!.delivery_province }}</p>
             <p>CP: {{ order()!.delivery_postal_code }}</p>
             <p *ngIf="order()!.delivery_notes" class="delivery-notes">
               <strong>Notas:</strong> {{ order()!.delivery_notes }}
@@ -186,16 +186,16 @@
         <div class="info-grid">
           <div class="info-block">
             <h3>Datos del cliente</h3>
-            <p><strong>Nombre:</strong> {{ order()!.billing_name }}</p>
+            <p class="capitalize"><strong>Nombre:</strong> {{ order()!.billing_name }}</p>
             <p><strong>Teléfono:</strong> ({{ order()!.billing_phone_area_code }}){{ order()!.billing_phone_number }}</p>
             <p><strong>Tipo de documento:</strong>{{ getCustomerIdentificationTypeLabel(order()!.customer_identification_type) }}</p>
             <p><strong>Número de documento:</strong>{{ order()!.customer_identification_number }}</p>
           </div>
           <div class="info-block">
             <h3>Dirección de facturación</h3>
-            <p>{{ order()!.billing_address }}</p>
+            <p class="capitalize">{{ order()!.billing_address }}</p>
             <p *ngIf="order()!.billing_apartment">{{ order()!.billing_apartment }}</p>
-            <p>{{ order()!.billing_city }}, {{ order()!.billing_province }}</p>
+            <p class="capitalize">{{ order()!.billing_city }}, {{ order()!.billing_province }}</p>
             <p>CP: {{ order()!.billing_postal_code }}</p>
           </div>
         </div>

@@ -183,7 +183,7 @@
 
 /* Sale Card */
 .my-sales-page .sale-card {
-  border: 1px solid #e9ecef;
+  border: 1px solid #4a90a4;
   border-radius: 8px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -257,6 +257,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
+  text-align: center;
 }
 
 /* Status badges */
@@ -331,38 +332,51 @@
 .my-sales-page .sale-card-body .sale-customer {
   font-weight: 600;
   color: #2c3e50;
+  text-transform: capitalize;
 }
 
 .my-sales-page .sale-card-body .detail-item .sale-items {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
 }
 
 .my-sales-page .sale-card-body .sale-item {
   padding: 0.25rem 0;
   color: #495057;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
 }
 
-.my-sales-page .sale-card-body .payment-status {
+.my-sales-page .sale-card-body .sale-item .item-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 0.75rem;
+}
+
+.my-sales-page .sale-card-header .payment-status {
   font-weight: 600;
 }
 
-.my-sales-page .sale-card-body .payment-status.payment-pending {
+.my-sales-page .sale-card-header .payment-status.payment-pending {
   color: #856404;
 }
 
-.my-sales-page .sale-card-body .payment-status.payment-approved {
+.my-sales-page .sale-card-header .payment-status.payment-approved {
   color: #155724;
 }
 
-.my-sales-page .sale-card-body .payment-status.payment-cancelled,
-.my-sales-page .sale-card-body .payment-status.payment-rejected {
+.my-sales-page .sale-card-header .payment-status.payment-cancelled,
+.my-sales-page .sale-card-header .payment-status.payment-rejected {
   color: #721c24;
 }
 
-.my-sales-page .sale-card-body .payment-status.payment-refunded {
+.my-sales-page .sale-card-header .payment-status.payment-refunded {
   color: #6c757d;
 }
 

@@ -82,6 +82,7 @@
     "PAGINATION.SHOWING": "Mostrando",
     "PAGINATION.FIRST": "Primera página",
     "PAGINATION.LAST": "Última página",    
+    "PAGINATION.ITEMS_PER_PAGE": "Items por página",
     
     "LISTINGS.VIEW_MORE": "Ver más",
     "LISTINGS.NO_RESULTS": "No se encontraron productos",

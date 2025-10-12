@@ -517,6 +517,10 @@
   line-height: 1.6;
 }
 
+.order-detail-page .info-grid .info-block p.capitalize{
+  text-transform: capitalize;
+}
+
 .order-detail-page .info-grid .info-block p strong {
   color: #495057;
   margin-right: 0.5rem;

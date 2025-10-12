@@ -75,4 +75,21 @@ export class OrdersService {
       })
     );
   }  
+
+  /**
+   * Actualizar el estado de una orden
+   */
+  updateOrderStatus(orderId: string, newStatus: string): Observable<any> {
+    return this.apiService.put<any>(`/my-sales/${orderId}/status`, { 
+      status: newStatus 
+    }).pipe(
+      tap((response) => {
+        console.log('✅ Order status updated:', response);
+      }),
+      catchError((error) => {
+        console.error('Error updating order status:', error);
+        throw error;
+      })
+    );
+  }
 }

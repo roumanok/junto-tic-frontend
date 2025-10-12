@@ -11,6 +11,11 @@ import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { CdnService } from '../../core/services/cdn.service';
 
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ChangeOrderStatusDialogComponent } from './components/change-order-status-dialog/change-order-status-dialog.component';
+
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { environment } from 'src/environments/environment';
@@ -22,6 +27,8 @@ import { environment } from 'src/environments/environment';
     CommonModule,
     RouterModule,
     BreadcrumbComponent,
+    MatDialogModule,
+    MatSnackBarModule,
     TranslatePipe
   ],
   templateUrl: './sale-detail-page.component.html',
@@ -41,6 +48,9 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
   private i18n = inject(I18nService);
   private cdnService = inject(CdnService);
   private listingService = inject(ListingService);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+
 
   constructor(
     private route: ActivatedRoute,
@@ -291,6 +301,76 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
 
   goToListing(listingId: string): void {
     this.router.navigate(['/articulo', listingId]);
+  }
+
+  openChangeStatusDialog(): void {
+    if (!this.order()) return;
+
+    const dialogRef = this.dialog.open(ChangeOrderStatusDialogComponent, {
+      width: '500px',
+      data: {
+        currentStatus: this.order()!.status,
+        orderId: this.order()!.id,
+        publicId: this.order()!.public_id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(newStatus => {
+      if (newStatus) {
+        this.updateOrderStatus(newStatus);
+      }
+    });
+  }
+
+  private updateOrderStatus(newStatus: string): void {
+    if (!this.order()) return;
+
+    const orderId = this.order()!.id;
+    
+    this.ordersService.updateOrderStatus(orderId, newStatus)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          // Actualizar el estado local
+          this.order.update(order => {
+            if (order) {
+              return { ...order, status: newStatus };
+            }
+            return order;
+          });
+
+          this.snackBar.open(
+            `Estado actualizado a: ${this.getStatusLabel(newStatus)}`,
+            'Cerrar',
+            { duration: 3000 }
+          );
+
+          console.log('✅ Estado actualizado:', response);
+        },
+        error: (error) => {
+          console.error('❌ Error actualizando estado:', error);
+          this.snackBar.open(
+            'Error al actualizar el estado de la orden',
+            'Cerrar',
+            { duration: 4000 }
+          );
+        }
+      });
+  }
+
+  canChangeStatus(): boolean {
+    if (!this.order()) return false;
+    // No se puede cambiar el estado si ya está entregado
+    return this.order()!.status !== 'delivered';
+  }
+
+  printOrder(): void {
+    if (!this.isBrowser) return;    
+    document.body.classList.add('printing-order');
+    setTimeout(() => {
+      window.print();
+      document.body.classList.remove('printing-order');
+    }, 1000);
   }
   
 }

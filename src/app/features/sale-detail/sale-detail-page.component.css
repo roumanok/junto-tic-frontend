@@ -296,6 +296,74 @@
   color: #6c757d;
 }
 
+/* Status Card con botón */
+.order-detail-page .status-card-with-button {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.order-detail-page .status-card-with-button .status-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.order-detail-page .status-card-with-button .status-icon {
+  font-size: 2rem;
+  color: #6c757d;
+}
+
+.order-detail-page .status-card-with-button .status-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Botón de cambiar estado */
+.order-detail-page .btn-change-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #4A90A4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;  
+}
+
+.order-detail-page .btn-change-status:hover {
+  background: #3a7a8a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(74, 144, 164, 0.3);
+}
+
+.order-detail-page .btn-change-status:active {
+  transform: translateY(0);
+}
+
+.order-detail-page .btn-change-status i {
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .order-detail-page .status-card-with-button {
+    gap: 12px;
+  }
+
+  .order-detail-page .btn-change-status {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}
+
+
 /* Order Content */
 .order-detail-page .order-content {
   padding: 2rem;
@@ -517,6 +585,10 @@
   line-height: 1.6;
 }
 
+.order-detail-page .info-grid .info-block p.capitalize {  
+  text-transform: capitalize;
+}
+
 .order-detail-page .info-grid .info-block p strong {
   color: #495057;
   margin-right: 0.5rem;
@@ -586,6 +658,27 @@
   background: white;
   color: #495057;
   border: 1px solid #dee2e6;
+}
+
+.order-detail-page .btn.btn-secondary {
+  background: #6c757d;
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.order-detail-page .btn.btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
 }
 
 .order-detail-page .btn.btn-outline:hover {

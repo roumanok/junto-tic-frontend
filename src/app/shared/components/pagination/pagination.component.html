@@ -4,6 +4,20 @@
     <span class="showing-text">
       {{'PAGINATION.SHOWING' | translate}} {{ startItem }}-{{ endItem }} {{'PAGINATION.OF' | translate}} {{ totalItems }} {{'PAGINATION.RESULTS' | translate}}
     </span>
+
+    <div class="page-size-selector" *ngIf="showPageSizeSelector && pageSizeOptions.length > 0">
+      <label for="pageSize">{{'PAGINATION.ITEMS_PER_PAGE' | translate}}:</label>
+      <select 
+        id="pageSize" 
+        [ngModel]="itemsPerPage" 
+        (ngModelChange)="onPageSizeChange($event)"
+        class="page-size-select">
+        <option *ngFor="let size of pageSizeOptions" [value]="size">
+          {{ size }}
+        </option>
+      </select>
+    </div>
+    
   </div>
 
   <!-- Pagination Controls -->
