@@ -119,9 +119,9 @@
               <mat-label>Precio de lista (opcional)</mat-label>
               <input matInput type="number" formControlName="list_price" placeholder="0">
               <span matTextPrefix>$&nbsp;</span>
-              @if (priceError) {
-                <mat-error>El precio de lista debe ser mayor al precio de venta</mat-error>
-              }
+              <mat-error *ngIf="listingForm.get('list_price')?.hasError('listPriceNotGreater')">
+                El precio de lista debe ser mayor al precio de venta
+              </mat-error>
               <mat-hint>Para mostrar descuento (precio tachado)</mat-hint>
             </mat-form-field>
           </div>

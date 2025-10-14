@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
@@ -126,30 +126,49 @@ export class EditListingPageComponent implements OnInit, OnDestroy {
       short_description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
       long_description: ['', [Validators.required, Validators.minLength(20)]],
       price: ['', [Validators.required, Validators.min(0.01)]],
-      list_price: [''],
+      list_price: [null, [this.listPriceGreaterThan('price')]],
       stock_quantity: [0, [Validators.min(0), Validators.max(10000)]],
       max_quantity_per_order: [1, [Validators.required, Validators.min(1), Validators.max(10000)]],
       category_id: ['', Validators.required],
       delivery_method_ids: [[]],
       is_active: [false],
       is_featured: [false]
-    }, { validators: this.priceValidator });
+    });
   }
 
-  private priceValidator(group: FormGroup): { [key: string]: boolean } | null {
-    const price = group.get('price')?.value;
-    const listPrice = group.get('list_price')?.value;
-    
-    if (listPrice && price && parseFloat(listPrice) < parseFloat(price)) {
-      return { invalidListPrice: true };
-    }
-    
-    return null;
+  public listPriceGreaterThan(priceCtrlName: string): ValidatorFn {
+    return (ctrl: AbstractControl) => {
+      if (!ctrl.parent) return null;
+      const priceCtrl = ctrl.parent.get(priceCtrlName);
+      if (!priceCtrl) return null;
+      const price = +priceCtrl.value || 0;
+      const list  = (ctrl.value === null || ctrl.value === '') ? null : +ctrl.value;
+      if (list === null || Number.isNaN(list)) return null;
+      return list > price ? null : { listPriceNotGreater: true };
+    };
   }
 
-  get priceError(): boolean {
-    return this.listingForm.hasError('invalidListPrice') && 
-           this.listingForm.get('list_price')?.touched === true;
+  get showDiscount(): boolean {
+    const price = this.listingForm.get('price')?.value;
+    const listPrice = this.listingForm.get('list_price')?.value;
+    return listPrice && price && parseFloat(listPrice) > parseFloat(price);
+  }
+
+  get discountAmount(): number {
+    const price = parseFloat(this.listingForm.get('price')?.value || '0');
+    const listPrice = parseFloat(this.listingForm.get('list_price')?.value || '0');
+    return listPrice - price;
+  }
+
+  get discountPercentage(): number {
+    const price = parseFloat(this.listingForm.get('price')?.value || '0');
+    const listPrice = parseFloat(this.listingForm.get('list_price')?.value || '0');
+    if (listPrice === 0) return 0;
+    return Math.round(((listPrice - price) / listPrice) * 100);
+  }
+
+  formatPrice(amount: string | number): string {
+    return this.listingService.getformattedPrice(amount);
   }
 
   private loadCategories(): void {

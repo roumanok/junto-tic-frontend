@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
@@ -93,18 +93,9 @@ export class CreateListingPageComponent implements OnInit, OnDestroy {
     this.loadCategories();
     this.loadDeliveryMethods();
 
-    this.listingForm.get('price')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.listingForm.get('list_price')?.updateValueAndValidity({ emitEvent: false });
-      });
-    
-    this.listingForm.get('list_price')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        console.log('list_price changed, validating form group');
-        this.listingForm.updateValueAndValidity({ emitEvent: false });
-      });      
+    this.listingForm.get('price')!.valueChanges.subscribe(() => {
+      this.listingForm.get('list_price')!.updateValueAndValidity({ onlySelf: true });
+    });     
     
     this.listingForm.get('type')?.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -127,40 +118,26 @@ export class CreateListingPageComponent implements OnInit, OnDestroy {
       short_description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
       long_description: ['', [Validators.required, Validators.minLength(20)]],
       price: ['', [Validators.required, Validators.min(0.01)]],
-      list_price: [''],
+      list_price: [null, [this.listPriceGreaterThan('price')]],
       stock_quantity: [0, [Validators.min(0), Validators.max(10000)]],
       max_quantity_per_order: [1, [Validators.required, Validators.min(1), Validators.max(10000)]],
       category_id: ['', Validators.required],
       delivery_method_ids: [[]],
       is_active: [false],
       is_featured: [false]
-    }, { validators: this.priceValidator });
+    });
   }
 
-  private priceValidator(group: FormGroup): { [key: string]: boolean } | null {
-    const price = group.get('price')?.value;
-    const listPrice = group.get('list_price')?.value;
-    
-    console.log('🔍 Validando precios:', { price, listPrice });
-    
-    // Si hay precio de lista y es menor o igual al precio de venta, es inválido
-    if (listPrice && price && parseFloat(listPrice) <= parseFloat(price)) {
-      console.log('❌ Validación falló: precio de lista debe ser mayor');
-      return { invalidListPrice: true };
-    }
-    
-    console.log('✅ Validación OK');
-    return null;
-  }
-
-  get priceError(): boolean {
-    const hasError = this.listingForm.hasError('invalidListPrice');
-    const isTouched = this.listingForm.get('list_price')?.touched || false;
-    const isDirty = this.listingForm.get('list_price')?.dirty || false;
-    
-    console.log('🔍 priceError getter:', { hasError, isTouched, isDirty });
-    
-    return hasError && (isTouched || isDirty);
+  public listPriceGreaterThan(priceCtrlName: string): ValidatorFn {
+    return (ctrl: AbstractControl) => {
+      if (!ctrl.parent) return null;
+      const priceCtrl = ctrl.parent.get(priceCtrlName);
+      if (!priceCtrl) return null;
+      const price = +priceCtrl.value || 0;
+      const list  = (ctrl.value === null || ctrl.value === '') ? null : +ctrl.value;
+      if (list === null || Number.isNaN(list)) return null;
+      return list > price ? null : { listPriceNotGreater: true };
+    };
   }
 
   get showDiscount(): boolean {
