@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject, takeUntil, switchMap } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +12,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ListingService } from '../../core/services/listing.service';
 import { CategoryService } from '../../core/services/category.service';
 import { SeoService } from '../../core/services/seo.service';
@@ -27,6 +29,10 @@ import { ListingDetail } from '../../core/models/listing.model';
 interface DeliveryMethod {
   id: string;
   type: string;
+  name: string;
+  description?: string;
+  cost?: string;
+  address?: string;
   enabled: boolean;
 }
 
@@ -49,6 +55,8 @@ interface CategoryWithDisplay extends Category {
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
+    MatIconModule,
+    MatButtonToggleModule,
     BreadcrumbComponent,
     TranslatePipe,
     ImageUploaderComponent
@@ -86,18 +94,17 @@ export class EditListingPageComponent implements OnInit, OnDestroy {
     { value: 'service', label: 'Servicio' }
   ];
 
-  deliveryMethods: DeliveryMethod[] = [
-    { id: 'pickup', type: 'Retiro en local', enabled: false },
-    { id: 'delivery', type: 'Envío a domicilio', enabled: false }
-  ];
+  deliveryMethods: DeliveryMethod[] = [];
+  defaultPickupMethodId: string = '';
 
   ngOnInit(): void {
     this.listingId = this.route.snapshot.paramMap.get('id') || '';
     this.buildBreadcrumbs();
     this.initForm();
     this.loadCategories();
+    this.loadDeliveryMethods();
     this.loadListing();
-    
+        
     this.listingForm.get('type')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(type => {
@@ -149,10 +156,7 @@ export class EditListingPageComponent implements OnInit, OnDestroy {
     this.categoryService.all$
       .pipe(takeUntil(this.destroy$))
       .subscribe(categories => {
-        // Filtrar solo categorías que tienen parent_id (son hijas)
         const childCategories = categories.filter(cat => cat.parent_id);
-        
-        // Mapear con la ruta completa
         this.categories = childCategories.map(child => {
           const parent = categories.find(cat => cat.id === child.parent_id);
           return {
@@ -162,6 +166,29 @@ export class EditListingPageComponent implements OnInit, OnDestroy {
         });
       });
   }
+
+  private loadDeliveryMethods(): void {
+    this.listingService.getMyDeliveryMethods()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (methods) => {
+          this.deliveryMethods = methods.map(method => ({
+            ...method,
+            enabled: false
+          }));
+          const pickupMethod = this.deliveryMethods.find(m => m.type === 'pickup');
+          if (pickupMethod) {
+            this.defaultPickupMethodId = pickupMethod.id;
+          }
+        },
+        error: (error) => {
+          console.error('Error loading delivery methods:', error);
+          this.snackBar.open('Error al cargar métodos de entrega', 'Cerrar', {
+            duration: 3000
+          });
+        }
+      });
+  } 
 
   private loadListing(): void {
     this.listingService.getListingById(this.listingId)
@@ -194,7 +221,9 @@ export class EditListingPageComponent implements OnInit, OnDestroy {
       list_price: listing.list_price || '',
       stock_quantity: listing.stock_quantity,
       max_quantity_per_order: listing.max_quantity_per_order,
-      category_id: listing.category_id
+      category_id: listing.category_id,
+      is_active: listing.is_active || false,
+      is_featured: listing.is_featured || false
     });
 
     // Set delivery methods
@@ -302,10 +331,10 @@ export class EditListingPageComponent implements OnInit, OnDestroy {
       list_price: formValue.list_price ? parseFloat(formValue.list_price) : undefined,
       stock_quantity: isProduct ? parseInt(formValue.stock_quantity) : 0,
       max_quantity_per_order: parseInt(formValue.max_quantity_per_order),
-      category_id: formValue.category_id,
-      delivery_method_ids: isProduct ? formValue.delivery_method_ids : [],
-      is_active: this.currentListing?.is_active !== undefined ? this.currentListing.is_active : false,
-      is_featured: this.currentListing?.is_featured !== undefined ? this.currentListing.is_featured : false,
+      category_id: formValue.category_id,      
+      delivery_method_ids: isProduct ? formValue.delivery_method_ids : [this.defaultPickupMethodId],
+      is_active: formValue.is_active === true,
+      is_featured: formValue.is_featured === true,
       temp_image_ids: this.tempImageIds,
       delete_image_ids: this.deleteImageIds
     };

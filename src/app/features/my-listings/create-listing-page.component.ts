@@ -92,6 +92,19 @@ export class CreateListingPageComponent implements OnInit, OnDestroy {
     this.setupSEO();
     this.loadCategories();
     this.loadDeliveryMethods();
+
+    this.listingForm.get('price')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.listingForm.get('list_price')?.updateValueAndValidity({ emitEvent: false });
+      });
+    
+    this.listingForm.get('list_price')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        console.log('list_price changed, validating form group');
+        this.listingForm.updateValueAndValidity({ emitEvent: false });
+      });      
     
     this.listingForm.get('type')?.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -128,16 +141,49 @@ export class CreateListingPageComponent implements OnInit, OnDestroy {
     const price = group.get('price')?.value;
     const listPrice = group.get('list_price')?.value;
     
-    if (listPrice && price && parseFloat(listPrice) < parseFloat(price)) {
+    console.log('🔍 Validando precios:', { price, listPrice });
+    
+    // Si hay precio de lista y es menor o igual al precio de venta, es inválido
+    if (listPrice && price && parseFloat(listPrice) <= parseFloat(price)) {
+      console.log('❌ Validación falló: precio de lista debe ser mayor');
       return { invalidListPrice: true };
     }
     
+    console.log('✅ Validación OK');
     return null;
   }
 
   get priceError(): boolean {
-    return this.listingForm.hasError('invalidListPrice') && 
-           this.listingForm.get('list_price')?.touched === true;
+    const hasError = this.listingForm.hasError('invalidListPrice');
+    const isTouched = this.listingForm.get('list_price')?.touched || false;
+    const isDirty = this.listingForm.get('list_price')?.dirty || false;
+    
+    console.log('🔍 priceError getter:', { hasError, isTouched, isDirty });
+    
+    return hasError && (isTouched || isDirty);
+  }
+
+  get showDiscount(): boolean {
+    const price = this.listingForm.get('price')?.value;
+    const listPrice = this.listingForm.get('list_price')?.value;
+    return listPrice && price && parseFloat(listPrice) > parseFloat(price);
+  }
+
+  get discountAmount(): number {
+    const price = parseFloat(this.listingForm.get('price')?.value || '0');
+    const listPrice = parseFloat(this.listingForm.get('list_price')?.value || '0');
+    return listPrice - price;
+  }
+
+  get discountPercentage(): number {
+    const price = parseFloat(this.listingForm.get('price')?.value || '0');
+    const listPrice = parseFloat(this.listingForm.get('list_price')?.value || '0');
+    if (listPrice === 0) return 0;
+    return Math.round(((listPrice - price) / listPrice) * 100);
+  }
+
+  formatPrice(amount: string | number): string {
+    return this.listingService.getformattedPrice(amount);
   }
 
   private loadCategories(): void {
@@ -254,8 +300,8 @@ export class CreateListingPageComponent implements OnInit, OnDestroy {
       max_quantity_per_order: parseInt(formValue.max_quantity_per_order),
       category_id: formValue.category_id,      
       delivery_method_ids: isProduct ? formValue.delivery_method_ids : [this.defaultPickupMethodId],
-      is_active: false,
-      is_featured: false,
+      is_active: formValue.is_active === true,
+      is_featured: formValue.is_featured === true,
       temp_image_ids: this.tempImageIds,
       delete_image_ids: []
     };

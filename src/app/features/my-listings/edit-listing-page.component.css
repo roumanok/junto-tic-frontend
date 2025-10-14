@@ -1,7 +1,62 @@
 .edit-listing-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
-  padding-bottom: 2rem;
+}
+
+/* Page Header */
+.edit-listing-page .page-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.edit-listing-page .page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+  text-transform: capitalize;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.edit-listing-page .page-header .header-info {
+  text-align: center;
+}
+
+.edit-listing-page .page-header .page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.edit-listing-page .page-header .page-title i {
+  color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  .edit-listing-page .page-header .page-title {
+    font-size: 2rem;
+  }
+}
+
+.edit-listing-page .page-header .page-description {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .edit-listing-page .page-header .page-description {
+    font-size: 1rem;
+  }
 }
 
 .loading-container {
@@ -18,35 +73,10 @@
   font-size: 1rem;
 }
 
-.page-header {
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.page-header .container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 0.5rem 0;
-}
-
-.page-subtitle {
-  color: #666;
-  margin: 0;
-  font-size: 1rem;
-}
-
 .form-container {
   max-width: 900px;
   margin: 0 auto;
+  margin-bottom: 50px;
   padding: 0 1rem;
 }
 
@@ -59,7 +89,7 @@
 .form-section {
   margin-bottom: 2.5rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .form-section:last-of-type {
@@ -71,14 +101,63 @@
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #2c3e50;
   margin: 0 0 0.5rem 0;
 }
 
 .section-description {
-  color: #666;
+  color: #e9ecef;
   font-size: 0.875rem;
   margin: 0 0 1rem 0;
+}
+
+.type-toggle-group {
+  display: flex;
+  width: 70%;    
+  margin: 0 auto;
+}
+
+.type-toggle-button {
+  flex: 1;
+  height: auto !important;
+  padding: 0 !important;
+}
+
+::ng-deep .type-toggle-button .mat-button-toggle-button {
+  padding: 0.5rem 0.5rem !important;
+  height: auto !important;
+}
+
+::ng-deep .type-toggle-button .mat-button-toggle-label-content{
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.toggle-button-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-button-content mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #2c3e50;
+}
+
+.toggle-button-content span {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .full-width {
@@ -105,6 +184,81 @@
 
 .delivery-method-checkbox {
   display: block;
+}
+
+.delivery-method-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+.method-name {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+.method-description {
+  font-size: 0.8125rem;
+  color: #666;
+}
+
+.info-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #e3f2fd;
+  border-left: 4px solid #4A90A4;
+  border-radius: 4px;
+  color: #2c3e50;
+  font-size: 0.9375rem;
+}
+
+.info-banner .info-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: #4A90A4;
+}
+
+.visibility-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.visibility-option {
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.toggle-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+.toggle-label {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #1a1a1a;
+}
+
+.toggle-hint {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+::ng-deep .mat-mdc-slide-toggle {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-slide-toggle .mdc-form-field {
+  width: 100%;
 }
 
 .form-actions {

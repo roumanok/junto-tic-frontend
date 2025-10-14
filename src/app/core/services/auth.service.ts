@@ -2,19 +2,15 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
 import { OAuthService, AuthConfig, OAuthEvent } from 'angular-oauth2-oidc';
-import { BehaviorSubject, Observable, filter, map } from 'rxjs';
+import { BehaviorSubject, Observable, filter, map , firstValueFrom } from 'rxjs';
 import { getAuthConfig } from '../config/auth.config';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-interface UserProfile {
-  sub?: string;
-  name?: string;
-  email?: string;
-  preferred_username?: string;
-  given_name?: string;
-  family_name?: string;
-}
+import { UserMeResponse, UserProfile } from '../models/user.model';
+import { CommunityService } from './community.service';
+import { ApiService } from './api.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +19,9 @@ export class AuthService {
   private oauthService = inject(OAuthService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(MatSnackBar);  
+  private communityService = inject(CommunityService);
+  private apiService = inject(ApiService);
   
   private isAuthenticatedSubject$ = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject$.asObservable();
@@ -33,6 +31,9 @@ export class AuthService {
 
   private isLoadingSubject$ = new BehaviorSubject<boolean>(true);
   public isLoading$ = this.isLoadingSubject$.asObservable();
+
+  private communityRolesSubject$ = new BehaviorSubject<string[]>([]);
+  public communityRoles$ = this.communityRolesSubject$.asObservable();
 
   constructor() {
     // Solo inicializar OAuth en el browser
@@ -46,9 +47,7 @@ export class AuthService {
   private initOAuth(): void {
     // Configurar OAuth
     this.oauthService.configure(getAuthConfig());
-
     this.oauthService.setStorage(localStorage);    
-
     this.isLoadingSubject$.next(true);
 
     if (isPlatformBrowser(this.platformId)) {
@@ -62,15 +61,17 @@ export class AuthService {
   }
     
     // Cargar discovery document (endpoints de Keycloak)
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {     
+    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async () => {     
       console.log('✅ Discovery document cargado');
       console.log('🔍 Endpoints:', this.oauthService);
       this.oauthService.setupAutomaticSilentRefresh();          
       console.log('✅ Silent refresh configurado');
       this.updateAuthenticationState();
-
       this.loadUserProfile();              
-      this.isLoadingSubject$.next(false);      
+      if (this.isLoggedIn()) {
+        await this.loadUserFromApi();
+      }
+      this.isLoadingSubject$.next(false);            
     })
     .catch((error) => {
       console.error('❌ Error al cargar OAuth:', error);
@@ -109,9 +110,47 @@ export class AuthService {
       .subscribe(() => {
         this.isAuthenticatedSubject$.next(false);
         this.userProfileSubject$.next(null);
+        this.communityRolesSubject$.next([]);
       });
 
   }
+
+  /**
+   * Carga los datos del usuario desde /api/auth/me
+   */
+  async loadUserFromApi(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    const communityId = this.communityService.communityId;
+    if (!communityId) {
+      console.warn('⚠️ No se puede cargar usuario: communityId no disponible');
+      return;
+    }
+
+    try {
+      const params = new HttpParams().set('community_id', communityId);
+      
+      const userData = await firstValueFrom(
+        this.apiService.getSimple<UserMeResponse>('/auth/me', params)
+      );
+      
+      console.log('✅ Datos del usuario cargados desde API:', userData);
+      
+      this.communityRolesSubject$.next(userData.roles || []);
+      
+      const currentProfile = this.userProfileSubject$.value;
+      if (currentProfile) {
+        this.userProfileSubject$.next({
+          ...currentProfile,
+          communityRoles: userData.roles
+        });
+      }
+      
+    } catch (error) {
+      console.error('❌ Error al cargar datos del usuario:', error);
+    }
+  }
+
 
   /**
    * Verifica si está cargando el estado de autenticación
@@ -155,6 +194,7 @@ export class AuthService {
     
     this.oauthService.logOut();
     this.isAuthenticatedSubject$.next(false);
+    this.communityRolesSubject$.next([]);
   }
 
   /**
@@ -217,22 +257,36 @@ export class AuthService {
   }
 
   /**
-   * Verifica si el usuario tiene un rol específico
+   * Verifica si el usuario tiene un rol específico en la comunidad
    */
   hasRole(role: string): boolean {
     if (!isPlatformBrowser(this.platformId)) return false;
     
+    // Primero intentar con los roles de la comunidad (desde API)
+    const communityRoles = this.communityRolesSubject$.value;
+    if (communityRoles.length > 0) {
+      return communityRoles.includes(role);
+    }
+    
+    // Fallback a los roles del token (para compatibilidad)
     const claims = this.oauthService.getIdentityClaims() as any;
-    const roles = claims?.realm_access?.roles || claims?.roles || [];
-    return roles.includes(role);
+    const tokenRoles = claims?.realm_access?.roles || claims?.roles || [];
+    return tokenRoles.includes(role);
   }
 
   /**
-   * Obtiene todos los roles del usuario
+   * Obtiene todos los roles del usuario en la comunidad
    */
   getUserRoles(): string[] {
     if (!isPlatformBrowser(this.platformId)) return [];
     
+    // Primero intentar con los roles de la comunidad (desde API)
+    const communityRoles = this.communityRolesSubject$.value;
+    if (communityRoles.length > 0) {
+      return communityRoles;
+    }
+    
+    // Fallback a los roles del token (para compatibilidad)
     const claims = this.oauthService.getIdentityClaims() as any;
     return claims?.realm_access?.roles || claims?.roles || [];
   }
