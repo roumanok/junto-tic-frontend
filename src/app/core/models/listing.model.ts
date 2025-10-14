@@ -31,10 +31,12 @@ export interface ListingImage {
 export interface ListingDetail extends Listing {
   images: ListingImage[];
   slug?: string;
+  long_description?: string;
   meta_description?: string;
   tags?: string[];
   delivery_methods?: DeliveryMethod[];
   related_listings?: Listing[];
+  category_id?: string;
 }
 
 export interface DeliveryMethod {

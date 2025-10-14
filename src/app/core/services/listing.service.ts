@@ -161,6 +161,18 @@ export class ListingService {
     );
   }
 
+  /**
+ * Obtener detalles de un artículo para edición
+ */
+  getListingById(listingId: string): Observable<any> {
+    return this.apiService.get<any>(`/my-listings/${listingId}`).pipe(
+      catchError((error) => {
+        console.error('Error getting listings stats:', error);        
+        return of(null);
+      })
+    );
+  }
+
   toggleListingStatus(id: string, active: boolean): Observable<any> {
     return this.apiService.put<any>(`/stock/${id}/status`, { 
       is_active: active

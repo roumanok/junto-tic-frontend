@@ -22,6 +22,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MyListingsMiniStatsComponent } from './components/my-listings-mini-stats/my-listings-mini-stats.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { StockDialogComponent, StockDialogData } from '../../shared/components/stock-dialog/stock-dialog.component';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 import { I18nService } from 'src/app/core/services/i18n.service';
 import { SeoService } from 'src/app/core/services/seo.service';
@@ -219,14 +220,125 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
   }
 
   addStock(listing: MyListing) {
-    this.snackBar.open('Funcionalidad "Agregar Stock" - Por implementar', 'Cerrar', { duration: 2000 });
+    const dialogRef = this.dialog.open(StockDialogComponent, {
+      width: '500px',
+      data: {
+        mode: 'add',
+        currentStock: listing.stock,
+        listingTitle: listing.title
+      } as StockDialogData
+    });
+
+    dialogRef.afterClosed().subscribe(quantity => {
+      if (quantity !== null && quantity !== undefined) {
+        this.listingService.addStock(listing.id, quantity)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              // Actualizar el stock local
+              const updatedListings = this.listings().map(l => 
+                l.id === listing.id 
+                  ? { ...l, stock: listing.stock + quantity }
+                  : l
+              );
+              this.listings.set(updatedListings);
+              
+              this.snackBar.open(
+                `Se agregaron ${quantity} unidades. Stock actual: ${listing.stock + quantity}`,
+                'Cerrar',
+                { duration: 3000 }
+              );
+            },
+            error: (error) => {
+              console.error('Error agregando stock:', error);
+              this.snackBar.open('Error al agregar stock', 'Cerrar', { duration: 3000 });
+            }
+          });
+      }
+    });
   }
 
   updateStock(listing: MyListing) {
-    this.snackBar.open('Funcionalidad "Actualizar Stock" - Por implementar', 'Cerrar', { duration: 2000 });
+    const dialogRef = this.dialog.open(StockDialogComponent, {
+      width: '500px',
+      data: {
+        mode: 'update',
+        currentStock: listing.stock,
+        listingTitle: listing.title
+      } as StockDialogData
+    });
+
+    dialogRef.afterClosed().subscribe(newStock => {
+      if (newStock !== null && newStock !== undefined && newStock !== listing.stock) {
+        this.listingService.updateStock(listing.id, newStock)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              // Actualizar el stock local
+              const updatedListings = this.listings().map(l => 
+                l.id === listing.id 
+                  ? { ...l, stock: newStock }
+                  : l
+              );
+              this.listings.set(updatedListings);
+              
+              this.snackBar.open(
+                `Stock actualizado a ${newStock} unidades`,
+                'Cerrar',
+                { duration: 3000 }
+              );
+            },
+            error: (error) => {
+              console.error('Error actualizando stock:', error);
+              this.snackBar.open('Error al actualizar stock', 'Cerrar', { duration: 3000 });
+            }
+          });
+      }
+    });
   }
 
   deleteListing(listing: MyListing) {
-    this.snackBar.open('Funcionalidad "Eliminar" - Por implementar', 'Cerrar', { duration: 2000 });
+    // Verificar si tiene ventas
+    if (listing.total_sold && listing.total_sold > 0) {
+      this.snackBar.open(
+        'No se puede eliminar un artículo con ventas',
+        'Cerrar',
+        { duration: 4000 }
+      );
+      return;
+    }
+
+    // Mostrar confirmación
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Eliminar artículo',
+        message: '¿Está seguro que desea eliminar este artículo? Esta acción no se puede deshacer.',
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+        confirmColor: 'warn'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.listingService.deleteListing(listing.id)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              // Remover el artículo de la lista local
+              const updatedListings = this.listings().filter(l => l.id !== listing.id);
+              this.listings.set(updatedListings);
+              this.totalItems.set(this.totalItems() - 1);
+              
+              this.snackBar.open('Artículo eliminado correctamente', 'Cerrar', { duration: 3000 });
+            },
+            error: (error) => {
+              console.error('Error eliminando artículo:', error);
+              this.snackBar.open('Error al eliminar el artículo', 'Cerrar', { duration: 3000 });
+            }
+          });
+      }
+    });
   }
 }

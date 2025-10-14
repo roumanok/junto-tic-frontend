@@ -3,6 +3,7 @@ import { Component, OnInit, inject, signal, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { CommunityService } from 'src/app/core/services/community.service';
 import { CheckoutService } from './services/checkout.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CdnService } from 'src/app/core/services/cdn.service';
@@ -48,6 +49,7 @@ import {
 export class CheckoutPageComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private readonly community = inject(CommunityService);
   private checkoutService = inject(CheckoutService);
   private authService = inject(AuthService);
   private cdnService = inject(CdnService);
@@ -560,6 +562,7 @@ export class CheckoutPageComponent implements OnInit {
     const orderData = {
       items: [{ listing_id: prod.id, quantity: this.quantity() }],
       delivery_method_id: this.selectedDeliveryMethod()!,
+      community_id: this.community.communityId,
       ...formData
     };    
 

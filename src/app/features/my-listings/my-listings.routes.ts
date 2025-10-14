@@ -9,9 +9,7 @@ export const myListingsRoutes: Routes = [
         .then(m => m.MyListingsPageComponent),
     canActivate: [authGuard],
     data: { roles: ['advertiser'] }
-  }
-  /*
-  ,
+  },
   {
     path: 'crear',
     loadComponent: () => 
@@ -28,5 +26,4 @@ export const myListingsRoutes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['advertiser'] }
   }
-    */
 ];

@@ -1,0 +1,203 @@
+<div class="edit-listing-page">
+  <!-- Breadcrumbs -->
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Cargando artículo...</p>
+    </div>
+  } @else {
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">Editar Artículo</h1>
+        <p class="page-subtitle">Actualiza la información de tu publicación</p>
+      </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+      <mat-card>
+        <form [formGroup]="listingForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Tipo de publicación -->
+          <div class="form-section">
+            <h2 class="section-title">Tipo de publicación</h2>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Tipo</mat-label>
+              <mat-select formControlName="type">
+                @for (type of listingTypes; track type.value) {
+                  <mat-option [value]="type.value">{{ type.label }}</mat-option>
+                }
+              </mat-select>
+              <mat-error>El tipo es requerido</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Información básica -->
+          <div class="form-section">
+            <h2 class="section-title">Información básica</h2>
+            
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Título</mat-label>
+              <input matInput formControlName="title" placeholder="Ej: Notebook Lenovo IdeaPad 3">
+              @if (listingForm.get('title')?.hasError('required') && listingForm.get('title')?.touched) {
+                <mat-error>El título es requerido</mat-error>
+              }
+              @if (listingForm.get('title')?.hasError('minlength')) {
+                <mat-error>El título debe tener al menos 5 caracteres</mat-error>
+              }
+              @if (listingForm.get('title')?.hasError('maxlength')) {
+                <mat-error>El título no puede superar los 100 caracteres</mat-error>
+              }
+              <mat-hint align="end">{{listingForm.get('title')?.value?.length || 0}}/100</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descripción corta</mat-label>
+              <textarea matInput formControlName="short_description" rows="2" 
+                placeholder="Breve descripción del artículo"></textarea>
+              @if (listingForm.get('short_description')?.hasError('required') && listingForm.get('short_description')?.touched) {
+                <mat-error>La descripción corta es requerida</mat-error>
+              }
+              @if (listingForm.get('short_description')?.hasError('minlength')) {
+                <mat-error>Debe tener al menos 10 caracteres</mat-error>
+              }
+              @if (listingForm.get('short_description')?.hasError('maxlength')) {
+                <mat-error>No puede superar los 200 caracteres</mat-error>
+              }
+              <mat-hint align="end">{{listingForm.get('short_description')?.value?.length || 0}}/200</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descripción completa</mat-label>
+              <textarea matInput formControlName="long_description" rows="6" 
+                placeholder="Descripción detallada del artículo, características, etc."></textarea>
+              @if (listingForm.get('long_description')?.hasError('required') && listingForm.get('long_description')?.touched) {
+                <mat-error>La descripción completa es requerida</mat-error>
+              }
+              @if (listingForm.get('long_description')?.hasError('minlength')) {
+                <mat-error>Debe tener al menos 20 caracteres</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Categoría</mat-label>
+              <mat-select formControlName="category_id">
+                @for (category of categories; track category.id) {
+                  <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                }
+              </mat-select>
+              <mat-error>La categoría es requerida</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Precios -->
+          <div class="form-section">
+            <h2 class="section-title">Precios</h2>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Precio</mat-label>
+                <input matInput type="number" formControlName="price" placeholder="0">
+                <span matTextPrefix>              <input matInput formControlName="title" placeholder="Ej: Notebook Lenovo IdeaPad"></span>
+                @if (listingForm.get('price')?.hasError('required') && listingForm.get('price')?.touched) {
+                  <mat-error>El precio es requerido</mat-error>
+                }
+                @if (listingForm.get('price')?.hasError('min')) {
+                  <mat-error>El precio debe ser mayor a 0</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Precio de lista (opcional)</mat-label>
+                <input matInput type="number" formControlName="list_price" placeholder="0">
+                <span matTextPrefix>              <input matInput formControlName="title" placeholder="Ej: Notebook Lenovo IdeaPad"></span>
+                <mat-hint>Para mostrar descuento (precio tachado)</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Stock y cantidad (solo para productos) -->
+          @if (isProduct) {
+            <div class="form-section">
+              <h2 class="section-title">Stock y cantidad</h2>
+              
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Stock disponible</mat-label>
+                  <input matInput type="number" formControlName="stock_quantity" placeholder="0">
+                  @if (listingForm.get('stock_quantity')?.hasError('min')) {
+                    <mat-error>El stock no puede ser negativo</mat-error>
+                  }
+                  <mat-hint>Cantidad de unidades disponibles</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Cantidad máxima por pedido</mat-label>
+                  <input matInput type="number" formControlName="max_quantity_per_order" placeholder="1">
+                  @if (listingForm.get('max_quantity_per_order')?.hasError('required')) {
+                    <mat-error>Este campo es requerido</mat-error>
+                  }
+                  @if (listingForm.get('max_quantity_per_order')?.hasError('min')) {
+                    <mat-error>Debe ser al menos 1</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          }
+
+          <!-- Métodos de entrega (solo para productos) -->
+          @if (isProduct) {
+            <div class="form-section">
+              <h2 class="section-title">Métodos de entrega</h2>
+              <p class="section-description">Selecciona al menos un método de entrega</p>
+              
+              <div class="delivery-methods">
+                @for (method of deliveryMethods; track method.id) {
+                  <mat-checkbox 
+                    [checked]="method.enabled"
+                    (change)="toggleDeliveryMethod(method)"
+                    class="delivery-method-checkbox">
+                    {{ method.type }}
+                  </mat-checkbox>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Imágenes -->
+          <div class="form-section">
+            <h2 class="section-title">Imágenes</h2>
+            <p class="section-description">
+              Sube hasta 5 imágenes. La primera será la imagen principal. Máximo 2MB por imagen.
+            </p>
+            <app-image-uploader 
+              [maxImages]="5"
+              [maxSizeInMB]="2"
+              [existingImages]="existingImages"
+              (imagesChanged)="onImagesChanged($event)">
+            </app-image-uploader>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()" [disabled]="isSubmitting()">
+              Cancelar
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>Guardando...</span>
+              } @else {
+                <span>Guardar Cambios</span>
+              }
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  }
+</div>

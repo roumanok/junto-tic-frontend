@@ -238,7 +238,10 @@
     "PAGES.MY_SALES.STATS.TOTAL_SALES" : "Ventas",
     "PAGES.MY_SALES.STATS.ESTIMATED_REVENUE" : "Ingresos estimados",
     "PAGES.MY_SALES.STATS.INVENTORY_VALUE" : "Valor de inventario",
-    "PAGES.MY_SALES.STATS.AVERAGE_PRICE" : "Ticket promedio"
+    "PAGES.MY_SALES.STATS.AVERAGE_PRICE" : "Ticket promedio",
 
+    "PAGES.CREATE_LISTING.TITLE" : "Crear artículo - {{communityName}}",
+    "PAGES.CREATE_LISTING.DESCRIPTION" : "Crear nuevo artículo en {{communityName}}",
+    "PAGES.CREATE_LISTING.SECTION_TITLE" : "Crear artículo"
                 
 }

@@ -1,0 +1,94 @@
+<div class="image-uploader">
+  <!-- Drop Zone -->
+  @if (canAddMore) {
+    <div 
+      class="drop-zone"
+      [class.dragging]="isDragging()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)">
+      <mat-icon class="upload-icon">cloud_upload</mat-icon>
+      <p class="drop-text">Arrastra imágenes aquí o haz clic para seleccionar</p>
+      <p class="drop-hint">Máximo {{ maxImages }} imágenes - {{ maxSizeInMB }}MB cada una</p>
+      <input 
+        type="file" 
+        #fileInput
+        accept="image/*" 
+        multiple
+        (change)="onFileSelected($event)"
+        style="display: none">
+      <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">
+        Seleccionar imágenes
+      </button>
+    </div>
+  }
+
+  <!-- Image Preview Grid -->
+  @if (images().length > 0) {
+    <div class="images-grid" cdkDropList (cdkDropListDropped)="onImageDrop($event)">
+      @for (image of images(); track image.id; let i = $index) {
+        <div class="image-card" cdkDrag>
+          <!-- Drag Handle -->
+          <div class="drag-handle" cdkDragHandle>
+            <mat-icon>drag_indicator</mat-icon>
+          </div>
+
+          <!-- Image Preview -->
+          <div class="image-preview">
+            <img [src]="image.preview" [alt]="'Imagen ' + (i + 1)">
+            
+            <!-- First Image Badge -->
+            @if (i === 0) {
+              <div class="primary-badge">Principal</div>
+            }
+
+            <!-- Upload Progress -->
+            @if (image.uploading) {
+              <div class="upload-overlay">
+                <mat-progress-bar mode="determinate" [value]="image.progress"></mat-progress-bar>
+                <span class="progress-text">{{ image.progress }}%</span>
+              </div>
+            }
+
+            <!-- Error State -->
+            @if (image.error) {
+              <div class="error-overlay">
+                <mat-icon>error</mat-icon>
+                <span>{{ image.error }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Remove Button -->
+          <button 
+            mat-icon-button 
+            class="remove-btn"
+            type="button"
+            (click)="removeImage(image)"
+            [disabled]="image.uploading">
+            <mat-icon>close</mat-icon>
+          </button>
+
+          <!-- Position Indicator -->
+          <div class="position-indicator">{{ i + 1 }}</div>
+        </div>
+      }
+    </div>
+
+    <!-- Info Text -->
+    <div class="info-text">
+      <mat-icon class="info-icon">info</mat-icon>
+      <span>Arrastra las imágenes para reordenarlas. La primera será la imagen principal.</span>
+    </div>
+  }
+
+  <!-- Image Counter -->
+  <div class="image-counter">
+    <span class="counter-text">
+      {{ images().length }} / {{ maxImages }} imágenes
+      @if (uploadingCount > 0) {
+        <span class="uploading-text">({{ uploadingCount }} subiendo...)</span>
+      }
+    </span>
+  </div>
+</div>

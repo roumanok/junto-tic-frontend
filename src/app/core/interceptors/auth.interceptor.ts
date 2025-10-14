@@ -3,9 +3,12 @@ import { inject } from '@angular/core';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { CommunityService } from '../services/community.service';
+import { environment } from 'src/environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const oauthService = inject(OAuthService);
+  const communityService = inject(CommunityService);
 
   // Si es una petición a assets, no agregar token
   if (req.url.includes('/assets/') || req.url.includes('silent-refresh')) {
@@ -16,9 +19,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = oauthService.getAccessToken();
   
   if (req.url.includes('/api/') && token) {
-    const clonedReq = req.clone({
+    const community = communityService.community();
+    const communityId = community ? String(community.id) : '0';
+    const clonedReq = req.clone({       
       setHeaders: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        'X-Community-Context': communityId
       }
     });
     return next(clonedReq).pipe(
