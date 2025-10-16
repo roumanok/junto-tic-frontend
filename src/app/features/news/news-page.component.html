@@ -1,21 +1,10 @@
 <div class="news-page">
-  <!-- Breadcrumbs -->
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <!-- Page Header -->
-  <div class="page-header">
-    <div class="container">
-      <div class="header-info">
-        <h1 class="page-title">
-          {{ 'PAGES.NEWS.SECTION_TITLE' | translate }}
-        </h1>
-      </div>
-    </div>
-  </div>
+  <app-page-header [title]="'PAGES.NEWS.SECTION_TITLE'"></app-page-header>
 
-  <!-- Main Content -->
   <div class="container">
-    <!-- Loading State -->
+  
     <div class="loading-state" *ngIf="loading">
       <div class="loading-spinner">
         <div class="spinner"></div>
@@ -23,7 +12,6 @@
       </div>
     </div>
 
-    <!-- Error State -->
     <div class="error-state" *ngIf="error && !loading">
       <div class="error-message">
         <i class="fas fa-exclamation-triangle"></i>
@@ -35,18 +23,16 @@
       </div>
     </div>
 
-    <!-- Empty State -->
     <div class="empty-state" *ngIf="!loading && !error && listings.length === 0">
       <div class="empty-message">
         <i class="fas fa-calendar-times"></i>
         <h3>{{ 'LISTINGS.NO_RESULTS' | translate }}</h3>
-        <p>No se encontraron productos o servicios recientes en este momento.</p>
         <a routerLink="/" class="btn btn-primary">{{ 'COMMON.BACK_TO_HOME' | translate }}</a>
       </div>
     </div>
-
-    <!-- Listings Grid -->
+    
     <div class="listings-section" *ngIf="!loading && !error && listings.length > 0">
+
       <div class="listings-grid">
         <app-listing-card 
           *ngFor="let listing of listings; trackBy: trackByListing"
@@ -54,7 +40,6 @@
         </app-listing-card>
       </div>
 
-      <!-- Pagination -->
       <app-pagination 
         *ngIf="totalPages > 1"
         [currentPage]="currentPage"
@@ -63,6 +48,9 @@
         [itemsPerPage]="itemsPerPage"
         (pageChange)="onPageChange($event)">
       </app-pagination>
+
     </div>
+    
   </div>
+
 </div>

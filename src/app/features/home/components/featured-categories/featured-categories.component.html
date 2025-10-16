@@ -1,23 +1,23 @@
 <section class="featured-categories" aria-label="Categorías destacadas">
-      <div class="featured-categories-container">
-        <div class="featured-categories-grid">
-          <a 
-            *ngFor="let category of featuredCategories$ | async; trackBy: trackByCategory" 
-            [routerLink]="['/categoria', category.slug]"
-            class="featured-category-circle"
-            [attr.aria-label]="'Ver productos de ' + category.name"
-          >
-            <div class="circle-image">
-              <img 
-                [src]="(getCategoryImage(category.icon_url) | async) || getDefaultCategoryImage(category.slug)"
-                [alt]="category.name"
-                class="category-image"
-                loading="lazy"
-                (error)="onImageError($event, category.slug)"
-              />
-            </div>
-            <span class="category-name">{{ category.name }}</span>
-          </a>
+  <div class="featured-categories-container">
+    <div class="featured-categories-grid">
+      <a 
+        *ngFor="let category of featuredCategories$ | async; trackBy: trackByCategory" 
+        [routerLink]="['/categoria', category.slug]"
+        class="featured-category-circle"
+        [attr.aria-label]="'Ver productos de ' + category.name"
+      >
+        <div class="circle-image">
+          <img 
+            [src]="(getCategoryImage(category.icon_url) | async) || getDefaultCategoryImage(category.slug)"
+            [alt]="category.name"
+            class="category-image"
+            loading="lazy"
+            (error)="onImageError($event, category.slug)"
+          />
         </div>
-      </div>
-    </section>
+        <span class="category-name">{{ category.name }}</span>
+      </a>
+    </div>
+  </div>
+</section>

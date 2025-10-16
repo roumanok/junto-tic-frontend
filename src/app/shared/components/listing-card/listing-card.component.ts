@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
@@ -19,10 +19,11 @@ export class ListingCardComponent {
   @Output() cardClick = new EventEmitter<Listing>();
   @Output() viewMore = new EventEmitter<Listing>();
 
+  private cdnService = inject(CdnService);  
+  private listingService = inject(ListingService);
+
   constructor(
-      private cdnService: CdnService,
-      private router: Router,
-      private listingService: ListingService 
+      private router: Router      
   ) {}
 
   getMainImage(): Observable<string> {

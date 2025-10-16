@@ -11,9 +11,6 @@ import { CategoryService } from './core/services/category.service';
 import { AuthService } from './core/services/auth.service';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { environment } from '../environments/environment';
-
-
 
 function initApp() {
   const platformId  = inject(PLATFORM_ID);
@@ -24,12 +21,10 @@ function initApp() {
 
 
   return async () => {
-    // 1) Siempre intentá resolver comunidad (SSR y browser)
     await community.ensureLoaded().catch(err => {
       console.warn('ensureLoaded() no resolvió comunidad todavía (ok en SSR):', err);
     });
 
-    // 2) Solo en browser: inicializá el theme (puede tocar DOM / cargar assets)
     if (isPlatformBrowser(platformId)) {      
       await Promise.all([
         theme.init().catch(err => console.error('Theme init error:', err)),

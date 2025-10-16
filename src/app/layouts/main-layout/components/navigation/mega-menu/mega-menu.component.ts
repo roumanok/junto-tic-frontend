@@ -11,7 +11,11 @@ import { MMCategory, Subcategory, CategoryLink, Category } from 'src/app/core/mo
 @Component({
   selector: 'app-mega-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    TranslatePipe
+  ],
   templateUrl: './mega-menu.component.html',
   styleUrls: ['./mega-menu.component.css']
 })
@@ -27,10 +31,8 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
 
   public isHydrated = signal(false);
 
-  private authService = inject(AuthService);
-  
+  private authService = inject(AuthService);  
   private destroy$ = new Subject<void>();
-
   private allCategories: Category[] = [];
 
   constructor(
@@ -49,21 +51,17 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit(): void {}
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   private transformCategories(categories: Category[]): MMCategory[] {
-    // Filtrar solo categorías padre (sin parent_id o parent_id null)
     const parentCategories = categories.filter(cat => !cat.parent_id || cat.parent_id === null);    
     return parentCategories.map(parentCat => {
-      // Buscar categorías hijas
       const childCategories = categories.filter(cat => cat.parent_id === parentCat.id);
-                 
-      // Si no hay hijas, crear estructura básica con la misma categoría como subcategoría
       const subcategories: Subcategory[] = childCategories.length > 0 
         ? childCategories.map(child => ({
             id: child.id,
@@ -71,26 +69,7 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
             description: child.description,
             links: []
           }))
-        : [
-            {
-              id: parentCat.id,
-              title: 'Productos',
-              links: [
-                {
-                  name: `Ver todo en ${parentCat.name || parentCat.slug}`,
-                  url: `/categoria/${parentCat.slug}`
-                },
-                {
-                  name: 'Novedades',
-                  url: `/categoria/${parentCat.slug}/novedades`
-                },
-                {
-                  name: 'Ofertas',
-                  url: `/categoria/${parentCat.slug}/ofertas`
-                }
-              ]
-            }
-          ];
+        : [];
       return {
         id: parentCat.id,
         title: parentCat.name || parentCat.slug,
@@ -100,12 +79,11 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
         featured: parentCat.is_featured,
         order: parentCat.sort_order
       };
-    }).sort((a, b) => (a.order || 0) - (b.order || 0)); // Ordenar por sort_order
+    }).sort((a, b) => (a.order || 0) - (b.order || 0));
   }
 
   onCategoryHover(categoryId: string) {
-    if (this.isMobile()) return;
-    
+    if (this.isMobile()) return;    
     this.activeCategory = categoryId;
     this.showDesktopPanel();
   }
@@ -117,15 +95,12 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
     event.stopPropagation();
 
     if (this.openAccordion === categoryId) {
-      // Cerrar si ya está abierto
       this.openAccordion = null;
       this.activeCategory = null;
     } else {
-      // Abrir el acordeón
       this.openAccordion = categoryId;
       this.activeCategory = categoryId;
       
-      // Scroll suave al acordeón
       setTimeout(() => {
         if (isPlatformBrowser(this.platformId)) {
           const accordionElement = document.querySelector(`[data-acc="${categoryId}"]`);
@@ -138,7 +113,6 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
   }
 
   onLinkClick() {
-    // Cerrar menú al hacer click en cualquier link
     this.closeMegaMenu();
   }
 
@@ -153,20 +127,16 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
   }
 
   showDesktopPanel() {
-    if (this.isMobile() || !isPlatformBrowser(this.platformId)) return;
-    
+    if (this.isMobile() || !isPlatformBrowser(this.platformId)) return;    
     const dropdownMenu = document.querySelector('.dropdown-menu');
     dropdownMenu?.classList.remove('no-panel');
   }
 
-   getCategorySlug(parentId: string, subcategoryId: string | undefined): string {
-    // Buscar primero en subcategorías (categorías hijas)
+  getCategorySlug(parentId: string, subcategoryId: string | undefined): string {
     const subcategory = this.allCategories.find(cat => cat.id === subcategoryId);
     if (subcategory) {
       return subcategory.slug ? subcategory.slug : 'categoria-no-encontrada';
     }
-    
-    // Si no existe como subcategoría, usar la categoría padre
     const parentCategory = this.allCategories.find(cat => cat.id === parentId);
     return parentCategory?.slug || 'categoria-no-encontrada';
   }
@@ -187,19 +157,16 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
   }
 
   login(): void {
-    console.log('🔐 Iniciando login desde mega-menu...');
     this.authService.login(this.router.url);
     this.closeMegaMenu();
   }
 
   register(): void {
-    console.log('📝 Iniciando registro desde mega-menu...');
     this.authService.register();
     this.closeMegaMenu();
   }
 
   logout(): void {
-    console.log('👋 Cerrando sesión desde mega-menu...');
     this.authService.logout();
     this.closeMegaMenu();
   }

@@ -3,7 +3,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { of, Subject } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { PLATFORM_ID } from '@angular/core';
-
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
@@ -38,22 +37,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   private isBrowser: boolean;  
   private seo = inject(SeoService);
   private i18n = inject(I18nService);
+  private community = inject(CommunityService);
+  private listingService = inject(ListingService);
   
-  constructor(
-    private listingService: ListingService,
-    private community: CommunityService,
+  constructor(    
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit(): void {
-    //No dispares cargas en SSR
     if (!this.isBrowser) {
       return;
     }   
 
-    // Asegurá comunidad primero
     this.community.ensureLoaded()
       .then(() => {
         this.setupSEO();
@@ -62,7 +59,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
             catchError(err => {
               console.error('Error loading listings:', err);
-              this.error = err?.message || 'Error al cargar los listados';
+              this.error = err?.message || this.i18n.t("LISTINGS.LOADING_ERROR");
               return of<Listing[]>([]);
             })
           )
@@ -74,7 +71,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
             catchError(err => {
               console.error('Error loading listings:', err);
-              this.error = err?.message || 'Error al cargar los listados';
+              this.error = err?.message || this.i18n.t("LISTINGS.LOADING_ERROR");
               return of<Listing[]>([]);
             })
           )

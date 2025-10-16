@@ -11,7 +11,13 @@ import { FooterComponent } from './components/footer/footer.component';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, NavigationComponent, RouterOutlet, FooterComponent],
+  imports: [
+    CommonModule, 
+    HeaderComponent, 
+    NavigationComponent, 
+    RouterOutlet, 
+    FooterComponent
+  ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
@@ -30,7 +36,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      //window.scrollTo(0, 0);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }

@@ -1,4 +1,3 @@
-// src/app/shared/pipes/translate.pipe.ts
 import { Pipe, PipeTransform, inject } from '@angular/core';
 import { I18nService } from 'src/app/core/services/i18n.service';
 

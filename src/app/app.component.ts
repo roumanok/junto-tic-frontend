@@ -18,21 +18,17 @@ export class AppComponent implements OnInit {
   private authService = inject(AuthService);
   isAuthenticated = false;
   ngOnInit(): void {
-    // ✅ Suscribirse a cambios de autenticación
     this.authService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
       if (isAuth) {
         console.log('Usuario logueado - Roles:', this.authService.getUserRoles());
       }
-    });
-    
-    // Verificación inicial
+    });    
     this.checkAuthStatus();
   }
 
   checkAuthStatus() {
     this.isAuthenticated = this.authService.isAuthenticated();
-    // ✅ Mostrar roles en consola si está logueado
     if (this.isAuthenticated) {
       console.log('Usuario logueado - Roles:', this.authService.getUserRoles());
     }

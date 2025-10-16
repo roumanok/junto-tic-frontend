@@ -26,6 +26,8 @@
     "COMMON.NEXT": "Siguiente",
     "COMMON.PREVIOUS": "Anterior", 
     "COMMON.ORDER": "Orden",
+    "COMMON.OFFERS": "Ofertas",
+    "COMMON.NEWS": "Novedades",
     "COMMON.MY_ACCOUNT": "Mi cuenta",
     "COMMON.MY_ORDERS": "Mis compras",
     "COMMON.MY_SALES": "Mis ventas",
@@ -74,6 +76,8 @@
     "SEARCH.MAX": "Máximo",
     "SEARCH.EMPTY_TITLE": "No se encontraron productos",
     "SEARCH.EMPTY_MESSAGE": "Intentá ajustar tus filtros o buscar con otros términos.",
+
+    "FOOTER.COPYRIGHT": "{{currentYear}} Todos los derechos reservados",
 
     "PAGINATION.NEXT": "Página siguiente",
     "PAGINATION.PREVIOUS": "Página anterior",
@@ -242,6 +246,10 @@
 
     "PAGES.CREATE_LISTING.TITLE" : "Crear artículo - {{communityName}}",
     "PAGES.CREATE_LISTING.DESCRIPTION" : "Crear nuevo artículo en {{communityName}}",
-    "PAGES.CREATE_LISTING.SECTION_TITLE" : "Crear artículo"
+    "PAGES.CREATE_LISTING.SECTION_TITLE" : "Crear artículo",
+
+    "PAGES.EDIT_LISTING.TITLE" : "Editar {{listingTitle}} - {{communityName}}",
+    "PAGES.EDIT_LISTING.DESCRIPTION" : "Editar artículo en {{communityName}}",
+    "PAGES.EDIT_LISTING.SECTION_TITLE" : "Editar artículo"
                 
 }

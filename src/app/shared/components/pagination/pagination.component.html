@@ -1,10 +1,9 @@
 <div class="pagination-container" *ngIf="totalPages > 1">
-  <!-- Pagination Info -->
+
   <div class="pagination-info">
     <span class="showing-text">
       {{'PAGINATION.SHOWING' | translate}} {{ startItem }}-{{ endItem }} {{'PAGINATION.OF' | translate}} {{ totalItems }} {{'PAGINATION.RESULTS' | translate}}
     </span>
-
     <div class="page-size-selector" *ngIf="showPageSizeSelector && pageSizeOptions.length > 0">
       <label for="pageSize">{{'PAGINATION.ITEMS_PER_PAGE' | translate}}:</label>
       <select 
@@ -16,11 +15,9 @@
           {{ size }}
         </option>
       </select>
-    </div>
-    
+    </div>    
   </div>
 
-  <!-- Pagination Controls -->
   <nav class="pagination-nav">
     <ul class="pagination">
       <!-- First Page -->
@@ -33,7 +30,6 @@
           <i class="fas fa-angle-double-left"></i>
         </button>
       </li>
-
       <!-- Previous Page -->
       <li class="page-item" [class.disabled]="currentPage === 1">
         <button 
@@ -44,17 +40,14 @@
           <i class="fas fa-angle-left"></i>
         </button>
       </li>
-
       <!-- First Page Indicator -->
       <li class="page-item" *ngIf="showFirst">
         <button class="page-link" (click)="onPageClick(1)">1</button>
       </li>
-      
       <!-- First Ellipsis -->
       <li class="page-item disabled" *ngIf="showFirst && visiblePages[0] > 2">
         <span class="page-link">...</span>
       </li>
-
       <!-- Visible Page Numbers -->
       <li 
         *ngFor="let page of visiblePages" 
@@ -64,21 +57,17 @@
           class="page-link" 
           (click)="onPageClick(page)"
           [class.current]="page === currentPage">
-          {{ page }}
-          <span class="sr-only" *ngIf="page === currentPage">(actual)</span>
+          {{ page }}          
         </button>
       </li>
-
       <!-- Last Ellipsis -->
       <li class="page-item disabled" *ngIf="showLast && visiblePages[visiblePages.length - 1] < totalPages - 1">
         <span class="page-link">...</span>
       </li>
-
       <!-- Last Page Indicator -->
       <li class="page-item" *ngIf="showLast">
         <button class="page-link" (click)="onPageClick(totalPages)">{{ totalPages }}</button>
       </li>
-
       <!-- Next Page -->
       <li class="page-item" [class.disabled]="currentPage === totalPages">
         <button 
@@ -89,7 +78,6 @@
           <i class="fas fa-angle-right"></i>
         </button>
       </li>
-
       <!-- Last Page -->
       <li class="page-item" [class.disabled]="currentPage === totalPages">
         <button 

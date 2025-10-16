@@ -1,84 +1,28 @@
 .hero {
-      background: linear-gradient(135deg, #4A90A4 0%, #2C5F6F 100%);
-      color: white;
-      padding: 4rem 0;
-      text-align: center;
-    }
-    
-    .hero-container {      
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-    
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-    }
-    
-    .hero p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
-    
-    .listings-section {
-      padding: 4rem 0;
-      background: #f8f9fa;
-    }
-    
-    .container {      
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-    
-    .container h2 {
-      text-align: center;
-      margin-bottom: 3rem;
-      font-size: 2.5rem;
-      color: #333;
-    }
-    
-    .listings-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-    
-    .loading, .error, .empty-state {
-      text-align: center;
-      padding: 3rem;
-    }
-    
-    .btn-retry {
-      background: #4A90A4;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-retry:hover {
-      background: #2C5F6F;
-      transform: translateY(-2px);
-    }
-    
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2rem;
-      }
-      
-      .listings-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1.5rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .listings-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
-    }
+  background: var(--color-primary);
+  color: var(--text-on-primary);
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.hero-container {      
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }      
+}      

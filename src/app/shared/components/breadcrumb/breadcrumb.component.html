@@ -1,24 +1,24 @@
 <nav class="breadcrumb" *ngIf="items && items.length > 0">
-      <div class="breadcrumb-container">
-        <div class="breadcrumb-nav">
-          <ng-container *ngFor="let item of items; let i = index">
-            <a 
-              *ngIf="item.url && !item.isActive" 
-              [routerLink]="item.url" 
-              class="breadcrumb-link">
-              {{ item.label }}
-            </a>
-            <span 
-              *ngIf="!item.url || item.isActive" 
-              class="breadcrumb-current">
-              {{ item.label }}
-            </span>
-            <span 
-              *ngIf="i < items.length - 1" 
-              class="breadcrumb-separator">
-              >
-            </span>
-          </ng-container>
-        </div>
-      </div>
-    </nav>
+  <div class="breadcrumb-container">
+    <div class="breadcrumb-nav">
+      <ng-container *ngFor="let item of items; let i = index">
+        <a 
+          *ngIf="item.url && !item.isActive" 
+          [routerLink]="item.url" 
+          class="breadcrumb-link">
+          {{ item.label }}
+        </a>
+        <span 
+          *ngIf="!item.url || item.isActive" 
+          class="breadcrumb-current">
+          {{ item.label }}
+        </span>
+        <span 
+          *ngIf="i < items.length - 1" 
+          class="breadcrumb-separator">
+          &#10095;
+        </span>
+      </ng-container>
+    </div>
+  </div>
+</nav>

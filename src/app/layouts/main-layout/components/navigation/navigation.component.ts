@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener, Inject, inject, PLATFORM_ID, afterNextRender, signal} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MegaMenuComponent } from './mega-menu/mega-menu.component';
 import { I18nService } from 'src/app/core/services/i18n.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -10,7 +10,12 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [CommonModule, RouterModule, MegaMenuComponent, TranslatePipe],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    MegaMenuComponent, 
+    TranslatePipe
+  ],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.css'
 })
@@ -26,7 +31,7 @@ export class NavigationComponent implements OnInit {
   private i18n = inject(I18nService);
   private authService = inject(AuthService);
   
-  featuredCategories = [
+  featuredItems = [
     { name: this.i18n.t('HEADER.MENU.NEWS'), url: '/novedades', active: false },
     { name: this.i18n.t('HEADER.MENU.OFFERS'), url: '/ofertas', active: false }
   ];
@@ -39,7 +44,7 @@ export class NavigationComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit(): void {}
 
   ngOnDestroy() {
     this.destroy$.next();
@@ -53,8 +58,7 @@ export class NavigationComponent implements OnInit {
   }
 
   toggleAccountDropdown() {
-    if (this.isMobile()) return;
-    
+    if (this.isMobile()) return;    
     this.showAccountDropdown = !this.showAccountDropdown;
     this.showCategoriesDropdown = false; 
   }
@@ -125,17 +129,14 @@ export class NavigationComponent implements OnInit {
   }
 
   login(): void {
-    console.log('🔐 Iniciando login desde navigation...');
     this.authService.login(this.router.url);
   }
 
   register(): void {
-    console.log('📝 Iniciando registro desde navigation...');
     this.authService.register();
   }
 
   logout(): void {
-    console.log('👋 Cerrando sesión desde navigation...');
     this.authService.logout();
   }
 

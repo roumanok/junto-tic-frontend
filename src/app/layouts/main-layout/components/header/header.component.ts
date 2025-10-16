@@ -8,7 +8,11 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    TranslatePipe
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -30,10 +34,7 @@ export class HeaderComponent implements OnInit {
     }
 
     if (searchTerm) {
-      // Navegar a la página de búsqueda con el término como parámetro de ruta
       this.router.navigate(['/buscar', searchTerm]);
-      
-      // Limpiar el campo de búsqueda si es un input
       if (input instanceof HTMLInputElement) {
         input.value = '';
       } else if (input.target instanceof HTMLInputElement) {

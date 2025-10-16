@@ -1,92 +1,92 @@
 .carousel-section {
-      max-width: 100%;
-      margin: 3rem auto;
-      padding: 0 2rem;
-    }
+  max-width: 100%;
+  margin: 3rem auto;
+  padding: 0 2rem;
+}
 
-    .carousel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
+.carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
 
-    .carousel-title {
-      font-size: 2rem;
-      font-weight: 600;
-      color: #333;
-      margin: 0;
-    }
+.carousel-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
 
-    .carousel-controls {
-      display: flex;
-      gap: 1rem;
-    }
+.carousel-controls {
+  display: flex;
+  gap: 1rem;
+}
 
-    .carousel-btn {
-      width: 50px;
-      height: 50px;
-      background: white;
-      border: 2px solid #4A90A4;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      color: #4A90A4;
-      font-size: 1.2rem;
-    }
+.carousel-btn {
+  width: 50px;
+  height: 50px;
+  background: var(--bg-carousel-button);
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
 
-    .carousel-btn:hover:not(:disabled) {
-      background: #4A90A4;
-      color: white;
-    }
+.carousel-btn:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: var(--bg-carousel-button);
+}
 
-    .carousel-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+.carousel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-    .carousel-container {
-      position: relative;
-      overflow: hidden;
-      padding: 25px 5px;
-    }
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+  padding: 25px 5px;
+}
 
-    .carousel-track {
-      display: flex;
-      gap: 2rem;
-      transition: transform 0.3s ease;
-    }
+.carousel-track {
+  display: flex;
+  gap: 2rem;
+  transition: transform 0.3s ease;
+}
 
-    .carousel-track ::ng-deep app-listing-card {
-      flex: 0 0 280px;
-      max-width: 280px;
-    }
+.carousel-track ::ng-deep app-listing-card {
+  flex: 0 0 280px;
+  max-width: 280px;
+}
 
-    @media (max-width: 768px) {
-      .carousel-section {
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
+@media (max-width: 768px) {
+  .carousel-section {
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
 
-      .carousel-title {
-        font-size: 1.5rem;
-      }
+  .carousel-title {
+    font-size: 1.5rem;
+  }
 
-      .carousel-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-      }
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
 
-      .carousel-track {
-        gap: 1rem;
-      }
+  .carousel-track {
+    gap: 1rem;
+  }
 
-      .carousel-track ::ng-deep app-listing-card {
-        flex: 0 0 250px;
-        max-width: 250px;
-      }
-    }
+  .carousel-track ::ng-deep app-listing-card {
+    flex: 0 0 250px;
+    max-width: 250px;
+  }
+}

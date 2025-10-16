@@ -75,8 +75,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   private getVisibleItems(): number {
-    if (typeof window === 'undefined') return 4;
-    
+    if (typeof window === 'undefined') return 4;    
     const width = window.innerWidth;
     if (width >= 1200) return 4;
     if (width >= 768) return 3;
@@ -116,10 +115,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   onTouchEnd(): void {
     if (!this.isDragging) return;
-    this.isDragging = false;
-    
-    const diff = this.startX - this.currentX;
-    
+    this.isDragging = false;    
+    const diff = this.startX - this.currentX;    
     if (Math.abs(diff) > this.swipeThreshold) {
       if (diff > 0) {
         this.nextSlide();

@@ -1,29 +1,27 @@
 <header class="header">
-      <div class="header-container">
-        <a routerLink="/" class="logo">
-          <img 
-            [src]="this.themeService.getLogoUrl()" 
-            alt="Logo" 
-            class="logo-img"
-            loading="eager">
-        </a>
-        
-        <div class="search-container">
-          <input 
-            type="text" 
-            class="search-bar" 
-            placeholder="{{ 'SEARCH.PLACEHOLDER' | translate }}"
-            (keyup.enter)="onSearch($event)"
-            #searchInput>
-          <button 
-            class="search-btn" 
-            (click)="onSearch(searchInput)"            >
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-        
-        <div class="header-right">
-          <!-- Espacio para futuras funcionalidades (carrito, usuario) -->
-        </div>
-      </div>
-    </header>
+  <div class="header-container">
+    <a routerLink="/" class="logo">
+      <img 
+        [src]="this.themeService.getLogoUrl()" 
+        alt="Logo" 
+        class="logo-img"
+        loading="eager">
+    </a>
+    
+    <div class="search-container">
+      <input 
+        type="text" 
+        class="search-bar" 
+        placeholder="{{ 'SEARCH.PLACEHOLDER' | translate }}"
+        (keyup.enter)="onSearch($event)"
+        #searchInput>
+      <button 
+        class="search-btn" 
+        (click)="onSearch(searchInput)"            >
+        <i class="fas fa-search"></i>
+      </button>
+    </div>    
+    <div class="header-right">      
+    </div>
+  </div>
+</header>

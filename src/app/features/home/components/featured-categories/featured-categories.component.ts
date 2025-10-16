@@ -1,4 +1,3 @@
-// src/app/shared/components/featured-categories/featured-categories.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -19,16 +18,6 @@ export class FeaturedCategoriesComponent implements OnInit, OnDestroy {
   featuredCategories$: Observable<Category[]>;
   private destroy$ = new Subject<void>();
 
-  // Mapeo de slugs a imágenes por defecto
-  private readonly defaultImages: { [key: string]: string } = {
-    'indumentaria': '/assets/images/categories/equipaciones.jpg',
-    'camisetas': '/assets/images/categories/camisetas.jpg',
-    'accesorios': '/assets/images/categories/accesorios.jpg',
-    'infantil': '/assets/images/categories/infantil.jpg',
-    'experiencias': '/assets/images/categories/experiencias.jpg',
-    'calzado': '/assets/images/categories/calzado.jpg'
-  };
-
   constructor(
     private categoryService: CategoryService,
     private cdnService: CdnService)
@@ -37,8 +26,6 @@ export class FeaturedCategoriesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // El observable featured$ ya se maneja automáticamente
-    // Si necesitas hacer alguna acción específica cuando se cargan las categorías:
     this.featuredCategories$
       .pipe(takeUntil(this.destroy$))
       .subscribe(categories => {
@@ -55,8 +42,8 @@ export class FeaturedCategoriesComponent implements OnInit, OnDestroy {
     return category.id;
   }
 
-  getDefaultCategoryImage(slug: string): string {
-    return this.defaultImages[slug] || '/assets/images/categories/default.jpg';
+  getDefaultCategoryImage(slug: string): Observable<string> {
+    return this.cdnService.getCdnUrl$('/gen/med/cat/' + slug + '.png');
   }
 
   getCategoryImage(image_url: string | undefined): Observable<string> {      
@@ -65,6 +52,8 @@ export class FeaturedCategoriesComponent implements OnInit, OnDestroy {
 
   onImageError(event: Event, slug: string): void {
     const img = event.target as HTMLImageElement;
-    img.src = this.getDefaultCategoryImage(slug);
+    this.getDefaultCategoryImage(slug).subscribe(url => {
+      img.src = url;
+    });
   }
 }

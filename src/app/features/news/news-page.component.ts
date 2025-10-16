@@ -2,32 +2,18 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject } from '@angu
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
-import { Subject, combineLatest, switchMap, map, catchError, tap, take } from 'rxjs';
+import { Subject, switchMap, catchError, tap } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
 import { ApiService } from '../../core/services/api.service';
 import { CommunityService } from '../../core/services/community.service';
 import { Listing } from '../../core/models/listing.model';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
-
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
-
+import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
-
-interface NewsListingsResponse {
-  items: Listing[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    total_pages: number;
-    has_next: boolean;
-    has_previous: boolean;
-  };
-}
 
 @Component({
   selector: 'app-news-page',
@@ -36,6 +22,7 @@ interface NewsListingsResponse {
     CommonModule,
     TranslatePipe,
     BreadcrumbComponent,
+    PageHeaderComponent,
     ListingCardComponent,
     PaginationComponent
   ],
@@ -58,12 +45,12 @@ export class NewsPageComponent implements OnInit, OnDestroy {
   private isBrowser: boolean;
   private seo = inject(SeoService);
   private i18n = inject(I18nService);
+  private apiService = inject(ApiService);
+  private communityService = inject(CommunityService);
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private apiService: ApiService,
-    private communityService: CommunityService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -73,7 +60,6 @@ export class NewsPageComponent implements OnInit, OnDestroy {
     this.buildBreadcrumbs();
     this.setupSEO();
 
-    // Observar cambios en los query params para la paginación
     this.route.queryParams.pipe(
       takeUntil(this.destroy$),
       tap(() => {
@@ -85,13 +71,13 @@ export class NewsPageComponent implements OnInit, OnDestroy {
         return this.loadNewsListings(this.currentPage);
       }),
       catchError(err => {
-        console.error('Error loading news page:', err);
-        this.error = err.message || 'Error al cargar las novedades';
+        console.error('Error loading News page:', err);
+        this.error = err.message || this.i18n.t('LISTINGS.LOADING_ERROR');
         this.loading = false;
         throw err;
       })
     ).subscribe({
-      next: (response: NewsListingsResponse) => {
+      next: (response) => {
         this.listings = response.items;
         this.totalItems = response.pagination.total;
         this.totalPages = response.pagination.total_pages;        
@@ -124,8 +110,8 @@ export class NewsPageComponent implements OnInit, OnDestroy {
 
   private buildBreadcrumbs(): void {
     this.breadcrumbItems = [
-      { label: 'Inicio', url: '/' },
-      { label: 'Novedades', isActive: true }
+      { label: this.i18n.t('COMMON.HOME'), url: '/' },
+      { label: this.i18n.t('COMMON.NEWS'), isActive: true }
     ];
   }
 
@@ -134,14 +120,12 @@ export class NewsPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Navegar con el nuevo parámetro de página
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { page: page > 1 ? page : null }, // No incluir page=1 en URL
+      queryParams: { page: page > 1 ? page : null },
       queryParamsHandling: 'merge'
     });
 
-    // Scroll al top
     if (this.isBrowser) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

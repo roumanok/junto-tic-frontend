@@ -6,7 +6,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    TranslatePipe
+  ],
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.css']
 })
@@ -34,16 +38,13 @@ export class PaginationComponent implements OnChanges {
     const pages: number[] = [];
     
     if (this.totalPages <= this.maxVisiblePages) {
-      // Si hay pocas páginas, mostrar todas
       for (let i = 1; i <= this.totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Calcular el rango de páginas a mostrar
       let start = Math.max(1, this.currentPage - Math.floor(this.maxVisiblePages / 2));
       let end = Math.min(this.totalPages, start + this.maxVisiblePages - 1);
       
-      // Ajustar si estamos cerca del final
       if (end - start + 1 < this.maxVisiblePages) {
         start = Math.max(1, end - this.maxVisiblePages + 1);
       }

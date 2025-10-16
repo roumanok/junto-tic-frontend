@@ -1,0 +1,13 @@
+<div class="page-header">
+  <div class="container">
+    <div class="header-info">
+      <h1 class="page-title">
+        <i *ngIf="icon" [class]="'fas ' + icon"></i>
+        {{ title | translate }}
+      </h1>
+      <p *ngIf="description" class="page-description">
+        {{ description | translate }}
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,8 @@
 /* ===== NAVIGATION STYLES ===== */
 .nav {
-  background: white;
+  background: var(--bg-navigation);
   padding: 1rem 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
   position: relative;
   z-index: 999;
 }
@@ -30,24 +30,19 @@
   justify-content: center;
   width: 45px;
   height: 45px;
-  background: #f1f5f9;
+  background: var(--bg-navigation);
   font-weight: 600;
-  color: #326879;                
+  color: var(--color-primary);
   border: none;
   border-radius: 8px;
   font-size: 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.mobile-menu-toggle:hover {
-  background: #e2e8f0;
-  transform: scale(1.05);
+  transition: var(--transition-normal);
 }
 
 .mobile-menu-toggle.active {
-  background: #D73027;
-  color: white;
+  background: var(--color-secondary);
+  color: var(--text-on-secondary);
 }
 
 /* ===== CATEGORIES DROPDOWN ===== */
@@ -56,8 +51,8 @@
 }
 
 .categories-btn {
-  background: #D73027;
-  color: white;
+  background: var(--color-secondary);
+  color: var(--text-on-secondary);
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -66,12 +61,12 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.3s ease;
+  transition: var(--transition-normal);
   font-size: 1rem;
 }
 
 .categories-btn:hover:not(:disabled) {
-  background: #B8242A;
+  background: var(--color-secondary-hover);
   transform: translateY(-1px);
 }
 
@@ -94,9 +89,9 @@
 }
 
 .account-btn {
-    background: #4A90A4;    
+    background: var(--color-primary);        
+    color: var(--text-on-primary);
     border: none;
-    color: white;
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
@@ -105,7 +100,7 @@
     gap: 10px;
     font-weight: 600;
     font-size: 0.95rem;
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
     white-space: nowrap;
 }
 
@@ -117,14 +112,14 @@
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    background: white;
+    background: var(--bg-menu);
     min-width: 280px;
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    box-shadow: var(--shadow-lg);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
     z-index: 1000;
 }
 
@@ -146,7 +141,7 @@
 
 .account-menu-list li.divider {
     height: 1px;
-    background: #eef1f4;
+    background: var(--border-color-light);
     margin: 8px 4px;
 }
 
@@ -155,36 +150,36 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    color: #2f3a45;
+    color: var(--text-primary);
     text-decoration: none;
     border-radius: 8px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: var(--transition-normal);
     cursor: pointer;
 }
 
 .account-menu-list a:hover {
-    background: #f5f8fa;
-    color: #0f5f74;
+    background: var(--bg-menu-item-hover);
+    color: var(--color-primary-hover);
 }
 
 .account-menu-list a i {
     width: 20px;
     font-size: 1.1rem;
-    color: #4A90A4;
+    color: var(--color-primary);
 }
 
 .account-menu-list a.logout-link {
-    color: #D73027;
+    color: var(--text-attention);
 }
 
 .account-menu-list a.logout-link i {
-    color: #D73027;
+    color: var(--text-attention);
 }
 
 .account-menu-list a.logout-link:hover {
-    background: #fef2f2;
-    color: #B8242A;
+    background: var(--bg-menu-item-attention-hover);
+    color: var(--text-attention-hover);
 }
 
 
@@ -197,11 +192,11 @@
 }
 
 .category-item {
-  color: #666;
+  color: var(--text-secondary);
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 20px;
-  transition: all 0.3s ease;
+  transition: var(--transition-normal);
   white-space: nowrap;
   font-weight: 600;
   font-size: 0.95rem;
@@ -209,63 +204,62 @@
 
 .category-item:hover, 
 .category-item.active {
-  background: #326879;
-  color: white;
+  background: var(--color-primary);
+  color: var(--text-on-primary);
   transform: translateY(-2px);
   text-decoration: none;
 }
 
 
-    .user-actions{
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-left: auto;
-    }
+.user-actions{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
 
-    .btn-primary {
-        background: #D73027;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 10px;        
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.8vw;
-    }
+.btn-register {
+    background: var(--color-secondary);
+    color: var(--text-on-secondary);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;        
+    cursor: pointer;
+    transition: var(--transition-normal);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8vw;
+}
 
-    .btn-primary:hover {
-        background: #B8242A;
-        transform: translateY(-2px);
-    }
+.btn-register:hover {
+    background: var(--color-secondary-hover);
+    transform: translateY(-2px);
+}
 
-    .btn-secondary {
-        background: #4A90A4;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 10px;        
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.8vw;
-    }
+.btn-login {
+    background: var(--color-primary);
+    color: var(--text-on-primary);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;        
+    cursor: pointer;
+    transition: var(--transition-normal);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8vw;
+}
 
-    .btn-secondary:hover {
-        background: #2C5F6F;
-        transform: translateY(-2px);
-    }    
+.btn-login:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-2px);
+}    
 
-    .user-actions .btn-secondary, 
-    .user-actions .btn-primary {
-        min-width: 120px;
-        text-align: center;
-    }
+.user-actions .btn-login, 
+.user-actions .btn-register {
+    min-width: 120px;
+    text-align: center;
+}
 
-   /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
 
   :host{

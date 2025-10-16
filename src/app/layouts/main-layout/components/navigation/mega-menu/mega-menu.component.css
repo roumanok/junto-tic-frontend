@@ -1,16 +1,15 @@
-/* ===== MEGA MENÚ STYLES ===== */
 .dropdown-menu {
   position: absolute;
   top: 100%;
   left: 0;
-  background: white;
+  background: var(--bg-menu);
   min-width: 300px;
   border-radius: 8px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-lg);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
-  transition: all 0.3s ease;
+  transition: var(--transition-slow);
   z-index: 1000;
   margin-top: 8px;
   width: 900px; 
@@ -72,7 +71,7 @@
   border-radius: 8px; 
   cursor: pointer;
   font-weight: 700; 
-  color: #2f3a45;
+  color: var(--text-primary);
   flex-direction: column;
 }
 
@@ -83,12 +82,13 @@
 }
 
 .mega-parents li:hover { 
-  background: #f5f8fa; 
+  background: var(--bg-menu-item-hover); 
+  color: var(--color-primary-hover);
 }
 
 .mega-parents li.active { 
-  background: #e9f2f6; 
-  color: #0f5f74; 
+  background: var(--bg-menu-item-hover); 
+  color: var(--color-primary-hover);
 }
 
 .mega-parents li.active .chev {
@@ -106,7 +106,7 @@
 .acc-children { 
   display: none; 
   padding: 12px 16px;
-  background: #fafcff;
+  background: var(--bg-menu-item);
   width: 100%;
   border-radius: 6px;
   margin-top: 8px;
@@ -135,24 +135,24 @@
 .mega-col h4 { 
   margin: 0 0 8px; 
   font-size: .95rem; 
-  color: #0f5f74; 
+  color: var(--color-primary); 
   font-weight: 600;
 }
 
 .subcategory-title-link {
   text-decoration: none;
-  color: #0f5f74;
+  color: var(--color-primary);
   font-size: .95rem;
   font-weight: 600;
   display: block;
   padding: 6px 8px;
   border-radius: 6px;
-  transition: all 0.3s ease;
+  transition: var(--transition-normal);
 }
 
 .subcategory-title-link:hover {
-  background: #f2f6f8;
-  color: #E91E63;
+  background: var(--bg-menu-item-hover);
+  color: var(--color-primary-hover);
   text-decoration: none;
 }
 
@@ -167,17 +167,16 @@
 
 .mega-links a { 
   text-decoration: none; 
-  color: #56636d; 
+  color: var(--text-secondary); 
   font-size: .95rem; 
   border-radius: 6px; 
   padding: 6px 8px; 
   display: block; 
-  transition: all 0.3s ease;
+  transition: var(--transition-normal);
 }
 
 .mega-links a:hover { 
-  background: #f2f6f8; 
-  color: #E91E63; 
+  background: var(--bg-menu-item-hover);  
 }
 
 /* ===== NO PANEL MODE ===== */
@@ -189,7 +188,6 @@
   border-right: 0; 
 }
 
-/* ===== ANIMATIONS ===== */
 @keyframes fadeIn { 
   from {
     opacity: 0; 
@@ -202,9 +200,9 @@
 }
 
 /* ===== BUTTONS ===== */
-.btn-primary {
-  background: #D73027;
-  color: white;
+.btn-register {
+  background: var(--color-secondary);
+  color: var(--text-on-secondary);
   padding: 10px 20px;
   border: none;
   border-radius: 10px;
@@ -214,41 +212,41 @@
   font-weight: 500;
 }
 
-.btn-primary:hover {
-  background: #B8242A;
+.btn-register:hover {
+  background: var(--color-secondary-hover);
   transform: translateY(-2px);
 }
 
-.btn-secondary {
-  background: #4A90A4;
-  color: white;
+.btn-login {
+  background: var(--color-primary);
+  color: var(--text-on-primary);
   padding: 10px 20px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition-normal);
   text-decoration: none;
   font-weight: 500;  
 }
 
-.btn-secondary:hover {
-  background: #2C5F6F;
+.btn-login:hover {
+  background: var(--color-primary-hover);
   transform: translateY(-2px);
 }
 
 .mega-close-btn {
-  background: #f1f5f9; 
+  background: var(--bg-menu-item);
   border: 0;
   border-radius: 10px; 
   padding: 8px 12px; 
   font-weight: 600; 
-  color: #334155;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .mega-close-btn:hover {
-  background: #e2e8f0;
+  background: var(--bg-menu-item-hover);
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -270,12 +268,12 @@
     align-items: center;
     gap: 8px;
     padding: 14px 16px;
-    border-bottom: 1px solid #eef1f4;
+    border-bottom: 1px solid var(--border-color-light);
     position: sticky; 
     top: 0;
-    background: linear-gradient(135deg, #4A90A4 0%, #2C5F6F 100%);
+    background: var(--color-primary);
     z-index: 2;
-    color: white;
+    color: var(--text-on-primary);
   }
 
   .mega-mobile-header .logo-img {
@@ -296,7 +294,7 @@
     display: flex;
     gap: 12px;
     padding: 16px;
-    border-bottom: 1px solid #eef1f4;
+    border-bottom: 1px solid var(--border-color-light);
   }
 
   .mega-mobile-user-actions button {
@@ -306,7 +304,7 @@
   /* ===== MOBILE ACCOUNT SECTION ===== */
   .mega-mobile-account-section {
     display: block;
-    border-bottom: 8px solid #f1f5f9;
+    border-bottom: 8px solid var(--border-color-light);
   }
 
   .account-section-title {
@@ -316,14 +314,14 @@
     padding: 16px;
     font-weight: 700;
     font-size: 1.05rem;
-    color: #2f3a45;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border-bottom: 1px solid #e2e8f0;
+    color: var(--text-primary);
+    background: var(--bg-menu-item-hover);
+    border-bottom: 1px solid var(--border-color-light);
   }
 
   .account-section-title i {
     font-size: 1.3rem;
-    color: #4A90A4;
+    color: var(--color-primary);
   }
 
   .account-menu-mobile {
@@ -338,56 +336,59 @@
     gap: 12px;
     padding: 14px 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    border-bottom: 1px solid #f1f5f9;
+    transition: var(--transition-normal);
+    border-bottom: 1px solid var(--border-color-light);
   }
 
   .account-menu-mobile li:hover {
-    background: #f8fafc;
+    background: var(--bg-menu-item-hover);
   }
 
   .account-menu-mobile li:active {
-    background: #e9f2f6;
+    background: var(--bg-menu-item-hover);
   }
 
   .account-menu-mobile li i:first-child {
     width: 24px;
     font-size: 1.1rem;
-    color: #4A90A4;
+    color: var(--color-primary);
   }
 
   .account-menu-mobile li span {
     flex: 1;
     font-weight: 500;
-    color: #2f3a45;
+    color: var(--text-primary);
   }
 
   .account-menu-mobile li .arrow {
     width: auto;
     font-size: 0.9rem;
-    color: #94a3b8;
+    color: var(--text-primary);
   }
 
   .account-menu-mobile li.logout-item {
-    color: #D73027;
-    border-top: 2px solid #f1f5f9;
+    color: var(--text-attention);
+    background: var(--bg-menu-item-attention);
+    border-top: 2px solid var(--border-color-light);
     margin-top: 8px;
   }
 
   .account-menu-mobile li.logout-item i {
-    color: #D73027;
+    color: var(--text-attention);
   }
 
   .account-menu-mobile li.logout-item:hover {
-    background: #fef2f2;
+    background: var(--bg-menu-item-attention-hover);
   }
+
+  /* ===== MOBILE CATEGORIES ===== */
 
   .mega-mobile-categories-title {
     display: block;
     font-weight: 800;
     padding: 25px 10px 5px 10px;
     font-size: 18px;
-    color: #2f3a45;
+    color: var(--text-primary);
   }
 
   .mega-grid {
@@ -409,7 +410,7 @@
   }
 
   .mega-parents li {
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border-color-light);
     border-radius: 0;
     display: flex;
     align-items: center;
@@ -432,7 +433,7 @@
 
   .acc-children .mega-col {
     padding: 10px 0;
-    border-bottom: 1px solid #eef1f4;
+    border-bottom: 1px solid var(--border-color-light);
   }
 
   .acc-children .mega-col:last-child {
