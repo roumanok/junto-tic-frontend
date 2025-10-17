@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject, switchMap, catchError, tap, takeUntil, combineLatest } from 'rxjs';
 import { of } from 'rxjs';
 
-import { OrdersService } from '../../core/services/order.service';
+import { OrderService } from '../../core/services/order.service';
 import { OrderDetail } from '../../core/models/order.model';
 import { ListingService } from '../../core/services/listing.service';
 import { SeoService } from '../../core/services/seo.service';
@@ -45,7 +45,7 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private ordersService: OrdersService,
+    private orderService: OrderService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -87,7 +87,7 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
           throw new Error('No se encontró el ID de la orden');
         }
         
-        return this.ordersService.getOrderDetail(orderId);
+        return this.orderService.getOrderDetail(orderId);
       }),
       catchError((err) => {
         console.error('Error cargando detalle de orden:', err);

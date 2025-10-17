@@ -46,6 +46,7 @@ export interface DeliveryMethod {
   description?: string;
   cost: number;
   is_active: boolean;
+  address?: string;
 }
 
 export interface MyListing {

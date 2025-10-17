@@ -1,24 +1,22 @@
-// src/app/features/listing-detail/listing-detail.component.ts
 import { Component, OnInit, OnDestroy, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, of } from 'rxjs';
 import { takeUntil, catchError, switchMap } from 'rxjs/operators';
-
-import { ListingDetailService, ListingDetail } from './services/listing-detail.service';
+import { ListingDetailService } from './services/listing-detail.service';
 import { CategoryService } from '../../core/services/category.service';
 import { ListingService } from '../../core/services/listing.service';
-import { Listing } from '../../core/models/listing.model';
+import { Listing, ListingDetail } from '../../core/models/listing.model';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { AuthService } from '../../core/services/auth.service';
-
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { ImageGalleryComponent } from '../../shared/components/image-gallery/image-gallery.component';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { CarouselComponent } from '../../shared/components/carousel/carousel.component';
-
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({
@@ -28,6 +26,8 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
     CommonModule,
     TranslatePipe,
     FormsModule,
+    LoadingSpinnerComponent,
+    ErrorStateComponent,    
     BreadcrumbComponent,
     ImageGalleryComponent,
     ListingCardComponent,
@@ -49,13 +49,13 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   private seo = inject(SeoService);
   private i18n = inject(I18nService);
   private authService = inject(AuthService);
+  private listingService = inject(ListingService);
+  private categoryService = inject(CategoryService);
+  private listingDetailService = inject(ListingDetailService);
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private listingDetailService: ListingDetailService,
-    private listingService: ListingService,    
-    private categoryService: CategoryService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -72,17 +72,13 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
         const slug = params['slug'];
         if (!slug) {
           throw new Error('No se encontró el slug del listing');
-        }
-        
-        // Por ahora, extraer ID del slug o usar el slug como ID
-        // En un futuro podrías tener un endpoint que resuelva slug -> ID
-        const listingId = this.extractIdFromSlug(slug);
-        
+        }                
+        const listingId = this.extractIdFromSlug(slug);        
         return this.listingDetailService.getListingById(listingId);
       }),
       catchError(err => {
         console.error('Error loading listing:', err);
-        this.error = 'Error al cargar el listing';
+        this.error = this.i18n.t('LISTINGS.LOADING_ERROR');
         this.loading = false;
         return of(null);
       })
@@ -103,14 +99,16 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }  
 
+  handleRetry(): void {
+    this.ngOnInit();
+  }
+
   private extractIdFromSlug(slug: string): string {
     // Extraer ID del formato: "{slug}-lid-{id}"
     const lidIndex = slug.lastIndexOf('-lid-');
     if (lidIndex !== -1) {
-      return slug.substring(lidIndex + 5); // +5 para saltar "-lid-"
-    }
-    
-    // Fallback: usar el slug completo como ID
+      return slug.substring(lidIndex + 5);
+    }    
     console.warn(`No se encontró "-lid-" en el slug: ${slug}, usando slug como ID`);
     return slug;
   }
@@ -189,6 +187,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   }  
 
   addToCart(): void {
+    /* NO IMPLEMENTADO */
     if (!this.listing) return;
     
     console.log('Agregando al carrito:', {
@@ -204,11 +203,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   purchase(): void {
     if (!this.listing) return;
 
-    // ✅ Verificar si el usuario está logueado
     if (!this.authService.isLoggedIn()) {
-      console.log('🔒 Usuario no logueado, redirigiendo a login-required');
-      
-      // Guardar compra pendiente en sessionStorage
       if (this.isBrowser) {
         sessionStorage.setItem('pendingPurchase', JSON.stringify({
           listingId: this.listing.id,
@@ -217,7 +212,6 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
         }));
       }
       
-      // Redirigir a la página de login requerido
       const currentUrl = this.router.url;
       this.router.navigate(['/login-required'], {
         queryParams: { returnUrl: currentUrl }
@@ -230,7 +224,6 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
       quantity: this.quantity
     });
 
-    // ✅ ACTUALIZADO: Navegar al checkout pasando los datos del producto via state
     this.router.navigate(['/checkout'], {
       state: {
         product: {
@@ -257,27 +250,16 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
       try {
         const pendingPurchase = JSON.parse(pendingPurchaseStr);
         
-        // Verificar que sea el mismo listing y que no haya pasado más de 10 minutos
         if (pendingPurchase.listingId === this.listing.id) {
           const timeDiff = Date.now() - pendingPurchase.timestamp;
           const tenMinutes = 10 * 60 * 1000;
           
           if (timeDiff < tenMinutes) {
-            console.log('✅ Compra pendiente encontrada, restaurando cantidad...');
-            
-            // Establecer la cantidad guardada
-            this.quantity = pendingPurchase.quantity;
-            
-            // Limpiar la compra pendiente
+            console.log('Compra pendiente encontrada, restaurando cantidad...');            
+            this.quantity = pendingPurchase.quantity;            
             sessionStorage.removeItem('pendingPurchase');
-            
-            // Mostrar mensaje al usuario (opcional, si tenés un servicio de notificaciones)
-            if (this.isBrowser) {
-              // Podés usar un toast/snackbar aquí si tenés
-              console.log('💡 Sesión iniciada. Presioná "Comprar" para continuar');
-            }
+                        
           } else {
-            // Si pasó mucho tiempo, limpiar
             sessionStorage.removeItem('pendingPurchase');
           }
         }
@@ -289,10 +271,9 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   }
 
   toggleWishlist(): void {
-    if (!this.listing) return;
-    
+    /* NO IMPLEMENTADO */
+    if (!this.listing) return;    
     console.log('Toggle wishlist para:', this.listing.id);
-
     if (this.isBrowser) {
       alert('Funcionalidad de favoritos próximamente');
     }
@@ -309,14 +290,12 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
 
   get displayImages() {
     if (this.hasImages) {
-      // Ordenar imágenes por sort_order y primary
       return this.listing!.images.sort((a, b) => {
         if (a.is_primary && !b.is_primary) return -1;
         if (!a.is_primary && b.is_primary) return 1;
         return a.sort_order - b.sort_order;
       });
-    }
-    
+    }    
     return [];
   }
 
@@ -328,8 +307,7 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
   }
 
   get discountPercentage(): number {
-    if (!this.hasDiscount) return 0;
-    
+    if (!this.hasDiscount) return 0;    
     const listPrice = parseFloat(this.listing!.list_price!);
     const currentPrice = parseFloat(this.listing!.price!);
     return Math.round(((listPrice - currentPrice) / listPrice) * 100);
@@ -347,11 +325,11 @@ export class ListingDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
-  getMethodCostDisplay(cost: string): string {
-    const numericCost = parseInt(cost);
+  getMethodCostDisplay(cost: string | number) : string {
+    const numericCost = parseInt(cost as string);
     return numericCost === 0 
-      ? 'Gratis' 
-      : `$${numericCost.toLocaleString('es-AR')}`;
+      ? this.i18n.t('COMMON.FREE')
+      : `$${this.listingService.getformattedPrice(cost)}`;
   }
 
   private setupSEO(): void {    

@@ -1,30 +1,17 @@
-<!-- src/app/features/listing-detail/listing-detail.component.html -->
 <div class="listing-detail-page">
   
-  <!-- Breadcrumb -->
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <!-- Loading State -->
-  <div *ngIf="loading" class="loading-container">
-    <div class="loading-spinner">
-      <i class="fas fa-spinner fa-spin"></i>
-      <p>{{ 'COMMON.LOADING' | translate }}</p>
-    </div>
-  </div>
+  <app-loading-spinner [message]="( 'COMMON.LOADING' | translate )" *ngIf="loading"></app-loading-spinner>
 
-  <!-- Error State -->
-  <div *ngIf="error && !loading" class="error-container">
-    <div class="error-message">
-      <i class="fas fa-exclamation-triangle"></i>
-      <h2>{{ 'LISTING.LOADING_ERROR' | translate }}</h2>
-      <p>{{ error }}</p>
-      <button class="btn-secondary" (click)="goHome()">
-        {{ 'COMMON.BACK_TO_HOME' | translate }}
-      </button>
-    </div>
-  </div>
+  <app-error-state 
+    *ngIf="error && !loading"
+    [title]="'LISTINGS.LOADING_ERROR' | translate"
+    [message]="error"
+    [retryButtonText]="'COMMON.RETRY' | translate"
+    (retry)="handleRetry()">
+  </app-error-state>
 
-  <!-- Main Content -->
   <main *ngIf="listing && !loading && !error" class="listing-container">
     
     <div class="listing-content">
@@ -112,12 +99,12 @@
 
             <div class="action-buttons">
               <button class="btn-purchase" (click)="purchase()">
-                <i class="fas fa-shopping-cart"></i>
-                Comprar
+                <i class="fas {{ 'LISTINGS.PURCHASE_ICON' | translate }}"></i>
+                {{ 'LISTINGS.PURCHASE' | translate }}
               </button>
               <button class="btn-add-cart" (click)="addToCart()">
-                <i class="fas fa-shopping-cart"></i>
-                Agregar al carrito
+                <i class="fas {{ 'LISTINGS.ADD_TO_CART_ICON' | translate }}"></i>
+                {{ 'LISTINGS.ADD_TO_CART' | translate }}
               </button>
               <button class="btn-wishlist" (click)="toggleWishlist()">
                 <i class="far fa-heart"></i>
@@ -129,7 +116,7 @@
           <div class="delivery-info" *ngIf="listing.delivery_methods && listing.delivery_methods.length > 0">
             <div class="delivery-title">
               <i class="fas fa-truck"></i>
-              Métodos de entrega
+              {{ 'LISTINGS.DELIVERY_METHODS' | translate }}
             </div>
             <div class="delivery-methods">
               <div *ngFor="let method of listing.delivery_methods" class="delivery-method">
@@ -150,16 +137,14 @@
             </div>
           </div>
 
-          <!-- Default shipping info if no delivery methods -->
+          <!-- Default si no hay delivery methods -->
           <div class="shipping-info" *ngIf="!listing.delivery_methods || listing.delivery_methods.length === 0">
             <div class="shipping-title">
               <i class="fas fa-truck"></i>
-              Información de envío
+              {{ 'LISTINGS.DELIVERY_METHODS' | translate }}
             </div>
             <div class="shipping-details">
-              • Envío gratis en compras mayores a $50<br>
-              • Entrega estimada: 2-3 días hábiles<br>
-              • Consulta métodos de entrega disponibles
+              {{ 'LISTINGS.NO_DELIVERY_METHODS' | translate }}<br>
             </div>
           </div>
 
@@ -172,7 +157,7 @@
     <!-- Full Description Section -->
     <section class="description-section" *ngIf="listing.long_description">
       <div class="section-container">
-        <h2>Descripción completa</h2>
+        <h2>{{ 'LISTINGS.DESCRIPTION_TITLE' | translate }}</h2>
         <div class="description-content">
           <p>{{ listing.long_description }}</p>
         </div>
@@ -182,7 +167,7 @@
     <!-- Related Products -->
     <section class="related-section" *ngIf="relatedListings.length > 0">
       <div class="section-container">
-        <app-carousel title="Te puede interesar">
+        <app-carousel title="{{ 'LISTINGS.RELATED' | translate }}">
           <app-listing-card 
             *ngFor="let relatedListing of relatedListings" 
             [listing]="relatedListing"

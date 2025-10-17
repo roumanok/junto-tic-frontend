@@ -61,7 +61,6 @@ export class SearchService {
         return this.apiService.getPaginated<Listing>(endpoint, params);
       }),
       switchMap(response => {
-        // Transformar la respuesta a nuestro formato SearchResult
         const result: SearchResult = {
           items: response.items,
           pagination: response.pagination,
@@ -74,6 +73,7 @@ export class SearchService {
   }
 
   getSearchSuggestions(query: string): Observable<string[]> {
+    /* NO IMPLEMENTADA */
     if (query.length < 2) {
       return new Observable(observer => observer.next([]));
     }

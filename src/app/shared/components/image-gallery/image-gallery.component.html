@@ -1,53 +1,52 @@
 <div class="image-gallery">
-      <div class="main-image-container" (click)="openZoom()">
-        <img 
-          *ngIf="images.length > 0"
-          [src]="getImageUrl(images[currentImageIndex]) | async"
-          [alt]="images[currentImageIndex].alt_text || title || 'Listing Image'"
-          class="main-image" 
-          id="mainImage">
-        <div *ngIf="images.length === 0" class="placeholder-image">
-          <i class="fas fa-image"></i>
-          <p>{{'LISTINGS.GALLERY.NO_IMAGES' | translate}}</p>
-        </div>
-        <button 
-          *ngIf="images.length > 1"
-          class="gallery-nav prev" 
-          (click)="previousImage($event)">
-          ‹
-        </button>
-        <button 
-          *ngIf="images.length > 1"
-          class="gallery-nav next" 
-          (click)="nextImage($event)">
-          ›
-        </button>
-      </div>
-      
-      <div class="thumbnail-gallery" *ngIf="images.length > 1">
-        <div 
-          *ngFor="let image of images; let i = index"
-          class="thumbnail"
-          [class.active]="i === currentImageIndex"
-          (click)="changeImage(i)">
-          <img 
-            [src]="getImageUrl(image) | async"
-            [alt]="image.alt_text || 'Thumbnail'"
-            loading="lazy">
-        </div>
-      </div>
+  <div class="main-image-container" (click)="openZoom()">
+    <img 
+      *ngIf="images.length > 0"
+      [src]="getImageUrl(images[currentImageIndex]) | async"
+      [alt]="images[currentImageIndex].alt_text || title || 'Imagen principal'"
+      class="main-image" 
+      id="mainImage">
+    <div *ngIf="images.length === 0" class="placeholder-image">
+      <i class="fas fa-image"></i>
+      <p>{{'LISTINGS.GALLERY.NO_IMAGES' | translate}}</p>
     </div>
-
-    <!-- Zoom Overlay -->
+    <button 
+      *ngIf="images.length > 1"
+      class="gallery-nav prev" 
+      (click)="previousImage($event)">
+      ‹
+    </button>
+    <button 
+      *ngIf="images.length > 1"
+      class="gallery-nav next" 
+      (click)="nextImage($event)">
+      ›
+    </button>
+  </div>
+  
+  <div class="thumbnail-gallery" *ngIf="images.length > 1">
     <div 
-      class="zoom-overlay" 
-      id="zoomOverlay" 
-      (click)="closeZoom()"
-      [class.show]="showZoom">
-      <div class="close-zoom" (click)="closeZoom()">×</div>
+      *ngFor="let image of images; let i = index"
+      class="thumbnail"
+      [class.active]="i === currentImageIndex"
+      (click)="changeImage(i)">
       <img 
-        *ngIf="images.length > 0"
-        [src]="getImageUrl(images[currentImageIndex]) | async"
-        alt="Imagen ampliada" 
-        class="zoom-image">
+        [src]="getImageUrl(image) | async"
+        [alt]="image.alt_text || 'Imagen ' + (i + 1)"
+        loading="lazy">
     </div>
+  </div>
+</div>
+    
+<div 
+  class="zoom-overlay" 
+  id="zoomOverlay" 
+  (click)="closeZoom()"
+  [class.show]="showZoom">
+  <div class="close-zoom" (click)="closeZoom()">×</div>
+  <img 
+    *ngIf="images.length > 0"
+    [src]="getImageUrl(images[currentImageIndex]) | async"
+    alt="Imagen ampliada" 
+    class="zoom-image">
+</div>

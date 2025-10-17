@@ -1,55 +1,36 @@
 <div class="my-orders-page">
-  <!-- Breadcrumb -->
+
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <!-- Page Header -->
-  <div class="page-header">
-    <div class="container">
-      <div class="header-info">
-        <h1 class="page-title">
-          {{ 'PAGES.MY_ORDERS.SECTION_TITLE' | translate }}
-        </h1>
-      </div>
-    </div>
-  </div>
+  <app-page-header [title]="('PAGES.MY_ORDERS.SECTION_TITLE' | translate)"></app-page-header>
 
-  <!-- Loading State -->
-  <div *ngIf="loading()" class="loading-container">
-    <div class="spinner"></div>
-    <p>Cargando tus compras...</p>
-  </div>
+  <app-loading-spinner [message]="( 'COMMON.LOADING' | translate )" *ngIf="loading()"></app-loading-spinner>
 
-  <!-- Error State -->
-  <div *ngIf="error() && !loading()" class="error-container">
-    <i class="fas fa-exclamation-triangle"></i>
-    <h3>Error al cargar las compras</h3>
-    <p>{{ error() }}</p>
-    <button class="btn btn-primary" (click)="loadOrders()">
-      Reintentar
-    </button>
-  </div>
+  <app-error-state 
+    *ngIf="error() && !loading()"
+    [title]="'PAGES.MY_ORDERS.LOADING_ERROR' | translate"
+    [message]="error() || ( 'ERRORS.GENERAL' | translate )"
+    [retryButtonText]="'COMMON.RETRY' | translate"
+    (retry)="handleRetry()">
+  </app-error-state>
 
-  <!-- Empty State -->
-  <div *ngIf="!loading() && !error() && orders().length === 0" class="empty-state">
-    <i class="fas fa-shopping-bag"></i>
-    <h3>Aún no realizaste ninguna compra</h3>
-    <p>Cuando realices tu primera compra, aparecerá acá</p>
-    <a routerLink="/" class="btn btn-primary">
-      Ir a la tienda
-    </a>
-  </div>
+  <app-empty-state 
+    *ngIf="!loading() && !error() && orders().length === 0"
+    [title]="'PAGES.MY_ORDERS.EMPTY_TITLE' | translate"
+    [message]="'PAGES.MY_ORDERS.EMPTY_DESC' | translate"
+    icon="fa-shopping-bag"
+    [actionText]="'COMMON.BACK_TO_HOME' | translate"
+    actionRoute="/">
+  </app-empty-state>  
 
-  <!-- Orders List -->
   <div *ngIf="!loading() && !error() && orders().length > 0" class="orders-container">
     
-    <!-- Orders Grid -->
     <div class="orders-grid">
       <div 
         *ngFor="let order of orders()" 
         class="order-card"
         (click)="viewOrderDetail(order.id)"
       >
-        <!-- Order Header -->
         <div class="order-card-header">
           <div class="order-info">
             <span class="order-title">{{'COMMON.ORDER' | translate}}</span>
@@ -62,23 +43,22 @@
             </span>
           </div>
           <div class="order-status">
-            <button class="btn btn-primary btn-sm">
+            <button class="btn btn-details btn-sm">
               <i class="fas fa-eye"></i>
-              Ver detalle
+              {{ 'COMMON.VIEW_DETAILS' | translate }}
             </button>
-            <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+            <span class="status-badge" [ngClass]="'status-' + order.status">
               {{ getStatusLabel(order.status) }}
             </span>
           </div>
         </div>
 
-        <!-- Order Body -->
         <div class="order-card-body">
           <div class="order-details">
             <div class="detail-item">
               <div class="detail-title">
                 <i class="fas fa-box"></i>
-                <span>Productos</span>
+                <span>{{ 'PAGES.MY_ORDERS.LISTINGS' | translate }}</span>
               </div>
               <div 
                 *ngFor="let item of order.items" 
@@ -90,11 +70,11 @@
             <div class="detail-item">
               <div class="detail-title">
                 <i class="fas fa-credit-card"></i>
-                <span>Estado del pago</span>
+                <span>{{ 'PAGES.MY_ORDERS.PAYMENT_STATUS' | translate }}</span>
               </div>              
               <span 
                 class="payment-status" 
-                [ngClass]="getPaymentStatusClass(order.payment_status)"
+                [ngClass]="'payment-' + order.payment_status"
               >
                 {{ getPaymentStatusLabel(order.payment_status) }}
               </span>
@@ -102,23 +82,22 @@
             <div class="detail-item">
               <div class="detail-title">
                 <i class="fas fa-truck"></i>
-                <span>Método de entrega</span>
+                <span>{{ 'PAGES.MY_ORDERS.DELIVERY_METHOD' | translate }}</span>
               </div>               
-              <span>{{ getDeliveryMethodLabel(order.delivery_method_type) }}</span>
+              <span>{{ order.delivery_method.name }}</span>
             </div>  
             <div class="detail-item">
               <div class="detail-title">
                 <i class="fas fa-dollar-sign"></i>
-                <span>Total</span>
+                <span>{{ 'PAGES.MY_ORDERS.TOTAL' | translate }}</span>
               </div>               
-              <span class="total-value">{{ formatPrice(order.total) }}</span>
+              <span class="total-value">${{ getFormattedPrice(order.total) }}</span>
             </div>          
           </div>                   
         </div>        
       </div>
     </div>
 
-    <!-- Pagination -->
     <div class="pagination-container" *ngIf="totalPages > 1">
       <app-pagination
         [currentPage]="currentPage"
@@ -127,5 +106,6 @@
         (pageChange)="onPageChange($event)"
       ></app-pagination>
     </div>
+
   </div>
 </div>

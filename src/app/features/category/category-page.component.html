@@ -1,50 +1,29 @@
 <div class="category-page">
-  <!-- Breadcrumbs -->
+  
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <!-- Category Header -->
-  <div class="category-header" *ngIf="category && !loading">
-    <div class="container">
-      <div class="category-info">
-        <h1 class="category-title">{{ category.name || category.slug }}</h1>
-        <p class="category-description" *ngIf="category.description">
-          {{ category.description }}
-        </p>
-      </div>
-    </div>
-  </div>
+  <app-page-header [title]="category?.name || ''" [description]="category?.description"></app-page-header>
 
-  <!-- Main Content -->
   <div class="container">
-    <!-- Loading State -->
-    <div class="loading-state" *ngIf="loading">
-      <div class="loading-spinner">
-        <div class="spinner"></div>
-        <p>{{ 'COMMON.LOADING' | translate }}</p>
-      </div>
-    </div>
+  
+    <app-loading-spinner [message]="( 'COMMON.LOADING' | translate )" *ngIf="loading"></app-loading-spinner>
 
-    <!-- Error State -->
-    <div class="error-state" *ngIf="error && !loading">
-      <div class="error-message">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>{{ 'CATEGORY.LOADING_ERROR' | translate }}</h3>
-        <p>{{ error }}</p>
-        <button class="btn btn-primary" (click)="ngOnInit()">
-          {{ 'COMMON.RETRY' | translate }}
-        </button>
-      </div>
-    </div>
+    <app-error-state 
+      *ngIf="error && !loading"
+      [title]="'LISTINGS.LOADING_ERROR' | translate"
+      [message]="error"
+      [retryButtonText]="'COMMON.RETRY' | translate"
+      (retry)="handleRetry()">
+    </app-error-state>
 
-    <!-- Empty State -->
-    <div class="empty-state" *ngIf="!loading && !error && listings.length === 0">
-      <div class="empty-message">
-        <i class="fas fa-box-open"></i>
-        <h3>{{ 'LISTINGS.NO_RESULTS' | translate }}</h3>
-        <p *ngIf="category">No hay productos disponibles en {{ category.name || category.slug }} en este momento.</p>
-        <a routerLink="/" class="btn btn-primary">{{ 'COMMON.BACK_TO_HOME' | translate }}</a>
-      </div>
-    </div>
+    <app-empty-state 
+      *ngIf="!loading && !error && listings.length === 0"
+      [title]="'CATEGORY.EMPTY_TITLE' | translate"
+      [message]="'CATEGORY.EMPTY_DESC' | translate"
+      icon="fa-box"
+      [actionText]="'COMMON.BACK_TO_HOME' | translate"
+      actionRoute="/">
+    </app-empty-state>
 
     <!-- Listings Grid -->
     <div class="listings-section" *ngIf="!loading && !error && listings.length > 0">

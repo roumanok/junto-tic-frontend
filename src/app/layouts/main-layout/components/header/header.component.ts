@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { ThemeService } from '../../../../core/services/theme.service';
-
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({
@@ -16,13 +16,35 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit {  
+export class HeaderComponent implements OnInit, AfterViewInit {  
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
   constructor(
-    public themeService: ThemeService,
+    private themeService: ThemeService,
     private router: Router
   ) {}
 
-  ngOnInit(): void {}  
+  ngOnInit(): void {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.updateSearchInput(event.urlAfterRedirects);
+    });
+  }  
+
+  ngAfterViewInit(): void {
+    this.updateSearchInput(this.router.url);
+  }
+
+  private updateSearchInput(url: string): void {
+    const match = url.match(/\/buscar\/([^?]+)/);
+    if (match && this.searchInput) {
+      const searchTerm = decodeURIComponent(match[1]);
+      this.searchInput.nativeElement.value = searchTerm;
+    } else if (this.searchInput && !url.includes('/buscar/')) {
+      this.searchInput.nativeElement.value = '';
+    }
+  }
 
   onSearch(input: HTMLInputElement | Event): void {
     let searchTerm = '';
@@ -35,11 +57,6 @@ export class HeaderComponent implements OnInit {
 
     if (searchTerm) {
       this.router.navigate(['/buscar', searchTerm]);
-      if (input instanceof HTMLInputElement) {
-        input.value = '';
-      } else if (input.target instanceof HTMLInputElement) {
-        input.target.value = '';
-      }
     }
   }
 
@@ -48,6 +65,10 @@ export class HeaderComponent implements OnInit {
       event.preventDefault();
       this.onSearch(event.target as HTMLInputElement);
     }
+  }
+
+  getLogoUrl(): string {
+    return this.themeService.getLogoUrl();
   }
 
 }

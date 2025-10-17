@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
-import { OrdersService } from '../../core/services/order.service';
+import { OrderService } from '../../core/services/order.service';
 import { BreadcrumbComponent, BreadcrumbItem } from 'src/app/shared/components/breadcrumb/breadcrumb.component';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
@@ -67,7 +67,7 @@ export class MySalesPageComponent implements OnInit, OnDestroy {
   
   private destroy$ = new Subject<void>();
   private authService = inject(AuthService);
-  private ordersService = inject(OrdersService);
+  private orderService = inject(OrderService);
   private listingService = inject(ListingService);
   private cdnService = inject(CdnService);
   private router = inject(Router);
@@ -90,7 +90,7 @@ export class MySalesPageComponent implements OnInit, OnDestroy {
   public loadSales(): void {
     this.loading.set(true);
     
-    this.ordersService.getMySales(this.currentPage(), this.pageSize)
+    this.orderService.getMySales(this.currentPage(), this.pageSize)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: SalesResponse) => {

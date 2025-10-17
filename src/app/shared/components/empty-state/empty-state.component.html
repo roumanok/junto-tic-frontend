@@ -1,0 +1,25 @@
+<div class="empty-state" [style.min-height]="minHeight">
+  <div class="empty-message">
+    <i class="fas" [ngClass]="icon"></i>
+    <h3>{{ title }}</h3>
+    <p>{{ message }}</p>
+    
+    <!-- Link interno (routerLink) -->
+    <a 
+      *ngIf="actionText && actionRoute" 
+      [routerLink]="actionRoute" 
+      class="btn btn-primary">
+      <i class="fas fa-arrow-left"></i>
+      {{ actionText }}
+    </a>
+
+    <!-- Link externo (href) -->
+    <a 
+      *ngIf="actionText && actionExternal" 
+      [href]="actionExternal" 
+      class="btn btn-primary">
+      <i class="fas fa-external-link-alt"></i>
+      {{ actionText }}
+    </a>
+  </div>
+</div>

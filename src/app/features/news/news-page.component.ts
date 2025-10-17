@@ -9,6 +9,9 @@ import { CommunityService } from '../../core/services/community.service';
 import { Listing } from '../../core/models/listing.model';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
+import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
@@ -21,6 +24,9 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
   imports: [
     CommonModule,
     TranslatePipe,
+    LoadingSpinnerComponent,
+    ErrorStateComponent,
+    EmptyStateComponent,
     BreadcrumbComponent,
     PageHeaderComponent,
     ListingCardComponent,
@@ -92,6 +98,10 @@ export class NewsPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  handleRetry(): void {
+    this.ngOnInit();
   }
 
   private loadNewsListings(page: number = 1) {

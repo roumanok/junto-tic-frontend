@@ -24,6 +24,18 @@ $theme: mat.define-theme((
   --color-primary-hover: #2C5F6F;
   --color-secondary: #D73027;
   --color-secondary-hover: #B8242A;
+
+  /* === COLORES DE ESTADOS DE ORDEN === */
+  --order-status-pending: #856404;
+  --order-status-processing: #004085;
+  --order-status-delivered: #155724;
+  --order-status-cancelled: #721c24;
+
+/* === COLORES DE ESTADOS DE PAGO === */
+  --payment-status-pending: #856404;
+  --payment-status-completed: #155724;
+  --payment-status-failed: #721c24;
+  --payment-status-refunded: #6c757d;
   
   /* === COLORES DE FONDO === */
   --bg-main: #FFFFFF;
@@ -39,6 +51,7 @@ $theme: mat.define-theme((
   --bg-highlight-strip: #F5F5F5;
   --bg-footer: #2C2C2C;
   --bg-card: #FFFFFF;
+  --bg-card-section: #f8f9fa;
   --bg-card-image: #f5f8fa;
   --bg-card-badge-out-of-stock: #949494;
   --bg-carousel-button: #FFFFFF;
@@ -46,11 +59,36 @@ $theme: mat.define-theme((
   --bg-pagination-button: #FFFFFF;
   --bg-pagination-button-disabled: #f8f9fa;
   --bg-page-header: #e9ecef;
+  --bg-page-section: #f8f9fa;
+  --bg-form-input: #FFFFFF;
+  --bg-form-input-focus: #FFFFFF;
+  --bg-form-button: #d6d6d6;
+  --bg-form-button-hover: #bfbfbf;
+  --bg-listing-image: #f8f9fa;
+  --bg-listing-image-zoom: rgba(0,0,0,0.9);
+  --bg-listing-image-nav: rgba(0,0,0,0.5);
+  --bg-listing-image-nav-hover: rgba(0,0,0,0.8);
+  --bg-listing-detail: #f8f9fa;  
+  --bg-listing-inactive-msg: #ffdede;
+  --bg-my-orders-page: #f8f9fa;
+
+  /* === COLORES DE FONDO DE ESTADOS DE ORDEN === */
+  --bg-order-status-pending: #fff3cd;
+  --bg-order-status-processing: #cce5ff;
+  --bg-order-status-delivered: #d4edda;
+  --bg-order-status-cancelled: #f8d7da;
   
+  /* === COLORES DE FONDO DE PAGO === */
+  --bg-payment-status-pending: #fff3cd;
+  --bg-payment-status-completed: #d4edda;
+  --bg-payment-status-failed: #f8d7da;
+  --bg-payment-status-refunded: #e2e3e5;
+
   /* === COLORES DE TEXTO === */
   --text-primary: #333333;
   --text-secondary: #666666;
   --text-light: #999999;
+  --text-placeholder: #9ca3af;
   --text-on-primary: #FFFFFF;
   --text-on-secondary: #FFFFFF;
   --text-attention: #D73027;
@@ -60,7 +98,7 @@ $theme: mat.define-theme((
   /* === COLORES DE BORDES === */
   --border-color-light: #f1f5f9;
   --border-color-normal: #E0E0E0;
-  --border-color-dark: #B0B0B0;
+  --border-color-dark: #B0B0B0;  
   --border-radius-sm: 5px;
   --border-radius-md: 10px;
   --border-radius-lg: 15px;

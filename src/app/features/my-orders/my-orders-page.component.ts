@@ -3,15 +3,16 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Subject, switchMap, catchError, tap, takeUntil } from 'rxjs';
 import { of } from 'rxjs';
-
 import { Order } from '../../core/models/order.model';
-
-import { OrdersService } from '../../core/services/order.service';
+import { OrderService } from '../../core/services/order.service';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { ListingService } from '../../core/services/listing.service';
-
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
@@ -21,7 +22,11 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
   imports: [
     CommonModule,
     RouterModule,
+    LoadingSpinnerComponent,
+    ErrorStateComponent,
+    EmptyStateComponent,
     BreadcrumbComponent,
+    PageHeaderComponent,
     PaginationComponent,
     TranslatePipe
   ],
@@ -45,11 +50,11 @@ export class MyOrdersPageComponent implements OnInit, OnDestroy {
   private seo = inject(SeoService);
   private i18n = inject(I18nService);
   private listingService = inject(ListingService);
+  private orderService = inject(OrderService);
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private ordersService: OrdersService,
+    private router: Router,    
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -66,6 +71,10 @@ export class MyOrdersPageComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  handleRetry(): void {
+    this.ngOnInit();
+  }
+
   public loadOrders(): void {
     this.route.queryParams.pipe(
       takeUntil(this.destroy$),
@@ -75,17 +84,16 @@ export class MyOrdersPageComponent implements OnInit, OnDestroy {
       }),
       switchMap((queryParams) => {
         this.currentPage = parseInt(queryParams['page']) || 1;
-        return this.ordersService.getUserOrders(this.currentPage, this.itemsPerPage);
+        return this.orderService.getUserOrders(this.currentPage, this.itemsPerPage);
       }),
       catchError((err) => {
         console.error('Error cargando órdenes:', err);
-        this.error.set(err.message || 'Error al cargar las órdenes');
+        this.error.set(err.message || this.i18n.t('PAGES.MY_ORDERS.LOADING_ERROR'));
         this.loading.set(false);
         return of(null);
       })
     ).subscribe((response) => {
-      if (response) {
-        console.log('📦 Órdenes cargadas:', response);
+      if (response) {        
         const ordersData = response.orders || [];
         this.orders.set(ordersData);
         
@@ -114,69 +122,7 @@ export class MyOrdersPageComponent implements OnInit, OnDestroy {
       'PAGES.MY_ORDERS.DESCRIPTION',
       { communityName }
     );
-  }
-
-  getStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'pending': 'status-pending',
-      'processing': 'status-processing',
-      'delivered': 'status-delivered',
-      'cancelled': 'status-cancelled'
-    };
-    return statusMap[status] || 'status-pending';
-  }
-
-  getPaymentStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'pending': 'payment-pending',
-      'approved': 'payment-approved',
-      'cancelled': 'payment-cancelled',
-      'refunded': 'payment-refunded'
-    };
-    return statusMap[status] || 'payment-pending';
-  }
-
-  getStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      'pending': 'Pendiente',
-      'processing': 'En preparación',
-      'delivered': 'Entregado',
-      'cancelled': 'Cancelado'
-    };
-    return labels[status] || status;
-  }
-
-  getPaymentStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      'pending': 'Pendiente',
-      'approved': 'Pago aprobado',
-      'cancelled': 'Pago cancelado',
-      'refunded': 'Reembolsado'
-    };
-    return labels[status] || status;
-  }
-
-  getDeliveryMethodLabel(type: string): string {
-    const labels: { [key: string]: string } = {
-      'pickup': 'Retiro en local',
-      'delivery': 'Envío a domicilio'
-    };
-    return labels[type] || type;
-  }
-
-  formatDate(dateString: string): string {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-AR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-
-  formatPrice(price: string | number): string {    
-    return '$' + this.listingService.getformattedPrice(price);    
-  }
+  }  
 
   getItemsCount(items: any[]): number {
     if (!items || items.length === 0) return 0;
@@ -195,4 +141,21 @@ export class MyOrdersPageComponent implements OnInit, OnDestroy {
       queryParamsHandling: 'merge'
     });
   }
+
+  formatDate(dateString: string): string {
+    return this.orderService.formatDate(dateString);
+  }
+
+  getStatusLabel(status: string): string {
+    return this.orderService.getStatusLabel(status);
+  }
+
+  getPaymentStatusLabel(status: string): string {
+    return this.orderService.getPaymentStatusLabel(status);
+  }
+
+  getFormattedPrice(price: string | number): string {
+    return this.listingService.getformattedPrice(price);
+  }
+
 }

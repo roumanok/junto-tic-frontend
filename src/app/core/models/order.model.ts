@@ -1,3 +1,5 @@
+import { DeliveryMethod } from "./listing.model";
+
 export interface OrderDetail {
   id: string;
   public_id: string;
@@ -31,6 +33,7 @@ export interface OrderDetail {
   delivery_province: string;
   delivery_notes: string;
   items: OrderItem[];
+  delivery_method: DeliveryMethod;
 }
 
 export interface OrderItem {
@@ -54,6 +57,7 @@ export interface Order {
   status: string;
   payment_status: string;
   items: any[];
+  delivery_method: DeliveryMethod;
 }
 
 export interface OrdersResponse {

@@ -1,8 +1,7 @@
 <div class="search-page">
-  <!-- Breadcrumb -->
+  
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <!-- Header de la página -->
   <div class="search-header">
     <h1 class="search-title">
       <span *ngIf="searchResult?.query">
@@ -25,9 +24,8 @@
     </div>
   </div>
 
-  <!-- Contenido principal -->
   <div class="search-content">
-    <!-- Sidebar con filtros -->
+    
     <aside class="search-filters">
       <div class="filters-card">
         <div class="filters-header">
@@ -101,12 +99,10 @@
       </div>
     </aside>
 
-    <!-- Área de resultados -->
     <main class="search-results">      
 
-      <!-- Resultados -->
       <div *ngIf="!loading && searchResult" class="results-container">
-        <!-- Grid de productos -->
+      
         <div class="listings-grid" *ngIf="searchResult.items.length > 0">
           <app-listing-card 
             *ngFor="let listing of searchResult.items; trackBy: trackByListingId"
@@ -114,7 +110,6 @@
           </app-listing-card>
         </div>
 
-        <!-- Sin resultados -->
         <div class="no-results" *ngIf="searchResult.items.length === 0">
           <div class="no-results-content">
             <div class="no-results-icon">
@@ -128,7 +123,6 @@
           </div>
         </div>
 
-        <!-- Paginación -->
         <app-pagination 
           *ngIf="searchResult.items.length > 0"
           [currentPage]="searchResult.pagination.page"
@@ -138,7 +132,6 @@
         </app-pagination>
       </div>
 
-      <!-- Estado inicial (sin búsqueda) -->
       <div *ngIf="!loading && !searchResult" class="search-empty">
         <div class="search-empty-content">
           <div class="search-empty-icon">
@@ -151,6 +144,8 @@
           <p>{{ 'SEARCH.EMPTY_MESSAGE' | translate }}</p>
         </div>
       </div>
+
     </main>
+
   </div>
 </div>

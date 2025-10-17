@@ -1,0 +1,26 @@
+{
+  "COMMUNITY.NAME": "Junto a TIC",
+
+  "COMMUNITY.SOCIAL.INSTAGRAM": "https://instagram.com/juntoatic",
+  "COMMUNITY.SOCIAL.FACEBOOK": "https://facebook.com/juntoatic",
+  "COMMUNITY.SOCIAL.LINKEDIN": "https://linkedin.com/juntoatic",  
+  
+  "HEADER.TITLE": "Junto a TIC",
+  "HEADER.SUBTITLE": "Red económica con propósito",
+  
+  "SEARCH.PLACEHOLDER": "Buscar propósitos...",
+
+  "PAGES.HOME.HERO.TITLE": "Bienvenido a la Junto a TIC",
+  "PAGES.HOME.HERO.SUBTITLE": "Donde la solidaridad y la economía se encuentran",
+
+  "PAGES.HOME:HIGHLIGHTS.FIRST.ICON": "fa-hands-holding-heart",
+  "PAGES.HOME:HIGHLIGHTS.FIRST.TITLE": "AYUDÁ DONANDO",
+  "PAGES.HOME:HIGHLIGHTS.FIRST.DESCRIPTION": "Doná para apoyar causas sociales.",
+  "PAGES.HOME:HIGHLIGHTS.SECOND.ICON": "fa-certificate",
+  "PAGES.HOME:HIGHLIGHTS.SECOND.TITLE": "PRODUCTOS OFICIALES",
+  "PAGES.HOME:HIGHLIGHTS.SECOND.DESCRIPTION": "Productos y servicios con licencia oficial de Club Tu Barrio.",
+  "PAGES.HOME:HIGHLIGHTS.THIRD.ICON": "fa-shield-halved",
+  "PAGES.HOME:HIGHLIGHTS.THIRD.TITLE": "PAGO SEGURO",
+  "PAGES.HOME:HIGHLIGHTS.THIRD.DESCRIPTION": "Para que compres con tranquilidad"
+
+}

@@ -3,12 +3,15 @@ import { Observable, tap, catchError, map } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { ApiService } from '../../core/services/api.service';
 import { OrderDetail, OrdersResponse } from '../models/order.model';
+import { I18nService } from './i18n.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OrdersService {
+export class OrderService {
   private apiService = inject(ApiService);
+  private i18n = inject(I18nService);
 
   /**
    * Obtener listado de órdenes del usuario
@@ -92,4 +95,35 @@ export class OrdersService {
       })
     );
   }
+
+  getStatusLabel(status: string): string {
+    const labels: { [key: string]: string } = {
+      'pending': this.i18n.t('ORDER.STATUS.PENDING'),
+      'processing': this.i18n.t('ORDER.STATUS.PROCESSING'),
+      'delivered': this.i18n.t('ORDER.STATUS.DELIVERED'),
+      'cancelled': this.i18n.t('ORDER.STATUS.CANCELLED')
+    };
+    return labels[status] || status;
+  }
+
+  getPaymentStatusLabel(status: string): string {
+    const labels: { [key: string]: string } = {
+      'pending': this.i18n.t('ORDER.PAYMENT_STATUS.PENDING'),
+      'approved': this.i18n.t('ORDER.PAYMENT_STATUS.APPROVED'),
+      'cancelled': this.i18n.t('ORDER.PAYMENT_STATUS.CANCELLED'),
+      'refunded': this.i18n.t('ORDER.PAYMENT_STATUS.REFUNDED')
+    };
+    return labels[status] || status;
+  }
+
+  formatDate(dateString: string): string {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString(environment.locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
 }

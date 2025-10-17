@@ -3,13 +3,16 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CommunityService } from 'src/app/core/services/community.service';
+import { I18nService } from 'src/app/core/services/i18n.service';
+import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-auth-callback',
   standalone: true,
+  imports: [TranslatePipe],
   template: `
     <div class="callback-container">
-      <h3>Procesando autenticación...</h3>
+      <h3>{{ 'PAGES.LOGIN.PROCESSING' | translate }}</h3>
       <p>{{ statusMessage }}</p>
     </div>
   `,
@@ -29,8 +32,9 @@ export class AuthCallbackComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private communityService = inject(CommunityService);
+  private i18n = inject(I18nService);
 
-  statusMessage = 'Redirigiendo...';
+  statusMessage = this.i18n.t('PAGES.LOGIN.SUCCESS');
 
   async ngOnInit(): Promise<void> {
     console.log('=== AUTH CALLBACK ===');
@@ -44,7 +48,7 @@ export class AuthCallbackComponent implements OnInit {
       
       if (isAuth) {
         // IMPORTANTE: Cargar los datos del usuario desde la API
-        this.statusMessage = 'Cargando tu perfil...';
+        this.statusMessage = this.i18n.t('PAGES.LOGIN.PROFILE_LOADING');
         
         // Esperar a que el community ID esté disponible
         await this.communityService.ensureLoaded();
@@ -65,7 +69,7 @@ export class AuthCallbackComponent implements OnInit {
       }
     } catch (error) {
       console.error('❌ Error en el proceso de autenticación:', error);
-      this.statusMessage = 'Error al procesar la autenticación';
+      this.statusMessage = this.i18n.t('PAGES.LOGIN.ERROR');
       setTimeout(() => {
         this.router.navigate(['/']);
       }, 2000);

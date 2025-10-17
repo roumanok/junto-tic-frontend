@@ -1,0 +1,14 @@
+<div class="error-state" [style.min-height]="minHeight">
+  <div class="error-message">
+    <i class="fas" [ngClass]="icon"></i>
+    <h3>{{ title }}</h3>
+    <p>{{ message }}</p>
+    <button 
+      *ngIf="showRetryButton" 
+      class="btn btn-primary" 
+      (click)="onRetry()">
+      <i class="fas fa-redo"></i>
+      {{ retryButtonText }}
+    </button>
+  </div>
+</div>

@@ -9,6 +9,9 @@ import { CommunityService } from '../../core/services/community.service';
 import { Listing } from '../../core/models/listing.model';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
@@ -21,6 +24,9 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
   imports: [
     CommonModule,
     TranslatePipe,
+    LoadingSpinnerComponent,
+    ErrorStateComponent,
+    EmptyStateComponent,
     BreadcrumbComponent,
     PageHeaderComponent,
     ListingCardComponent,
@@ -94,6 +100,10 @@ export class OffersPageComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  handleRetry(): void {
+    this.ngOnInit();
+  }
+
   private loadOffersListings(page: number = 1) {
     return this.communityService.waitForId$().pipe(
       switchMap((communityId: string) => {
@@ -133,7 +143,7 @@ export class OffersPageComponent implements OnInit, OnDestroy {
 
   trackByListing(index: number, listing: Listing): string {
     return listing.id;
-  }
+  }  
 
   private setupSEO(): void {    
     const communityName = this.i18n.t('COMMUNITY.NAME'); 

@@ -19,14 +19,15 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 export class FooterComponent implements OnInit {
   currentYear = new Date().getFullYear();
   private i18n = inject(I18nService);
-
-  constructor(
-    public themeService: ThemeService
-  ) {}
+  private themeService = inject(ThemeService);
 
   ngOnInit(): void {}
 
   getCopyrightText(): string {
     return this.i18n.t('FOOTER.COPYRIGHT', { currentYear: this.currentYear });
+  }
+
+  getLogoUrl(): string {
+    return this.themeService.getLogoUrl();
   }
 }

@@ -1,20 +1,17 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Subject, combineLatest } from 'rxjs';
-import { takeUntil, switchMap, map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
+import { takeUntil, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SearchService, SearchFilters, SearchResult } from './services/search.service';
 import { CategoryService } from '../../core/services/category.service';
 import { SeoService } from '../../core/services/seo.service';
 import { Category } from '../../core/models/category.model';
 import { Listing } from '../../core/models/listing.model';
-
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
-
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { I18nService } from 'src/app/core/services/i18n.service';
 
@@ -35,23 +32,23 @@ import { I18nService } from 'src/app/core/services/i18n.service';
 })
 export class SearchPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+
+  private seo = inject(SeoService);
+  private i18n = inject(I18nService);
+  private categoryService = inject(CategoryService);
+  private searchService = inject(SearchService)
   
   searchForm: FormGroup;
   searchResult: SearchResult | null = null;
   categories: Category[] = [];
-  loading = false;
-  
   breadcrumbItems: BreadcrumbItem[] = [];
-  currentPage = 1;
+  loading = false;  
+  currentPage = 1;   
   
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
-    private searchService: SearchService,
-    private categoryService: CategoryService,
-    private seo: SeoService,
-    private i18n: I18nService
+    private fb: FormBuilder  
   ) {
     this.searchForm = this.fb.group({
       category_id: [''],
@@ -151,9 +148,9 @@ export class SearchPageComponent implements OnInit, OnDestroy {
 
   private updateBreadcrumb(searchTerm: string): void {
     this.breadcrumbItems = [
-      { label: 'Inicio', url: '/' },
+      { label: this.i18n.t('COMMON.HOME'), url: '/' },
       { 
-        label: searchTerm ? `Búsqueda: "${searchTerm}"` : 'Búsqueda', 
+        label: searchTerm ? `${this.i18n.t('COMMON.SEARCH')}: "${searchTerm}"` : this.i18n.t('COMMON.SEARCH'),
         url: '' 
       }
     ];
@@ -189,8 +186,7 @@ export class SearchPageComponent implements OnInit, OnDestroy {
     if (formValue.max_price && parseFloat(formValue.max_price) > 0) {
       queryParams.max_price = formValue.max_price;
     }
-
-    // Resetear página al aplicar filtros
+    
     delete queryParams.page;
 
     this.router.navigate([], {
