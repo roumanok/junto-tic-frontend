@@ -116,6 +116,14 @@ export class OrderService {
     return labels[status] || status;
   }
 
+  getCustomerIdentificationTypeLabel(type: string): string {
+    const labels: { [key: string]: string } = {
+      'DNI_ARG': this.i18n.t('COMMON.DNI'),
+      'CUIT_ARG': this.i18n.t('COMMON.CUIT')      
+    };
+    return labels[type] || type;
+  }
+
   formatDate(dateString: string): string {
     if (!dateString) return '-';
     const date = new Date(dateString);
@@ -123,6 +131,18 @@ export class OrderService {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
+    });
+  }
+
+  formatDateTime(dateString: string): string {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString(environment.locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   }
 

@@ -1,4 +1,3 @@
-// src/app/features/checkout/pages/checkout-page.component.ts
 import { Component, OnInit, inject, signal, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
@@ -20,17 +19,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {
-  CheckoutProduct,
-  CheckoutCalculationResponse,
-  ValidationError
-} from './models/checkout.model';
+import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
+import { CheckoutProduct, CheckoutCalculationResponse, ValidationError } from './models/checkout.model';
 
 @Component({
   selector: 'app-checkout-page',
   standalone: true,
   imports: [
     CommonModule, 
+    ErrorStateComponent,    
     ReactiveFormsModule,
     TranslatePipe,
     MatFormFieldModule,
@@ -46,6 +43,7 @@ import {
   templateUrl: './checkout-page.component.html',
   styleUrls: ['./checkout-page.component.css']
 })
+
 export class CheckoutPageComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -59,12 +57,9 @@ export class CheckoutPageComponent implements OnInit {
   private seo = inject(SeoService);
   private i18n = inject(I18nService);
 
-
-  // Datos del producto (vienen por navigation state)
   product = signal<CheckoutProduct | null>(null);
   quantity = signal<number>(1);
   
-  // Estados
   selectedDeliveryMethod = signal<string | null>(null);
   validating = signal(false);
   calculating = signal(false);
@@ -183,25 +178,19 @@ export class CheckoutPageComponent implements OnInit {
       return;
     }
 
-    // Obtener datos del producto desde navigation state
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state || (typeof history !== 'undefined' ? history.state : null);
 
     
-    // ✅ Intentar primero desde navigation state
     if (state?.['product'] && state?.['quantity']) {
       this.loadProductData(state['product'], state['quantity']);
-      // ✅ Guardar en sessionStorage para persistir en refresh
       this.saveCheckoutToSession(state['product'], state['quantity']);
     } 
-    // ✅ Si no hay en state, intentar recuperar desde sessionStorage
     else {
       const savedCheckout = this.loadCheckoutFromSession();
       if (savedCheckout) {
-        console.log('✅ Datos recuperados desde sessionStorage');
+        console.log('Datos recuperados desde sessionStorage');
         this.loadProductData(savedCheckout.product, savedCheckout.quantity);
-      } else {
-        console.warn('⚠️ No hay datos de producto');
       }
     }
 
@@ -222,10 +211,9 @@ export class CheckoutPageComponent implements OnInit {
       try {
         const saved = JSON.parse(pendingCheckout);
         
-        // Verificar que no haya expirado (30 minutos)
         const thirtyMinutes = 30 * 60 * 1000;
         if (Date.now() - saved.timestamp < thirtyMinutes) {
-          console.log('✅ Restaurando checkout pendiente');
+          console.log('Restaurando checkout pendiente');
           this.loadProductData(saved.product, saved.quantity);
           this.selectedDeliveryMethod.set(saved.selectedMethod);
           this.checkoutForm.patchValue(saved.formData);
@@ -272,22 +260,18 @@ export class CheckoutPageComponent implements OnInit {
   }
 
   private updateValidatorsForPickup() {
-    console.log('🚚 Modo pickup: deshabilitando validators de delivery');
     this.setFieldsValidators(this.DELIVERY_FIELDS, false);
   }
 
   private updateValidatorsForDelivery() {
-    console.log('📦 Modo delivery: habilitando validators de delivery');
     this.setFieldsValidators(this.DELIVERY_FIELDS, true);
   }
 
   private removeBillingValidators() {
-    console.log('🔓 Removiendo validators de billing (mismo que delivery)');
     this.setFieldsValidators(this.BILLING_FIELDS, false);
   }
 
   private restoreBillingValidators() {
-    console.log('🔒 Restaurando validators de billing');
     this.setFieldsValidators(this.BILLING_FIELDS, true);
   }  
 
@@ -344,21 +328,18 @@ export class CheckoutPageComponent implements OnInit {
     this.product.set(product);
     this.quantity.set(quantity);
     
-    console.log('✅ Datos cargados:', { product, quantity });
+    console.log('Datos cargados:', { product, quantity });
 
-    // Cargar email del usuario
     const userInfo = this.authService.getUserProfile();
     if (userInfo?.email) {
       this.checkoutForm.patchValue({ customer_email: userInfo.email });
     }
 
-    // Si hay un solo método de entrega, seleccionarlo automáticamente
     const methods = this.product()?.delivery_methods;
     if (methods && methods.length >= 1) {
       this.selectedDeliveryMethod.set(methods[0].id);      
     }
 
-    // Validar y calcular inicialmente
     this.validateCheckout();
   }
 
@@ -404,10 +385,8 @@ export class CheckoutPageComponent implements OnInit {
         this.validating.set(false);
         if (!response.valid) {
           this.validationErrors.set(response.errors);
-          console.error('❌ Validación fallida:', response.errors);
+          console.error('Validación fallida:', response.errors);
         } else {
-          console.log('✅ Validación exitosa');
-          // Si hay método seleccionado, calcular totales
           if (this.selectedDeliveryMethod()) {
             this.calculateTotals();
           }
@@ -415,7 +394,7 @@ export class CheckoutPageComponent implements OnInit {
       },
       error: (err) => {
         this.validating.set(false);
-        console.error('❌ Error validando:', err);
+        console.error('Error validando:', err);
       }
     });
   }
@@ -435,18 +414,16 @@ export class CheckoutPageComponent implements OnInit {
     this.checkoutService.calculateTotals(request).subscribe({
       next: (response) => {
         this.calculating.set(false);
-        this.totals.set(response);
-        console.log('✅ Totales calculados:', response);
+        this.totals.set(response);        
       },
       error: (err) => {
         this.calculating.set(false);
-        console.error('❌ Error calculando totales:', err);
+        console.error('Error calculando totales:', err);
       }
     });
   }
 
   onDeliveryMethodChange(methodId: string) {
-    console.log('📦 Método seleccionado:', methodId);
     this.selectedDeliveryMethod.set(methodId);
     this.checkIfPickup();
     this.calculateTotals();
@@ -458,9 +435,7 @@ export class CheckoutPageComponent implements OnInit {
     
     const isPickup = selectedMethod?.type === 'pickup';
     this.isPickupMethod.set(isPickup);
-    
-    console.log('🚚 Método es pickup?', isPickup);
-    
+        
     if (isPickup) {
       this.clearDeliveryFields();
       this.updateValidatorsForPickup();
@@ -487,7 +462,6 @@ export class CheckoutPageComponent implements OnInit {
       this.quantity.set(newQty);
     }
 
-    // Revalidar y recalcular
     setTimeout(() => {
       this.validateCheckout();
     }, 300);
@@ -519,9 +493,8 @@ export class CheckoutPageComponent implements OnInit {
   }
 
   redirectToLogin(): void{
-    console.log('🔒 Usuario no autenticado, redirigiendo a login-required');
+    console.log('Usuario no autenticado, redirigiendo a login-required');
     
-    // Guardar el estado actual del checkout en sessionStorage
     if (this.isBrowser) {
       sessionStorage.setItem('pendingCheckout', JSON.stringify({
         product: this.product(),
@@ -532,7 +505,6 @@ export class CheckoutPageComponent implements OnInit {
       }));
     }
     
-    // Redirigir a login-required
     this.router.navigate(['/login-required'], {
       queryParams: { returnUrl: '/checkout' }
     });
@@ -540,7 +512,6 @@ export class CheckoutPageComponent implements OnInit {
 
   proceedToPayment() {
     if (!this.canProceed() || !this.formValid()) {
-      alert('⚠️ Por favor completa todos los campos requeridos');
       return;
     }
 
@@ -566,19 +537,17 @@ export class CheckoutPageComponent implements OnInit {
       ...formData
     };    
 
-    console.log('💳 Creando orden:', orderData);
+    console.log('Creando orden:', orderData);
 
     this.checkoutService.createOrder(orderData as any).subscribe({
       next: (response) => {
-        console.log('✅ Orden creada:', response);
+        console.log('Orden creada:', response);
 
-        // ✅ Limpiar sessionStorage al completar la orden
         this.clearCheckoutFromSession();
         if (this.isBrowser) {
           sessionStorage.removeItem('pendingCheckout');
         }
 
-        // Redirigir a la pasarela de pago
         if (response.payment_url) {
           window.location.href = response.payment_url;
         } else {
@@ -586,8 +555,8 @@ export class CheckoutPageComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('❌ Error creando orden:', err);
-        alert('❌ Error al crear la orden');
+        console.error('Error creando orden:', err);
+        alert('Error al crear la orden');
       }
     });
   }

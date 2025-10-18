@@ -26,16 +26,25 @@ $theme: mat.define-theme((
   --color-secondary-hover: #B8242A;
 
   /* === COLORES DE ESTADOS DE ORDEN === */
-  --order-status-pending: #856404;
+  --order-status-pending: #957103;
   --order-status-processing: #004085;
-  --order-status-delivered: #155724;
-  --order-status-cancelled: #721c24;
+  --order-status-delivered: #0f7b29;
+  --order-status-cancelled: #8a101c;
 
 /* === COLORES DE ESTADOS DE PAGO === */
-  --payment-status-pending: #856404;
-  --payment-status-completed: #155724;
-  --payment-status-failed: #721c24;
+  --payment-status-pending: #957103;
+  --payment-status-approved: #0f7b29;
+  --payment-status-cancelled: #8a101c;
   --payment-status-refunded: #6c757d;
+
+/* === COLORES DE ALERTAS DE ORDENES === */
+  --alert-order-success: #0f7b29;
+  --alert-order-success-alt: #28a745;
+  --alert-order-error: #8a101c;
+  --alert-order-error-alt: #dc3545;
+  --alert-order-warning: #957103;
+  --alert-order-warning-alt: #ffc107;
+
   
   /* === COLORES DE FONDO === */
   --bg-main: #FFFFFF;
@@ -71,6 +80,11 @@ $theme: mat.define-theme((
   --bg-listing-detail: #f8f9fa;  
   --bg-listing-inactive-msg: #ffdede;
   --bg-my-orders-page: #f8f9fa;
+  --bg-order-detail-page: #ffffff;
+  --bg-checkout-page: #f8f9fa;
+  --bg-checkout-card: #ffffff;
+  --bg-checkout-overlay: rgba(0,0,0,0.6);
+  --bg-checkout-attention: #ffebee;
 
   /* === COLORES DE FONDO DE ESTADOS DE ORDEN === */
   --bg-order-status-pending: #fff3cd;
@@ -80,12 +94,17 @@ $theme: mat.define-theme((
   
   /* === COLORES DE FONDO DE PAGO === */
   --bg-payment-status-pending: #fff3cd;
-  --bg-payment-status-completed: #d4edda;
-  --bg-payment-status-failed: #f8d7da;
+  --bg-payment-status-approved: #d4edda;
+  --bg-payment-status-cancelled: #f8d7da;
   --bg-payment-status-refunded: #e2e3e5;
 
+  /* === COLORES DE FONDO DE ALERTAS DE ORDENES === */
+  --bg-alert-order-success: #d4edda;
+  --bg-alert-order-error: #f8d7da;
+  --bg-alert-order-warning: #fff3cd;
+  
   /* === COLORES DE TEXTO === */
-  --text-primary: #333333;
+  --text-primary: #444444;
   --text-secondary: #666666;
   --text-light: #999999;
   --text-placeholder: #9ca3af;

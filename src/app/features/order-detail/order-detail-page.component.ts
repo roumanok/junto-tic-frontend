@@ -1,19 +1,17 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subject, switchMap, catchError, tap, takeUntil, combineLatest } from 'rxjs';
-import { of } from 'rxjs';
-
+import { Subject, switchMap, catchError, tap, takeUntil, combineLatest, of } from 'rxjs';
 import { OrderService } from '../../core/services/order.service';
 import { OrderDetail } from '../../core/models/order.model';
 import { ListingService } from '../../core/services/listing.service';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { CdnService } from '../../core/services/cdn.service';
-
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-order-detail-page',
@@ -22,6 +20,8 @@ import { environment } from 'src/environments/environment';
     CommonModule,
     RouterModule,
     BreadcrumbComponent,
+    LoadingSpinnerComponent,
+    ErrorStateComponent,
     TranslatePipe
   ],
   templateUrl: './order-detail-page.component.html',
@@ -41,11 +41,11 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
   private i18n = inject(I18nService);
   private cdnService = inject(CdnService);
   private listingService = inject(ListingService);
+  private orderService = inject(OrderService);
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private orderService: OrderService,
+    private router: Router,    
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -60,7 +60,7 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
+  
   private loadOrderDetail(): void {
     combineLatest([
       this.route.params,
@@ -91,13 +91,12 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
       }),
       catchError((err) => {
         console.error('Error cargando detalle de orden:', err);
-        this.error.set(err.message || 'Error al cargar la orden');
+        this.error.set(err.message || this.i18n.t('PAGES.ORDER_DETAIL.LOADING_ERROR'));
         this.loading.set(false);
         return of(null);
       })
     ).subscribe((response) => {
       if (response) {
-        console.log('📦 Orden cargada:', response);       
         this.order.set(response);
         this.updateBreadcrumbsWithOrder(response);
         this.setupSEO();
@@ -120,56 +119,56 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
       case 'in_process':
         this.paymentStatusMessage.set({
           type: 'warning',
-          text: 'El pago está pendiente o en proceso'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_PENDING')
         });
         break;
       case 'approved':
         this.paymentStatusMessage.set({
           type: 'success',
-          text: '¡Pago exitoso! Gracias por tu compra'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_APPROVED')
         });
         break;      
       case 'rejected':
         this.paymentStatusMessage.set({
           type: 'error',
-          text: 'El pago fue rechazado'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_REJECTED')          
         });
         break;
       case 'cancelled':
       case 'overdue':
         this.paymentStatusMessage.set({
           type: 'error',
-          text: 'El pago fue cancelado'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_CANCELLED')
         });
         break;
       case 'refunded':
         this.paymentStatusMessage.set({
           type: 'error',
-          text: 'El pago fue devuelto'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_REFUNDED')
         });
         break;      
       case 'deferred':
         this.paymentStatusMessage.set({
           type: 'warning',
-          text: 'El pago se encuentra diferido'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_DEFERRED')
         });
         break;        
       case 'objected':
         this.paymentStatusMessage.set({
           type: 'warning',
-          text: 'El pago se encuentra objetado'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_OBJECTED')
         });
         break;                
       case 'review':
         this.paymentStatusMessage.set({
           type: 'warning',
-          text: 'El pago se realizó y está siendo revisado por la entidad'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_REVIEW')
         });
         break;
       case 'validate':
         this.paymentStatusMessage.set({
           type: 'warning',
-          text: 'El pago se realizó pero debe ser validado'
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_VALIDATE')
         });
         break;        
       
@@ -189,10 +188,9 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
   }
 
   private updateBreadcrumbsWithOrder(order: OrderDetail): void {
-    // Actualizar el último breadcrumb con el ID de la orden
     if (this.breadcrumbItems.length > 0) {
       this.breadcrumbItems[this.breadcrumbItems.length - 1] = {
-        label: this.i18n.t('COMMON.ORDER') + ' #'+order.public_id,
+        label: this.i18n.t('COMMON.ORDER') + ' #' + order.public_id,
         url: ''
       };
     }
@@ -200,7 +198,7 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
 
   private setupSEO(): void {
     const communityName = this.i18n.t('COMMUNITY.NAME');
-    const orderId = this.order()?.id;
+    const orderId = this.order()?.public_id;
     this.seo.setPageMeta(
       'PAGES.ORDER_DETAIL.TITLE',
       'PAGES.ORDER_DETAIL.DESCRIPTION',
@@ -208,80 +206,28 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
     );
   }
 
-  getStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'pending': 'status-pending',
-      'processing': 'status-processing',
-      'delivered': 'status-delivered',
-      'cancelled': 'status-cancelled'
-    };
-    return statusMap[status] || 'status-pending';
-  }
-
-  getPaymentStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'pending': 'payment-pending',
-      'approved': 'payment-approved',
-      'cancelled': 'payment-cancelled',
-      'refunded': 'payment-refunded'
-    };
-    return statusMap[status] || 'payment-pending';
-  }
-
   getStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      'pending': 'Pendiente',
-      'processing': 'En preparación',
-      'delivered': 'Entregado',
-      'cancelled': 'Cancelado'
-    };
-    return labels[status] || status;
+    return this.orderService.getStatusLabel(status);
   }
 
   getPaymentStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      'pending': 'Pendiente',
-      'approved': 'Pago aprobado',
-      'cancelled': 'Pago cancelado',
-      'refunded': 'Reembolsado'
-    };
-    return labels[status] || status;
-  }
-
-  getDeliveryMethodLabel(type: string): string {
-    const labels: { [key: string]: string } = {
-      'pickup': 'Retiro en local',
-      'delivery': 'Envío a domicilio'
-    };
-    return labels[type] || type;
+    return this.orderService.getPaymentStatusLabel(status);
   }
 
   getCustomerIdentificationTypeLabel(type: string): string {
-    const labels: { [key: string]: string } = {
-      'DNI_ARG': this.i18n.t('COMMON.DNI'),
-      'CUIT_ARG': this.i18n.t('COMMON.CUIT')      
-    };
-    return labels[type] || type;
+    return this.orderService.getCustomerIdentificationTypeLabel(type);
   }
 
-  formatDate(dateString: string): string {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString(environment.locale, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  formatDateTime(dateString: string): string {
+    return this.orderService.formatDateTime(dateString);
   }
 
   formatPrice(price: string | number): string {
-    return '$' + this.listingService.getformattedPrice(price);    
+    return this.listingService.getformattedPrice(price);    
   }  
 
   getCdnUrl(imagePath?: string): string {
-    if (!imagePath) return '/placeholder-product.png';
+    if (!imagePath) return '/placeholder.png';
     return this.cdnService.getCdnUrl(imagePath);
   }
 

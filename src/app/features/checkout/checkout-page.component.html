@@ -1,31 +1,27 @@
 <div class="checkout-wrapper">
   @if (!product()) {
-    <!-- Sin producto -->
-    <div class="empty-state">
-      <mat-icon class="empty-icon">shopping_cart</mat-icon>
-      <h2>{{ 'PAGES.CHECKOUT.NO_PRODUCT' | translate }}</h2>
-      <p>{{ 'PAGES.CHECKOUT.NO_PRODUCT_DESC' | translate }}</p>
-      <button mat-raised-button color="primary" (click)="goBack()">
-        <mat-icon>home</mat-icon>
-        {{ 'COMMON.BACK_TO_HOME' | translate }}
-      </button>
-    </div>
+    
+    <app-error-state     
+      [title]="'PAGES.CHECKOUT.NO_LISTING' | translate"
+      [message]="'PAGES.CHECKOUT.NO_LISTING_DESC' | translate"
+      [retryButtonText]="'COMMON.BACK' | translate"
+      (retry)="goBack()">
+    </app-error-state> 
+    
   } @else {
+
     <div class="checkout-container">
       
-      <!-- COLUMNA IZQUIERDA: Resumen -->
       <div class="checkout-left">
         <div class="summary-card">
           <h2>{{ 'PAGES.CHECKOUT.SUMMARY' | translate }}</h2>
           
-          <!-- Producto -->
           <div class="product-item">
             <img [src]="getCdnUrl(product()!.image_url)" [alt]="product()!.title" class="product-img">
             <div class="product-details">
               <h3>{{ product()!.title }}</h3>
               <p class="product-price">$ {{ getformattedPrice(product()!.price) }}</p>
-              
-              <!-- Control de cantidad -->
+                            
               <div class="quantity-section">
                 <label>{{ 'PAGES.CHECKOUT.QUANTITY' | translate }}</label>
                 <div class="quantity-controls">
@@ -46,7 +42,6 @@
             </div>
           </div>
 
-          <!-- Métodos de entrega -->
           @if (product()!.delivery_methods && product()!.delivery_methods!.length > 0) {
             <div class="delivery-section">
               <h4>{{ 'PAGES.CHECKOUT.DELIVERY_METHOD' | translate }}:</h4>
@@ -83,7 +78,6 @@
 
           <hr class="divider">
 
-          <!-- Totales -->
           <div class="totals">
             <div class="total-row">
               <span>{{'PAGES.CHECKOUT.SUBTOTAL' | translate}}:</span>
@@ -107,8 +101,8 @@
         </div>
       </div>
 
-      <!-- COLUMNA DERECHA: Formulario -->
       <div class="checkout-right">
+        
         <div class="data-card">                    
           <form [formGroup]="checkoutForm" class="checkout-form">
 
@@ -384,12 +378,12 @@
 
             <!-- Botones de acción -->
             <div class="action-buttons">
-              <button type="button" class="btn-secondary" (click)="goBack()">
+              <button type="button" class="btn-goback" (click)="goBack()">
                 <i class="fas fa-arrow-left"></i>
                 {{ 'PAGES.CHECKOUT.CONTINUE_SHOPPING' | translate }}
               </button>
               <button type="button" 
-                      class="btn-primary" 
+                      class="btn-payment" 
                       (click)="proceedToPayment()"
                       [disabled]="!canProceed() || !formValid()">
                 <i class="fas fa-credit-card"></i>

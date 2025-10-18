@@ -165,11 +165,11 @@
 }
 
 .my-orders-page .order-card-body .payment-status.payment-approved {
-  color: var(--payment-status-completed);
+  color: var(--payment-status-approved);
 }
 
 .my-orders-page .order-card-body .payment-status.payment-cancelled {
-  color: var(--payment-status-failed);
+  color: var(--payment-status-cancelled);
 }
 
 .my-orders-page .order-card-body .payment-status.payment-refunded {

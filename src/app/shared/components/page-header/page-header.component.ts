@@ -5,7 +5,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 @Component({
   selector: 'app-page-header',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule],
   templateUrl: './page-header.component.html',
   styleUrls: ['./page-header.component.css']
 })
