@@ -108,7 +108,7 @@ export class ApiService {
           errorMessage = `Error ${error.status}: ${error.message}`;
       }
     }    
-    console.error('❌ API Error:', errorMessage, error);
+    console.error('API Error:', errorMessage, error);
     return throwError(() => errorMessage);
   }
 }

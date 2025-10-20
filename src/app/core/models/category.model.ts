@@ -9,7 +9,6 @@ export interface Category {
   sort_order: number;  
 }
 
-// Para el mega menú transformado
 export interface CategoryLink {
   name: string;
   url: string;

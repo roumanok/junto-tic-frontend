@@ -1,18 +1,20 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { ThemeService } from './theme.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class I18nService {
-  private theme = inject(ThemeService);
+
+  private theme = inject(ThemeService);  
   
-  private _currentLang = signal('es'); // idioma por defecto
+  private _currentLang = signal(environment.lang);
   
   readonly currentLang = this._currentLang.asReadonly();
   
   readonly translations = computed(() => this.theme.i18n());
   
   /**
-   * Obtiene una traducción por su clave
+   * Obtiene  traducción por su clave en los archivos de i18n
    */
   t(key: string, params?: Record<string, any>): string {
     const translations = this.translations();
@@ -31,10 +33,7 @@ export class I18nService {
     this._currentLang.set(lang); 
     console.log('Language set to:', lang);   
   }
-  
-  /**
-   * Verifica si existe una traducción para la clave dada
-   */
+    
   has(key: string): boolean {
     return key in this.translations();
   }

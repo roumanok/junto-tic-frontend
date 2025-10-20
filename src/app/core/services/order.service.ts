@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, tap, catchError, map } from 'rxjs';
+import { Observable, tap, catchError } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { ApiService } from '../../core/services/api.service';
 import { OrderDetail, OrdersResponse, SalesResponse } from '../models/order.model';
@@ -13,16 +13,13 @@ export class OrderService {
   private apiService = inject(ApiService);
   private i18n = inject(I18nService);
 
-  /**
-   * Obtener listado de órdenes del usuario
-   */
   getUserOrders(page: number = 1, limit: number = 10): Observable<OrdersResponse> {
     const params = new HttpParams()
               .set('page', page)
               .set('limit', limit);
     return this.apiService.getSimple<OrdersResponse>('/checkout/orders', params).pipe(
       tap((response) => {
-        console.log('📋 Orders loaded:', response);
+        //console.log('Orders loaded:', response);
       }),
       catchError((error) => {
         console.error('Error getting user orders:', error);
@@ -31,13 +28,10 @@ export class OrderService {
     );
   }
 
-  /**
-   * Obtener detalle completo de una orden
-   */
   getOrderDetail(orderId: string): Observable<OrderDetail> {
     return this.apiService.getSimple<OrderDetail>(`/checkout/orders/${orderId}`).pipe(
       tap((response) => {
-        console.log('✅ Order detail loaded:', response);
+        //console.log('Order detail loaded:', response);
       }),
       catchError((error) => {
         console.error('Error getting order detail:', error);
@@ -46,16 +40,13 @@ export class OrderService {
     );
   }
 
-  /**
-   * Obtener listado de ventas del anunciante
-   */
   getMySales(page: number = 1, limit: number = 10): Observable<SalesResponse> {
     const params = new HttpParams()
               .set('page', page)
               .set('limit', limit);
     return this.apiService.getSimple<SalesResponse>('/my-sales/', params).pipe(
       tap((response) => {
-        console.log('📋 Sales loaded:', response);
+        //console.log('Sales loaded:', response);
       }),
       catchError((error) => {
         console.error('Error getting my sales:', error);
@@ -64,13 +55,10 @@ export class OrderService {
     );
   }
 
-  /**
-   * Obtener detalle completo de una venta
-   */
   getSaleDetail(orderId: string): Observable<OrderDetail> {
     return this.apiService.getSimple<OrderDetail>(`/my-sales/${orderId}`).pipe(
       tap((response) => {
-        console.log('✅ Sale detail loaded:', response);
+        //console.log('Sale detail loaded:', response);
       }),
       catchError((error) => {
         console.error('Error getting sale detail:', error);
@@ -79,15 +67,12 @@ export class OrderService {
     );
   }  
 
-  /**
-   * Actualizar el estado de una orden
-   */
   updateOrderStatus(orderId: string, newStatus: string): Observable<any> {
     return this.apiService.put<any>(`/my-sales/${orderId}/status`, { 
       status: newStatus 
     }).pipe(
       tap((response) => {
-        console.log('✅ Order status updated:', response);
+        //console.log('Order status updated:', response);
       }),
       catchError((error) => {
         console.error('Error updating order status:', error);

@@ -62,15 +62,11 @@ export class CommunityService {
 
   }
 
-  /**
-   * Garantiza que la comunidad esté cargada (idempotente).
-  */
   ensureLoaded(): Promise<void> {
     if (this._community()) return Promise.resolve();
     if (!this._loadPromise) {
       this._loadPromise = this.loadFromDomain()
-        .catch((e) => {
-          // No rompas el flujo: dejá que el cliente lo resuelva luego.
+        .catch((e) => {          
           console.warn('No se pudo resolver comunidad en este entorno:', e);
         })
         .finally(() => { this._loadPromise = null; });
@@ -78,19 +74,12 @@ export class CommunityService {
     return this._loadPromise;
   }
 
-    /**
-   * Hostname SSR-safe:
-   * - Browser: window.location.hostname
-   * - SSR: (si tuvieras REQUEST) this.req.headers.host.split(':')[0]
-   * - Fallback: environment.cmDomain (si lo definiste)
-   */
   private getHostSafe(): string | null {
     if (isPlatformBrowser(this.platformId)) {
       try {
         const hostname = window.location.hostname.toLowerCase();
         console.log('Hostname detectado:', hostname);
         if (!hostname) return this.detectedDomain;
-        // Si es localhost o IP, usar el del enviroment
         if (hostname === 'localhost' || /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
           return this.detectedDomain;
         }
@@ -99,9 +88,6 @@ export class CommunityService {
         return this.detectedDomain;
       }
     } else {
-      // SSR: si inyectás REQUEST, podés leer el host real
-      // const h = this.req?.headers?.host ? String(this.req.headers.host).split(':')[0] : null;
-      // return h ?? this.detectedDomain;
       console.log('No estamos en browser; usando domain de environment');
       return this.detectedDomain;
     }

@@ -1,4 +1,3 @@
-// src/app/core/services/cdn.service.ts
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { CommunityService } from './community.service';
@@ -42,8 +41,6 @@ export class CdnService {
 
     return merge(initial$, onLoaded$);
   }
-
-  // ----------------- helpers -----------------
 
   /** Base actual: cdn de comunidad si está, si no environment.cdnUrl */
   private currentBase(): string {

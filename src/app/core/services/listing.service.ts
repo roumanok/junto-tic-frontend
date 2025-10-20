@@ -8,36 +8,24 @@ import { Listing, MyListing, DashboardStats } from '../models/listing.model';
 import { CommunityService } from './community.service';
 import { environment } from 'src/environments/environment';
 
-type FeaturedResponse = { items: Listing[] };
-
 @Injectable({
   providedIn: 'root'
 })
 
 export class ListingService {
 
-  constructor(
-    private communityService: CommunityService
-  ) {}
-
   private readonly community = inject(CommunityService);
-
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-
   private apiService =inject(ApiService);    
    
-  // Signals para manejo de estado
   private loading = signal(false);
   private error = signal<string | null>(null);  
 
-  // Getters públicos para los signals
   get isLoading() { return this.loading.asReadonly(); }
   get errorMessage() { return this.error.asReadonly(); }
 
 
   getFeaturedListings(limit = 15, strategy = ''): Observable<Listing[]> {
-    console.log('Cargando destacados con limit=', limit, 'strategy=', strategy);
-
     return this.community.waitForId$().pipe(
       switchMap((communityId) => {
         const params = new HttpParams()
@@ -63,8 +51,7 @@ export class ListingService {
       .replace(/[^a-z0-9 -]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
-      .trim();
-    
+      .trim();    
     // Formato: {slug}-lid-{id}
     return `${baseSlug}-lid-${id}`;
   }
@@ -128,7 +115,7 @@ export class ListingService {
     return this.apiService.put<any>(`/my-listings/${id}/`, updates).pipe(
       map(this.mapBackendToFrontend),
       tap(() => {
-        console.log('✅ Publicación actualizada exitosamente');
+        //console.log('Publicación actualizada exitosamente');
       }),
       catchError((error) => {
         console.error('Error updating listing:', error);
@@ -140,7 +127,7 @@ export class ListingService {
   deleteListing(id: string): Observable<void> {
     return this.apiService.delete<void>(`/my-listings/${id}/`).pipe(
       tap(() => {
-        console.log('✅ Publicación eliminada exitosamente');
+        //console.log('Publicación eliminada exitosamente');
       }),
       catchError((error) => {
         console.error('Error deleting listing:', error);
@@ -152,7 +139,7 @@ export class ListingService {
   getListing(id: string): Observable<any> {
     return this.apiService.get<any>(`/my-listings/${id}`).pipe(
       tap(() => {
-        console.log('✅ Listing cargado');
+        //console.log('Listing cargado');
       }),
       catchError((error) => {
         console.error('Error getting listing:', error);
@@ -160,10 +147,7 @@ export class ListingService {
       })
     );
   }
-
-  /**
- * Obtener detalles de un artículo para edición
- */
+  
   getListingById(listingId: string): Observable<any> {
     return this.apiService.get<any>(`/my-listings/${listingId}`).pipe(
       catchError((error) => {
@@ -178,7 +162,7 @@ export class ListingService {
       is_active: active
     }).pipe(
       tap(() => {
-        console.log(`✅ Publicación ${active ? 'activada' : 'desactivada'}`);
+        //console.log(`Publicación ${active ? 'activada' : 'desactivada'}`);
       }),
       catchError((error) => {
         console.error('Error toggling listing status:', error);
@@ -193,7 +177,7 @@ export class ListingService {
       reason: "Actualización manual desde panel de advertiser"
     }).pipe(
       tap(() => {
-        console.log('✅ Stock actualizado exitosamente');
+        //console.log('Stock actualizado exitosamente');
       }),
       catchError((error) => {
         console.error('Error updating stock:', error);
@@ -208,7 +192,7 @@ export class ListingService {
       reason: "Reposición de stock desde panel de advertiser"
     }).pipe(
       tap(() => {
-        console.log('✅ Stock agregado exitosamente');
+        //console.log('Stock agregado exitosamente');
       }),
       catchError((error) => {
         console.error('Error adding stock:', error);
@@ -220,7 +204,7 @@ export class ListingService {
   getMyDeliveryMethods(): Observable<any[]> {
     return this.apiService.getSimpleList<any[]>('/delivery-methods/my').pipe(
       tap(() => {
-        console.log('✅ Métodos de entrega cargados');
+        //console.log('Métodos de entrega cargados');
       }),
       catchError((error) => {
         console.error('Error getting delivery methods:', error);
@@ -232,7 +216,7 @@ export class ListingService {
   createListing(listingData: any): Observable<any> {
     return this.apiService.post<any>('/my-listings/', listingData).pipe(
       tap(() => {
-        console.log('✅ Publicación creada exitosamente');
+        //console.log('Publicación creada exitosamente');
       }),
       catchError((error) => {
         console.error('Error creating listing:', error);
@@ -248,7 +232,7 @@ export class ListingService {
     return this.apiService.getSimple<DashboardStats>('/my-listings/dashboard-stats', params).pipe(
       tap((stats) => {
         const source = forceRefresh ? '(refreshed)' : '(cached)';
-        console.log(`✅ Dashboard stats cargadas ${source}:`, stats);
+        //console.log(`Dashboard stats cargadas ${source}:`, stats);
       }),
       catchError((error) => {
         console.error('Error getting dashboard stats:', error);
@@ -267,7 +251,7 @@ export class ListingService {
       stock: item.stock_quantity || 0,
       total_sold: item.total_sold || 0,
       status: item.is_active ? 'active' : 'inactive',
-      type: item.type || 'product', // ← NUEVO mapeo del type
+      type: item.type || 'product',
       image_url: item.primary_image?.image_url,
       created_at: item.created_at,
       updated_at: item.updated_at
