@@ -50,6 +50,14 @@ $theme: mat.define-theme((
   --stats-revenue: #11993e;
   --stats-inventory: #ffc002;
   --stats-average: #9b59b6;
+  --stats-total: #4A90A4;
+  --stats-active: #11993e;
+  --stats-warning: #ffc002;
+  --stats-danger: #ff0000;
+  --stats-active: #9aed8f;
+  --stats-inactive: #fafafa;
+  --stats-low-stock: #fff3e0;
+  --stats-no-stock: #ffebee;
 
   
   /* === COLORES DE FONDO === */
@@ -75,6 +83,7 @@ $theme: mat.define-theme((
   --bg-pagination-button-disabled: #f8f9fa;
   --bg-page-header: #e9ecef;
   --bg-page-section: #f8f9fa;
+  --bg-page-section-dark: #e9ecef;
   --bg-form-input: #FFFFFF;
   --bg-form-input-focus: #FFFFFF;
   --bg-form-button: #d6d6d6;

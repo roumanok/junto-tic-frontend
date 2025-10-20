@@ -1,190 +1,192 @@
 <div class="my-listings-page">
 
-  <!-- Breadcrumbs -->
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <!-- Page Header -->
-  <div class="page-header">
-    <div class="container">
-      <div class="header-info">
-        <h1 class="page-title">
-          {{ 'PAGES.MY_LISTINGS.SECTION_TITLE' | translate }}
-        </h1>
-      </div>
-      <button class="btn btn-primary" (click)="createNewListing()">
-        <i class="fas fa-plus"></i>
-        Crear Artículo
-      </button>
-    </div>
-  </div>
-  <!-- Estadísticas en Mini Resumen -->
+  <app-page-header [title]="('PAGES.MY_LISTINGS.SECTION_TITLE' | translate)"></app-page-header>
+  
   <app-my-listings-mini-stats></app-my-listings-mini-stats>
 
+  <div class="actions-bar">
+    <button class="btn btn-create" (click)="createNewListing()">
+      <i class="fas fa-plus"></i>
+      {{ 'PAGES.MY_LISTINGS.CREATE_NEW_LISTING' | translate }}
+    </button>
+  </div>
+
+  <app-loading-spinner [message]="( 'COMMON.LOADING' | translate )" *ngIf="loading()"></app-loading-spinner>
+
+  <app-error-state 
+    *ngIf="error() && !loading()"
+    [title]="'PAGES.MY_LISTINGS.LOADING_ERROR' | translate"
+    [message]="error() || ( 'ERRORS.GENERAL' | translate )"
+    [retryButtonText]="'COMMON.RETRY' | translate"
+    (retry)="loadMyListings()">
+  </app-error-state>  
+
+  <app-empty-state 
+    *ngIf="!loading() && !error() && listings().length === 0"
+    [title]="'PAGES.MY_LISTINGS.EMPTY_TITLE' | translate"
+    [message]="'PAGES.MY_LISTINGS.EMPTY_DESC' | translate"
+    icon="fa-shopping-bag"
+    [actionText]="'PAGES.MY_LISTINGS.CREATE_NEW_LISTING' | translate"
+    actionRoute="/mi-cuenta/mis-articulos/crear">
+  </app-empty-state> 
+
   <!-- Tabla de Artículos -->
-  <mat-card class="listings-table-card">
-    @if (loading()) {
-      <div class="loading-container">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>Cargando artículos...</p>
-      </div>
-    } @else if (listings().length === 0) {
-      <div class="empty-state">
-        <mat-icon class="empty-icon">inventory_2</mat-icon>
-        <h2>No tienes artículos</h2>
-        <p>Comienza creando tu primer artículo para vender.</p>
-        <button mat-raised-button color="primary" (click)="createNewListing()">
-          <mat-icon>add</mat-icon>
-          Crear Primer Artículo
-        </button>
-      </div>
-    } @else {
-      <div class="table-container">
-        <table mat-table [dataSource]="listings()" class="listings-table">
-          
-          <!-- Columna Imagen -->
-          <ng-container matColumnDef="image">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let listing">
-              <div class="image-cell">
-                <img 
-                  [src]="getImageUrl(listing)" 
-                  [alt]="listing.title"
-                  (error)="onImageError($event)"
-                  class="listing-image">
+   @if (!loading() && !error() && listings().length > 0) {
+    <mat-card class="listings-table-card">          
+        <div class="table-container">
+          <table mat-table [dataSource]="listings()" class="listings-table">
+            
+            <!-- Columna Imagen -->
+            <ng-container matColumnDef="image">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let listing">
+                <div class="image-cell">
+                  <img 
+                    [src]="getImageUrl(listing)" 
+                    [alt]="listing.title"
+                    (error)="onImageError($event)"
+                    class="listing-image">
+                  </div>
+              </td>
+            </ng-container>
+
+            <!-- Columna Título -->
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PAGES.MY_LISTINGS.COLUMNS.TITLE' | translate }}</th>
+              <td mat-cell *matCellDef="let listing">
+                <div class="title-cell">
+                  <mat-icon 
+                    [matTooltip]="getTypeLabel(listing)" 
+                    class="type-icon"
+                    [class.product]="isProduct(listing)"
+                    [class.service]="!isProduct(listing)">
+                    {{ getTypeIcon(listing) }}
+                  </mat-icon>
+                  <span class="listing-title">{{ listing.title }}</span>
                 </div>
-            </td>
-          </ng-container>
+              </td>
+            </ng-container>
 
-          <!-- Columna Título -->
-          <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef>Título</th>
-            <td mat-cell *matCellDef="let listing">
-              <div class="title-cell">
-                <mat-icon 
-                  [matTooltip]="getTypeLabel(listing)" 
-                  class="type-icon"
-                  [class.product]="isProduct(listing)"
-                  [class.service]="!isProduct(listing)">
-                  {{ getTypeIcon(listing) }}
-                </mat-icon>
-                <span class="listing-title">{{ listing.title }}</span>
-              </div>
-            </td>
-          </ng-container>
+            <!-- Columna Precio -->
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PAGES.MY_LISTINGS.COLUMNS.PRICE' | translate }}</th>
+              <td mat-cell *matCellDef="let listing">
+                <div class="price-cell">
+                  @if (listing.list_price && listing.list_price > listing.price) {
+                    <span class="list-price">${{ getformattedPrice(listing.list_price) }}</span>
+                  }
+                  <span class="current-price">${{ getformattedPrice(listing.price) }}</span>
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Columna Precio -->
-          <ng-container matColumnDef="price">
-            <th mat-header-cell *matHeaderCellDef>Precio</th>
-            <td mat-cell *matCellDef="let listing">
-              <div class="price-cell">
-                @if (listing.list_price && listing.list_price > listing.price) {
-                  <span class="list-price">${{ getformattedPrice(listing.list_price) }}</span>
-                }
-                <span class="current-price">${{ getformattedPrice(listing.price) }}</span>
-              </div>
-            </td>
-          </ng-container>
+            <!-- Columna Stock -->
+            <ng-container matColumnDef="stock">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PAGES.MY_LISTINGS.COLUMNS.STOCK' | translate }}</th>
+              <td mat-cell *matCellDef="let listing">
+                <div class="stock-cell">
+                  <mat-chip 
+                    [class.low-stock]="listing.stock > 0 && listing.stock <= 5"
+                    [class.no-stock]="listing.stock === 0">
+                    {{ listing.stock }}
+                  </mat-chip>
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Columna Stock -->
-          <ng-container matColumnDef="stock">
-            <th mat-header-cell *matHeaderCellDef>Stock</th>
-            <td mat-cell *matCellDef="let listing">
-              <div class="stock-cell">
-                <mat-chip 
-                  [class.low-stock]="listing.stock > 0 && listing.stock <= 5"
-                  [class.no-stock]="listing.stock === 0">
-                  {{ listing.stock }}
-                </mat-chip>
-              </div>
-            </td>
-          </ng-container>
+            <!-- Columna Ventas -->
+            <ng-container matColumnDef="sales">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PAGES.MY_LISTINGS.COLUMNS.SALES' | translate }}</th>
+              <td mat-cell *matCellDef="let listing">
+                <div class="sales-cell">
+                  {{ listing.total_sold || 0 }}
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Columna Ventas -->
-          <ng-container matColumnDef="sales">
-            <th mat-header-cell *matHeaderCellDef>Ventas</th>
-            <td mat-cell *matCellDef="let listing">
-              <div class="sales-cell">
-                {{ listing.total_sold || 0 }}
-              </div>
-            </td>
-          </ng-container>
+            <!-- Columna Estado -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PAGES.MY_LISTINGS.COLUMNS.STATUS' | translate }}</th>
+              <td mat-cell *matCellDef="let listing">
+                <div class="status-cell">
+                  <mat-chip 
+                    [class.active-status]="listing.status === 'active'"
+                    [class.inactive-status]="listing.status === 'inactive'">
+                    {{ listing.status === 'active' ? ( 'PAGES.MY_LISTINGS.STATUS.ACTIVE' | translate ) : ( 'PAGES.MY_LISTINGS.STATUS.INACTIVE' | translate ) }}
+                  </mat-chip>
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Columna Estado -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Estado</th>
-            <td mat-cell *matCellDef="let listing">
-              <div class="status-cell">
-                <mat-chip 
-                  [class.active-status]="listing.status === 'active'"
-                  [class.inactive-status]="listing.status === 'inactive'">
-                  {{ listing.status === 'active' ? 'Activo' : 'Inactivo' }}
-                </mat-chip>
-              </div>
-            </td>
-          </ng-container>
-
-          <!-- Columna Acciones -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let listing">
-              <div class="actions-cell">
-                <button 
-                  mat-icon-button 
-                  color="primary"
-                  (click)="viewListing(listing)"
-                  matTooltip="Ver">
-                  <mat-icon>language</mat-icon>
-                </button>
-                <button 
-                  mat-icon-button 
-                  color="accent"
-                  (click)="editListing(listing.id)"
-                  matTooltip="Editar">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button 
-                  mat-icon-button 
-                  [matMenuTriggerFor]="moreMenu"
-                  matTooltip="Más opciones">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                
-                <mat-menu #moreMenu="matMenu">
-                  <button mat-menu-item (click)="toggleStatus(listing)">
-                    <mat-icon>{{ listing.status === 'active' ? 'visibility_off' : 'visibility' }}</mat-icon>
-                    <span>{{ listing.status === 'active' ? 'Inactivar' : 'Activar' }}</span>
+            <!-- Columna Acciones -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let listing">
+                <div class="actions-cell">
+                  <button 
+                    mat-icon-button 
+                    color="primary"
+                    (click)="viewListing(listing)"
+                    matTooltip="{{ 'PAGES.MY_LISTINGS.VIEW_LISTING' | translate }}">
+                    <mat-icon>language</mat-icon>
                   </button>
-                  <button mat-menu-item (click)="addStock(listing)">
-                    <mat-icon>add_circle</mat-icon>
-                    <span>Agregar Stock</span>
-                  </button>
-                  <button mat-menu-item (click)="updateStock(listing)">
+                  <button 
+                    mat-icon-button 
+                    color="accent"
+                    (click)="editListing(listing.id)"
+                    matTooltip="{{ 'PAGES.MY_LISTINGS.EDIT_LISTING' | translate }}">
                     <mat-icon>edit</mat-icon>
-                    <span>Actualizar Stock</span>
                   </button>
-                  <mat-divider></mat-divider>
-                  <button mat-menu-item (click)="deleteListing(listing)" class="delete-action">
-                    <mat-icon color="warn">delete</mat-icon>
-                    <span>Eliminar</span>
+                  <button 
+                    mat-icon-button 
+                    [matMenuTriggerFor]="moreMenu"
+                    matTooltip="{{ 'PAGES.MY_LISTINGS.MORE_OPTIONS' | translate }}">
+                    <mat-icon>more_vert</mat-icon>
                   </button>
-                </mat-menu>
-              </div>
-            </td>
-          </ng-container>
+                  
+                  <mat-menu #moreMenu="matMenu">
+                    <button mat-menu-item (click)="toggleStatus(listing)">
+                      <mat-icon>{{ listing.status === 'active' ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      <span>{{ listing.status === 'active' ? ( 'PAGES.MY_LISTINGS.DEACTIVATE_LISTING' | translate ) : ( 'PAGES.MY_LISTINGS.ACTIVATE_LISTING' | translate ) }}</span>
+                    </button>
+                    <button mat-menu-item (click)="addStock(listing)">
+                      <mat-icon>add_circle</mat-icon>
+                      <span>{{ 'PAGES.MY_LISTINGS.ADD_STOCK' | translate }}</span>
+                    </button>
+                    <button mat-menu-item (click)="updateStock(listing)">
+                      <mat-icon>edit</mat-icon>
+                      <span>{{ 'PAGES.MY_LISTINGS.UPDATE_STOCK' | translate }}</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="deleteListing(listing)" class="delete-action">
+                      <mat-icon color="warn">delete</mat-icon>
+                      <span>{{ 'PAGES.MY_LISTINGS.DELETE_LISTING' | translate }}</span>
+                    </button>
+                  </mat-menu>
+                </div>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="listing-row"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="listing-row"></tr>
+          </table>        
 
-        <!-- Paginador -->
-        <mat-paginator 
-          [length]="totalItems()"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="[10, 25, 50]"
-          (page)="onPageChange($event)"
-          showFirstLastButtons>
-        </mat-paginator>
-      </div>
-    }
-  </mat-card>
+          <div class="pagination-wrapper">
+            <app-pagination
+              [currentPage]="currentPage()"
+              [totalPages]="totalPages"
+              [totalItems]="totalItems()"
+              [itemsPerPage]="pageSize"
+              [pageSizeOptions]="[5, 10, 25, 50]"
+              [showPageSizeSelector]="true"
+              (pageChange)="onPageChange($event)"
+              (pageSizeChange)="onPageSizeChange($event)"
+            ></app-pagination>
+          </div>
+          
+        </div>    
+    </mat-card>
+  }
 </div>

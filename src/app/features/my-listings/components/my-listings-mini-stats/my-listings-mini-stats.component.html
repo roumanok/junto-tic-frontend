@@ -13,9 +13,8 @@
       </button>
     </div>
   } @else {
-    <!-- Stats Cards -->
     <div class="stats-grid">
-      <!-- Total -->
+      
       <mat-card class="stat-card total">
         <mat-card-content>
           <div class="stat-icon">
@@ -28,7 +27,6 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Activas -->
       <mat-card class="stat-card active">
         <mat-card-content>
           <div class="stat-icon">
@@ -41,7 +39,6 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Stock Bajo -->
       <mat-card class="stat-card warning" [class.alert]="hasLowStock()">
         <mat-card-content>
           <div class="stat-icon">
@@ -54,7 +51,6 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Sin Stock -->
       <mat-card class="stat-card danger" [class.alert]="hasNoStock()">
         <mat-card-content>
           <div class="stat-icon">

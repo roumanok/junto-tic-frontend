@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 export interface StockDialogData {
   mode: 'add' | 'update';
@@ -17,6 +18,7 @@ export interface StockDialogData {
   standalone: true,
   imports: [
     CommonModule,
+    TranslatePipe,
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -32,13 +34,13 @@ export interface StockDialogData {
       <p class="listing-title">{{ data.listingTitle }}</p>
       
       @if (data.mode === 'update') {
-        <p class="current-stock">Stock actual: <strong>{{ data.currentStock }}</strong></p>
+        <p class="current-stock">{{ 'PAGES.MY_LISTINGS.CURRENT_STOCK' | translate }}: <strong>{{ data.currentStock }}</strong></p>
       }
 
       <form [formGroup]="stockForm">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>
-            {{ data.mode === 'add' ? 'Cantidad a agregar' : 'Nuevo stock' }}
+            {{ data.mode === 'add' ? ('PAGES.MY_LISTINGS.STOCK_TO_ADD' | translate) : ('PAGES.MY_LISTINGS.STOCK_TO_UPDATE' | translate) }}
           </mat-label>
           <input 
             matInput 
@@ -47,16 +49,16 @@ export interface StockDialogData {
             min="0"
             [placeholder]="data.mode === 'add' ? 'Ej: 10' : 'Ej: 25'">
           @if (stockForm.get('quantity')?.hasError('required')) {
-            <mat-error>Este campo es requerido</mat-error>
+            <mat-error>{{ 'COMMON.REQUIRED_FIELD' | translate }}</mat-error>
           }
           @if (stockForm.get('quantity')?.hasError('min')) {
-            <mat-error>Debe ser un número positivo</mat-error>
+            <mat-error>{{ 'COMMON.POSITIVE_NUMBER' | translate }}</mat-error>
           }
         </mat-form-field>
 
         @if (data.mode === 'add' && stockForm.get('quantity')?.value) {
           <p class="stock-preview">
-            Stock resultante: <strong>{{ data.currentStock + (stockForm.get('quantity')?.value || 0) }}</strong>
+            {{ 'PAGES.MY_LISTINGS.NEW_STOCK' | translate}}: <strong>{{ data.currentStock + (stockForm.get('quantity')?.value || 0) }}</strong>
           </p>
         }
       </form>
@@ -64,14 +66,14 @@ export interface StockDialogData {
 
     <mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">
-        Cancelar
+        {{ 'COMMON.CANCEL' | translate }}
       </button>
       <button 
         mat-raised-button 
         color="primary"
         [disabled]="!stockForm.valid"
         (click)="onConfirm()">
-        {{ data.mode === 'add' ? 'Agregar' : 'Actualizar' }}
+        {{ data.mode === 'add' ? ('PAGES.MY_LISTINGS.ADD_STOCK' | translate) : ('PAGES.MY_LISTINGS.UPDATE_STOCK' | translate) }}
       </button>
     </mat-dialog-actions>
   `,
@@ -83,18 +85,18 @@ export interface StockDialogData {
 
     .listing-title {
       font-size: 14px;
-      color: rgba(0, 0, 0, 0.6);
+      color: var(--text-primary);
       margin: 0 0 16px 0;
       font-weight: 500;
     }
 
     .current-stock {
       font-size: 14px;
-      color: rgba(0, 0, 0, 0.87);
+      color: var(--text-primary);
       margin: 0 0 20px 0;
 
       strong {
-        color: #1976d2;
+        color: var(--color-primary);
         font-size: 16px;
       }
     }
@@ -106,13 +108,13 @@ export interface StockDialogData {
     .stock-preview {
       margin: 16px 0 0 0;
       padding: 12px;
-      background-color: #e3f2fd;
+      background-color: var(--bg-page-section);
       border-radius: 4px;
       font-size: 14px;
-      color: rgba(0, 0, 0, 0.87);
+      color: var(--text-primary);
 
       strong {
-        color: #1976d2;
+        color: var(--color-primary);
         font-size: 16px;
       }
     }

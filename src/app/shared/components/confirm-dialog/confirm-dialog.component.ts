@@ -51,7 +51,7 @@ export interface ConfirmDialogData {
     p {
       margin: 0;
       font-size: 16px;
-      color: rgba(0, 0, 0, 0.87);
+      color: var(--text-primary);
     }
   `]
 })

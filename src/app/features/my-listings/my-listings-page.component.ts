@@ -1,4 +1,3 @@
-// src/app/features/my-listings/pages/my-listings-page/my-listings-page.component.ts
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -12,6 +11,11 @@ import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { ListingService } from '../../core/services/listing.service';
 import { BreadcrumbComponent, BreadcrumbItem } from 'src/app/shared/components/breadcrumb/breadcrumb.component';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { MyListing } from '../../core/models/listing.model';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
@@ -48,7 +52,12 @@ import { environment } from '../../../environments/environment';
     MatDividerModule,
     MatDialogModule,
     BreadcrumbComponent,
-    MyListingsMiniStatsComponent
+    LoadingSpinnerComponent,
+    ErrorStateComponent,
+    EmptyStateComponent,
+    PageHeaderComponent,
+    MyListingsMiniStatsComponent,
+    PaginationComponent
   ],
   templateUrl: './my-listings-page.component.html',
   styleUrl: './my-listings-page.component.css'
@@ -66,9 +75,10 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
   breadcrumbItems: BreadcrumbItem[] = [];
   
   loading = signal(false);
+  error = signal<string | null>(null);
   listings = signal<MyListing[]>([]);
-  totalItems = signal(0);
   currentPage = signal(1);
+  totalItems = signal(0);  
   pageSize = 10;
 
   displayedColumns: string[] = ['image', 'title', 'price', 'stock', 'sales', 'status', 'actions'];
@@ -84,8 +94,9 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
   
-  private loadMyListings() {
+  public loadMyListings() {
     this.loading.set(true);
+    this.error.set(null);
     
     this.listingService.getMyListings(this.currentPage(), this.pageSize)
       .pipe(takeUntil(this.destroy$))
@@ -94,17 +105,12 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
           this.listings.set(response.listings || response);
           this.totalItems.set(response.pagination?.total || 0);
           this.loading.set(false);
-
           this.setupSEO();
-          
-          console.log('✅ Artículos cargados:', response);
         },
-        error: (error) => {
+        error: (error) => {          
+          console.error('Error cargando artículos:', error);          
+          this.error.set(this.i18n.t('PAGES.MY_LISTINGS.LOADING_ERROR'));          
           this.loading.set(false);
-          console.error('❌ Error cargando artículos:', error);
-          this.snackBar.open('Error al cargar artículos', 'Cerrar', {
-            duration: 4000
-          });
           this.listings.set([]);
         }
       });
@@ -155,12 +161,23 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
 
   getformattedPrice(price: string | number): string {    
     return this.listingService.getformattedPrice(price);
+  }  
+
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+    this.loadMyListings();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex + 1);
-    this.pageSize = event.pageSize;
+  onPageSizeChange(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPage.set(1);
     this.loadMyListings();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalItems() / this.pageSize);
   }
   
   createNewListing() {
@@ -180,15 +197,16 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
   toggleStatus(listing: MyListing) {
     const isActive = listing.status === 'active';
     const action = isActive ? 'inactivar' : 'activar';
-    const actionCapitalized = isActive ? 'Inactivar' : 'Activar';
+    const actionCapitalized = isActive ? this.i18n.t('PAGES.MY_LISTINGS.DEACTIVATE_LISTING') : this.i18n.t('PAGES.MY_LISTINGS.ACTIVATE_LISTING');
+    const question = isActive ? this.i18n.t('PAGES.MY_LISTINGS.DEACTIVATE_LISTING_QUESTION') : this.i18n.t('PAGES.MY_LISTINGS.ACTIVATE_LISTING_QUESTION');
     
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: `${actionCapitalized} artículo`,
-        message: `¿Está seguro que desea ${action} el artículo?`,
+        title: actionCapitalized,
+        message: question,
         confirmText: actionCapitalized,
-        cancelText: 'Cancelar',
+        cancelText: this.i18n.t('COMMON.CANCEL'),
         confirmColor: isActive ? 'warn' : 'primary'
       }
     });
@@ -206,13 +224,12 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
                   : l
               );
               this.listings.set(updatedListings);
-              
-              const statusText = !isActive ? 'activado' : 'inactivado';
-              this.snackBar.open(`Artículo ${statusText}`, 'Cerrar', { duration: 2000 });
+              const statusText = !isActive ? this.i18n.t('PAGES.MY_LISTINGS.ACTIVATE_LISTING_SUCCESS') : this.i18n.t('PAGES.MY_LISTINGS.DEACTIVATE_LISTING_SUCCESS');
+              this.snackBar.open(statusText, this.i18n.t('COMMON.CLOSE'), { duration: 2000 });
             },
             error: (error) => {
               console.error('Error cambiando estado:', error);
-              this.snackBar.open('Error al cambiar el estado', 'Cerrar', { duration: 3000 });
+              this.snackBar.open(this.i18n.t('PAGES.MY_LISTINGS.UPDATE_STATUS_ERROR'), this.i18n.t('COMMON.CLOSE'), { duration: 3000 });
             }
           });
       }
@@ -244,14 +261,14 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
               this.listings.set(updatedListings);
               
               this.snackBar.open(
-                `Se agregaron ${quantity} unidades. Stock actual: ${listing.stock + quantity}`,
-                'Cerrar',
+                this.i18n.t('PAGES.MY_LISTINGS.ADD_STOCK_SUCCESS'),                
+                this.i18n.t('COMMON.CLOSE'),
                 { duration: 3000 }
               );
             },
             error: (error) => {
               console.error('Error agregando stock:', error);
-              this.snackBar.open('Error al agregar stock', 'Cerrar', { duration: 3000 });
+              this.snackBar.open(this.i18n.t('PAGES.MY_LISTINGS.ADD_STOCK_ERROR'), this.i18n.t('COMMON.CLOSE'), { duration: 3000 });
             }
           });
       }
@@ -283,14 +300,14 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
               this.listings.set(updatedListings);
               
               this.snackBar.open(
-                `Stock actualizado a ${newStock} unidades`,
-                'Cerrar',
+                this.i18n.t('PAGES.MY_LISTINGS.UPDATE_STOCK_SUCCESS'),                
+                this.i18n.t('COMMON.CLOSE'),
                 { duration: 3000 }
               );
             },
             error: (error) => {
               console.error('Error actualizando stock:', error);
-              this.snackBar.open('Error al actualizar stock', 'Cerrar', { duration: 3000 });
+              this.snackBar.open(this.i18n.t('PAGES.MY_LISTINGS.UPDATE_STOCK_ERROR'), this.i18n.t('COMMON.CLOSE'), { duration: 3000 });
             }
           });
       }
@@ -301,8 +318,8 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
     // Verificar si tiene ventas
     if (listing.total_sold && listing.total_sold > 0) {
       this.snackBar.open(
-        'No se puede eliminar un artículo con ventas',
-        'Cerrar',
+        this.i18n.t('PAGES.MY_LISTINGS.CANNOT_DELETE_SOLD_ITEM'),
+        this.i18n.t('COMMON.CLOSE'),
         { duration: 4000 }
       );
       return;
@@ -312,10 +329,10 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Eliminar artículo',
-        message: '¿Está seguro que desea eliminar este artículo? Esta acción no se puede deshacer.',
-        confirmText: 'Eliminar',
-        cancelText: 'Cancelar',
+        title: this.i18n.t('PAGES.MY_LISTINGS.DELETE_TITLE'),
+        message: this.i18n.t('PAGES.MY_LISTINGS.DELETE_MESSAGE'),
+        confirmText: this.i18n.t('COMMON.DELETE'),
+        cancelText: this.i18n.t('COMMON.CANCEL'),
         confirmColor: 'warn'
       }
     });
@@ -326,16 +343,15 @@ export class MyListingsPageComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
-              // Remover el artículo de la lista local
               const updatedListings = this.listings().filter(l => l.id !== listing.id);
               this.listings.set(updatedListings);
               this.totalItems.set(this.totalItems() - 1);
-              
-              this.snackBar.open('Artículo eliminado correctamente', 'Cerrar', { duration: 3000 });
+
+              this.snackBar.open(this.i18n.t('PAGES.MY_LISTINGS.DELETE_SUCCESS'), this.i18n.t('COMMON.CLOSE'), { duration: 3000 });
             },
             error: (error) => {
               console.error('Error eliminando artículo:', error);
-              this.snackBar.open('Error al eliminar el artículo', 'Cerrar', { duration: 3000 });
+              this.snackBar.open(this.i18n.t('PAGES.MY_LISTINGS.DELETE_ERROR'), this.i18n.t('COMMON.CLOSE'), { duration: 3000 });
             }
           });
       }

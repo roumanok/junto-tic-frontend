@@ -17,7 +17,7 @@
   align-items: center;
   gap: 12px;
   padding: 24px;
-  background-color: #ffebee;
+  background-color: var(--bg-attention);
   border-radius: 8px;
 
   mat-icon {
@@ -27,7 +27,7 @@
   }
 
   span {
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--text-attention);
   }
 }
 
@@ -46,22 +46,22 @@
 }
 
 .stat-card {
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: var(--transition-normal);
   border-radius: 12px;
   overflow: hidden;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-lg);
   }
 
   &.alert {
-    border-left: 4px solid #ffc002;
+    border-left: 4px solid var(--stats-warning);
     animation: pulse 2s infinite;
   }
 
   &.danger {
-    border-left: 4px solid #ff0000;
+    border-left: 4px solid var(--stats-danger);
     animation: pulse 2s infinite;
   }
 
@@ -94,24 +94,24 @@
       font-size: 28px;
       width: 28px;
       height: 28px;
-      color: white;
+      color: var(--text-on-primary);
     }
   }
 
   &.total .stat-icon {
-    background: #4A90A4;
+    background: var(--stats-total);
   }
 
   &.active .stat-icon {
-    background: #11993e;
+    background: var(--stats-active);
   }
 
   &.warning .stat-icon {
-    background: #ffc002;
+    background: var(--stats-warning);
   }
 
   &.danger .stat-icon {
-    background: #ff0000;
+    background: var(--stats-danger);
   }
 
   .stat-info {
@@ -121,14 +121,14 @@
       margin: 0 0 4px 0;
       font-size: 28px;
       font-weight: 700;
-      color: #2c3e50;
+      color: var(--text-primary);
       line-height: 1;
     }
 
     p {
       margin: 0;
       font-size: 14px;
-      color: #2c3e50;
+      color: var(--text-primary);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;

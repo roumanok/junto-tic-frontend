@@ -1,4 +1,3 @@
-// src/app/features/my-listings/components/my-listings-mini-stats/my-listings-mini-stats.component.ts
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DashboardStats } from '../../../../core/models/listing.model';
 import { ListingService } from '../../../../core/services/listing.service';
+import { I18nService } from 'src/app/core/services/i18n.service';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({
@@ -26,7 +26,9 @@ import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
   styleUrl: './my-listings-mini-stats.component.scss'
 })
 export class MyListingsMiniStatsComponent implements OnInit {
+  
   private listingsService = inject(ListingService);
+  private i18n = inject(I18nService);
   
   stats = signal<DashboardStats | null>(null);
   loading = signal<boolean>(true);
@@ -36,25 +38,25 @@ export class MyListingsMiniStatsComponent implements OnInit {
     this.loadStats();
   }
 
-  private loadStats(): void {
+  private loadStats(forceRefresh = false): void {
     this.loading.set(true);
     this.error.set(null);
     
-    this.listingsService.getDashboardStats(false).subscribe({
+    this.listingsService.getDashboardStats(forceRefresh).subscribe({
       next: (data) => {
         this.stats.set(data);
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set('Error al cargar estadísticas');
-        this.loading.set(false);
         console.error('Error loading mini stats:', err);
+        this.error.set(this.i18n.t('PAGES.MY_LISTINGS.STATS.LOADING_ERROR'));
+        this.loading.set(false);        
       }
     });
   }
 
   refresh(): void {
-    this.loadStats();
+    this.loadStats(true);
   }
 
   hasLowStock(): boolean {

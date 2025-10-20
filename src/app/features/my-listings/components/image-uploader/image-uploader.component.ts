@@ -193,8 +193,7 @@ export class ImageUploaderComponent {
     });
   }
 
-  removeImage(image: ImageUpload): void {
-    // Si es una imagen existente, agregar a la lista de eliminados
+  removeImage(image: ImageUpload): void {        
     if (image.isExisting && !image.tempId) {
       this.deletedImageIds.push(image.id);
     }

@@ -72,6 +72,7 @@ export class MySalesPageComponent implements OnInit, OnDestroy {
   
   public loadSales(): void {
     this.loading.set(true);
+    this.error.set(null);
     
     this.orderService.getMySales(this.currentPage(), this.pageSize)
       .pipe(takeUntil(this.destroy$))
@@ -81,13 +82,10 @@ export class MySalesPageComponent implements OnInit, OnDestroy {
           this.totalItems.set(response.pagination?.total || 0);
           this.loading.set(false);          
         },
-        error: (error) => {
-          this.loading.set(false);
-          this.error.set('Error al cargar las ventas');
+        error: (error) => {          
           console.error('Error cargando ventas:', error);
-          this.snackBar.open('Error al cargar las ventas', 'Cerrar', {
-            duration: 4000
-          });
+          this.error.set(this.i18n.t('PAGES.MY_SALES.LOADING_ERROR'));          
+          this.loading.set(false);
           this.sales.set([]);
         }
       });

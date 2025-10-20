@@ -45,19 +45,15 @@ export class MySalesMiniStatsComponent implements OnInit {
   
   private loadStats(forceRefresh = false): void {
     this.loading.set(true);
+    this.error.set(null);
+
     this.listingService.getDashboardStats(forceRefresh).subscribe({
-      next: (stats) => {
-        this.stats.set({
-          total_sales: stats.total_sales || 0,
-          estimated_revenue: stats.estimated_revenue || 0,
-          inventory_value: stats.inventory_value || 0,
-          average_price: stats.average_price || 0
-        });
-        this.loading.set(false);
-        console.log('✅ Sales stats cargadas:', stats);
+      next: (data) => {
+        this.stats.set(data);
+        this.loading.set(false);        
       },
       error: (error) => {
-        console.error('❌ Error cargando stats:', error);
+        console.error('Error cargando stats:', error);
         this.error.set(this.i18n.t('PAGES.MY_SALES.STATS.LOADING_ERROR'));
         this.loading.set(false);
       }
