@@ -1,0 +1,125 @@
+mat-dialog-content {
+    padding: 20px;
+    min-width: 450px;
+    max-width: 600px;
+}
+
+.order-info {
+    background: var(--bg-dialog);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.order-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.status-selection h3 {
+    font-size: 16px;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.status-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-option {
+    padding: 12px;
+    border: 2px solid var(--border-color-normal);
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.status-option:not(.mat-mdc-radio-disabled):hover {
+    background: var(--bg-page-section);
+    border-color: var(--color-primary);
+}
+
+.status-option.mat-mdc-radio-checked {
+    background: var(--bg-page-section);
+    border-color: var(--color-primary);
+}
+
+.status-option-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 8px;
+}
+
+.status-option-content i {
+    font-size: 20px;
+    width: 24px;
+}
+
+.status-pending i {
+    color: var(--order-status-pending);
+}
+
+.status-processing i {
+    color: var(--order-status-processing);
+}
+
+.status-delivered i {
+    color: var(--order-status-delivered);
+}
+
+.status-cancelled i {
+    color: var(--order-status-cancelled);
+}
+
+.status-label {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.status-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.no-changes {
+    text-align: center;
+    padding: 30px 20px;    
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.no-changes i {
+    font-size: 32px;
+    color: var(--text-attention);
+    margin-bottom: 10px;
+}
+
+.no-changes p {
+    margin: 0;
+    color: var(--text-attention);;
+    font-size: 14px;
+}
+
+mat-dialog-actions {
+    padding: 16px 20px;
+    gap: 8px;
+}
+
+@media (max-width: 600px) {
+    mat-dialog-content {
+    min-width: 300px;
+    }
+
+    .status-option-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    }
+}

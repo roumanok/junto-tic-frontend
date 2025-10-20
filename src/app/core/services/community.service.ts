@@ -94,17 +94,7 @@ export class CommunityService {
         if (hostname === 'localhost' || /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
           return this.detectedDomain;
         }
-        // Extraer subdomain
-        const parts = hostname.split('.');
-        let retHostname = hostname;        
-        if (parts.length >= 3) {
-          // Formato: subdomain.domain.com
-          retHostname = parts[0];
-        } else if (parts.length === 2) {
-          // Formato: domain.com - usar dominio completo
-          retHostname = hostname;
-        }
-        return retHostname;
+        return hostname;
       } catch {
         return this.detectedDomain;
       }

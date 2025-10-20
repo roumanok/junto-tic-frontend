@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, tap, catchError, map } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { ApiService } from '../../core/services/api.service';
-import { OrderDetail, OrdersResponse } from '../models/order.model';
+import { OrderDetail, OrdersResponse, SalesResponse } from '../models/order.model';
 import { I18nService } from './i18n.service';
 import { environment } from 'src/environments/environment';
 
@@ -49,11 +49,11 @@ export class OrderService {
   /**
    * Obtener listado de ventas del anunciante
    */
-  getMySales(page: number = 1, limit: number = 10): Observable<any> {
+  getMySales(page: number = 1, limit: number = 10): Observable<SalesResponse> {
     const params = new HttpParams()
               .set('page', page)
               .set('limit', limit);
-    return this.apiService.getSimple<any>('/my-sales/', params).pipe(
+    return this.apiService.getSimple<SalesResponse>('/my-sales/', params).pipe(
       tap((response) => {
         console.log('📋 Sales loaded:', response);
       }),

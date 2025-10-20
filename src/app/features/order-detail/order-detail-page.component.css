@@ -107,7 +107,6 @@
   gap: 0.75rem;
 }
 
-/* Status Cards */
 .order-detail-page .status-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -382,7 +381,6 @@
   margin-right: 0.5rem;
 }
 
-/* Info Grid */
 .order-detail-page .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -433,7 +431,6 @@
   color: var(--color-primary);
 }
 
-/* Buttons */
 .order-detail-page .btn {
   padding: 0.625rem 1.25rem;
   border: none;

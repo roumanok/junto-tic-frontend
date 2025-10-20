@@ -17,7 +17,7 @@
   align-items: center;
   gap: 12px;
   padding: 24px;
-  background-color: #ffebee;
+  background-color: var(--bg-attention);
   border-radius: 8px;
 
   mat-icon {
@@ -27,7 +27,7 @@
   }
 
   span {
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--text-attention);
   }
 }
 
@@ -46,13 +46,13 @@
 }
 
 .stat-card {
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: var(--transition-normal);
   border-radius: 12px;
   overflow: hidden;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-lg);
   }
 
   mat-card-content {
@@ -75,24 +75,24 @@
       font-size: 28px;
       width: 28px;
       height: 28px;
-      color: white;
+      color: var(--text-on-primary);
     }
   }
 
   &.sales .stat-icon {
-    background: #4A90A4;
+    background: var(--stats-sales);
   }
 
   &.revenue .stat-icon {
-    background: #11993e;
+    background: var(--stats-revenue);
   }
 
   &.inventory .stat-icon {
-    background: #ffc002;
+    background: var(--stats-inventory);
   }
 
   &.average .stat-icon {
-    background: #9b59b6;
+    background: var(--stats-average);
   }
 
   .stat-info {
@@ -102,14 +102,14 @@
       margin: 0 0 4px 0;
       font-size: 28px;
       font-weight: 700;
-      color: #2c3e50;
+      color: var(--text-primary);
       line-height: 1;
     }
 
     p {
       margin: 0;
       font-size: 14px;
-      color: #2c3e50;
+      color: var(--text-primary);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;

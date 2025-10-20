@@ -2,57 +2,37 @@
   <!-- Breadcrumb -->
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <!-- Page Header -->
-  <div class="page-header">
-    <div class="container">
-      <div class="header-info">
-        <h1 class="page-title">
-          {{ 'PAGES.MY_SALES.SECTION_TITLE' | translate }}
-        </h1>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mini Stats -->
+  <app-page-header [title]="('PAGES.MY_SALES.SECTION_TITLE' | translate)"></app-page-header>
+  
   <app-my-sales-mini-stats></app-my-sales-mini-stats>
 
-  <!-- Loading State -->
-  <div *ngIf="loading()" class="loading-container">
-    <div class="spinner"></div>
-    <p>Cargando tus ventas...</p>
-  </div>
+  <app-loading-spinner [message]="( 'COMMON.LOADING' | translate )" *ngIf="loading()"></app-loading-spinner>
 
-  <!-- Error State -->
-  <div *ngIf="error() && !loading()" class="error-container">
-    <i class="fas fa-exclamation-triangle"></i>
-    <h3>Error al cargar las ventas</h3>
-    <p>{{ error() }}</p>
-    <button class="btn btn-primary" (click)="loadSales()">
-      Reintentar
-    </button>
-  </div>
+  <app-error-state 
+    *ngIf="error() && !loading()"
+    [title]="'PAGES.MY_SALES.LOADING_ERROR' | translate"
+    [message]="error() || ( 'ERRORS.GENERAL' | translate )"
+    [retryButtonText]="'COMMON.RETRY' | translate"
+    (retry)="loadSales()">
+  </app-error-state>  
 
-  <!-- Empty State -->
-  <div *ngIf="!loading() && !error() && sales().length === 0" class="empty-state">
-    <i class="fas fa-receipt"></i>
-    <h3>Aún no tienes ventas</h3>
-    <p>Cuando realices tu primera venta, aparecerá acá</p>
-    <a routerLink="/mi-cuenta/mis-articulos" class="btn btn-primary">
-      Ver mis artículos
-    </a>
-  </div>
-
-  <!-- Sales List -->
+  <app-empty-state 
+    *ngIf="!loading() && !error() && sales().length === 0"
+    [title]="'PAGES.MY_SALES.EMPTY_TITLE' | translate"
+    [message]="'PAGES.MY_SALES.EMPTY_DESC' | translate"
+    icon="fa-shopping-bag"
+    [actionText]="'COMMON.BACK_TO_HOME' | translate"
+    actionRoute="/">
+  </app-empty-state> 
+  
   <div *ngIf="!loading() && !error() && sales().length > 0" class="sales-container">  
 
-    <!-- Sales Grid -->
     <div class="sales-grid">
       <div 
         *ngFor="let sale of sales()" 
         class="sale-card"
         (click)="viewOrderDetail(sale.id)"
       >
-        <!-- Sale Header -->
         <div class="sale-card-header">
           <div class="sale-info">
             <span class="sale-title">{{ 'COMMON.ORDER' | translate }}</span>
@@ -68,13 +48,13 @@
                 [ngClass]="'payment-' + sale.payment_status.toLowerCase()"
               >
               <i class="fas fa-credit-card"></i>
-               Pago: {{ getPaymentStatusLabel(sale.payment_status) }}
+               {{ getPaymentStatusLabel(sale.payment_status) }}
               </span>
           </div>
           <div class="sale-status">
-            <button class="btn btn-primary btn-sm">
+            <button class="btn btn-details btn-sm">
               <i class="fas fa-eye"></i>
-              Ver detalle
+              {{ 'COMMON.VIEW_DETAILS' | translate }}
             </button>
             <span class="status-badge" [ngClass]="getStatusClass(sale.status)">
               {{ getStatusLabel(sale.status) }}
@@ -88,7 +68,7 @@
             <div class="detail-item">
               <div class="detail-title">
                 <i class="fas fa-user"></i>
-                <span>Cliente</span>
+                <span>{{ 'PAGES.MY_SALES.CLIENT' | translate }}</span>
               </div>
               <div class="sale-customer">{{ sale.customer_name }}</div>
             </div>
@@ -96,7 +76,7 @@
             <div class="detail-item">
               <div class="detail-title">
                 <i class="fas fa-box"></i>
-                <span>Productos</span>
+                <span>{{ 'PAGES.MY_SALES.LISTINGS' | translate }}</span>
               </div>
               <div class="sale-items">
                 <div class="sale-item">
@@ -114,14 +94,14 @@
             <div class="detail-item">
               <div class="detail-title">
                 <i class="fas fa-shipping-fast"></i>
-                <span>Método de entrega</span>
+                <span>{{ 'PAGES.MY_SALES.DELIVERY_METHOD' | translate }}</span>
               </div>
-              <span class="delivery-value">{{ getDeliveryMethodLabel(sale.delivery_method_type) }}</span>
+              <span class="delivery-value">{{ sale.delivery_method.name }}</span>
             </div>
             <div class="detail-item">
               <div class="detail-title">
                 <i class="fas fa-dollar-sign"></i>
-                <span>Total</span>
+                <span>{{ 'PAGES.MY_SALES.TOTAL' | translate }}</span>
               </div>               
               <span class="total-value">{{ formatPrice(sale.total) }}</span>
             </div>
@@ -130,7 +110,6 @@
       </div>
     </div>
 
-    <!-- Pagination -->
     <app-pagination
       [currentPage]="currentPage()"
       [totalPages]="totalPages"
@@ -141,5 +120,6 @@
       (pageChange)="onPageChange($event)"
       (pageSizeChange)="onPageSizeChange($event)"
     ></app-pagination>
+    
   </div>
 </div>

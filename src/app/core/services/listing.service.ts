@@ -252,20 +252,7 @@ export class ListingService {
       }),
       catchError((error) => {
         console.error('Error getting dashboard stats:', error);
-        return of({
-          total_listings: 0,
-          active_listings: 0,
-          inactive_listings: 0,
-          featured_listings: 0,
-          out_of_stock_listings: 0,
-          total_sales: 0,
-          total_stock: 0,
-          inventory_value: 0,
-          estimated_revenue: 0,
-          average_price: 0,
-          low_stock_count: 0,
-          inactive_with_stock: 0
-        });
+        throw error;
       })
     );
   }

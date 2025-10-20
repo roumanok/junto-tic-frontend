@@ -72,5 +72,32 @@ export interface OrdersResponse {
   };
 }
 
+export interface Sale {
+  id: string;
+  public_id: string;
+  total: string;
+  delivery_method_type: string;
+  delivery_method: DeliveryMethod;
+  created_at: string;
+  status: string;
+  payment_status: string;
+  customer_name: string;
+  first_item_title: string;
+  first_item_quantity: number;
+  first_item_image: string;
+}
+
+export interface SalesResponse {
+  sales: Sale[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+    has_next: boolean;
+    has_previous: boolean;
+  };
+}
+
 export type OrderStatus = 'pending' | 'processing' | 'delivered' | 'cancelled';
 export type PaymentStatus = 'pending' | 'issued' | 'in_process' | 'approved' | 'rejected' | 'cancelled' | 'refunded' | 'deferred' | 'objected' | 'review' | 'validate' | 'overdue';

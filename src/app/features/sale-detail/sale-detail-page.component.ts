@@ -1,22 +1,19 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subject, switchMap, catchError, tap, takeUntil, combineLatest } from 'rxjs';
-import { of } from 'rxjs';
-
+import { Subject, switchMap, catchError, tap, takeUntil, combineLatest, of } from 'rxjs';
 import { OrderService } from '../../core/services/order.service';
 import { OrderDetail } from '../../core/models/order.model';
 import { ListingService } from '../../core/services/listing.service';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { CdnService } from '../../core/services/cdn.service';
-
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChangeOrderStatusDialogComponent } from './components/change-order-status-dialog/change-order-status-dialog.component';
-
 import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/breadcrumb/breadcrumb.component';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { environment } from 'src/environments/environment';
 
@@ -27,6 +24,8 @@ import { environment } from 'src/environments/environment';
     CommonModule,
     RouterModule,
     BreadcrumbComponent,
+    LoadingSpinnerComponent,
+    ErrorStateComponent,
     MatDialogModule,
     MatSnackBarModule,
     TranslatePipe
@@ -50,12 +49,12 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
   private listingService = inject(ListingService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private orderService = inject(OrderService);
 
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private orderService: OrderService,
+    private router: Router,    
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -82,8 +81,7 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
         this.error.set(null);
       }),
       switchMap(([params, queryParams]) => {    
-        this.checkPaymentStatus(queryParams);
-
+        
         const orderId = queryParams['external_transaction_id'] || params['order_id'];
         
         console.log('🔍 Buscando orden:', {
@@ -101,105 +99,30 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
       }),
       catchError((err) => {
         console.error('Error cargando detalle de orden:', err);
-        this.error.set(err.message || 'Error al cargar la orden');
+        this.error.set(err.message || this.i18n.t('PAGES.SALE_DETAIL.LOADING_ERROR'));
         this.loading.set(false);
         return of(null);
       })
     ).subscribe((response) => {
       if (response) {
-        console.log('📦 Orden cargada:', response);       
         this.order.set(response);
         this.updateBreadcrumbsWithOrder(response);
         this.setupSEO();
       }
       this.loading.set(false);
     });
-  }
-
-  private checkPaymentStatus(queryParams: any): void {
-    const status = queryParams['status'];
-    
-    if (!status) {
-      this.paymentStatusMessage.set(null);
-      return;
-    }
-
-    switch (status.toLowerCase()) {
-      case 'pending':
-      case 'issued':
-      case 'in_process':
-        this.paymentStatusMessage.set({
-          type: 'warning',
-          text: 'El pago está pendiente o en proceso'
-        });
-        break;
-      case 'approved':
-        this.paymentStatusMessage.set({
-          type: 'success',
-          text: '¡Pago exitoso! Gracias por tu compra'
-        });
-        break;      
-      case 'rejected':
-        this.paymentStatusMessage.set({
-          type: 'error',
-          text: 'El pago fue rechazado'
-        });
-        break;
-      case 'cancelled':
-      case 'overdue':
-        this.paymentStatusMessage.set({
-          type: 'error',
-          text: 'El pago fue cancelado'
-        });
-        break;
-      case 'refunded':
-        this.paymentStatusMessage.set({
-          type: 'error',
-          text: 'El pago fue devuelto'
-        });
-        break;      
-      case 'deferred':
-        this.paymentStatusMessage.set({
-          type: 'warning',
-          text: 'El pago se encuentra diferido'
-        });
-        break;        
-      case 'objected':
-        this.paymentStatusMessage.set({
-          type: 'warning',
-          text: 'El pago se encuentra objetado'
-        });
-        break;                
-      case 'review':
-        this.paymentStatusMessage.set({
-          type: 'warning',
-          text: 'El pago se realizó y está siendo revisado por la entidad'
-        });
-        break;
-      case 'validate':
-        this.paymentStatusMessage.set({
-          type: 'warning',
-          text: 'El pago se realizó pero debe ser validado'
-        });
-        break;        
-      
-      default:
-        this.paymentStatusMessage.set(null);
-        break;
-    }
-  }
+  }  
 
   private buildBreadcrumbs(): void {
     this.breadcrumbItems = [
       { label: this.i18n.t('COMMON.HOME'), url: '/' },
       { label: this.i18n.t('COMMON.MY_ACCOUNT'), url: '/mi-cuenta/' },
-      { label: this.i18n.t('COMMON.MY_ORDERS'), url: '/mi-cuenta/mis-compras' },
+      { label: this.i18n.t('COMMON.MY_SALES'), url: '/mi-cuenta/mis-ventas' },
       { label: this.i18n.t('COMMON.ORDER'), url: '' }
     ];
   }
 
   private updateBreadcrumbsWithOrder(order: OrderDetail): void {
-    // Actualizar el último breadcrumb con el ID de la orden
     if (this.breadcrumbItems.length > 0) {
       this.breadcrumbItems[this.breadcrumbItems.length - 1] = {
         label: this.i18n.t('COMMON.ORDER') + ' #'+order.public_id,
@@ -212,86 +135,34 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
     const communityName = this.i18n.t('COMMUNITY.NAME');
     const orderId = this.order()?.id;
     this.seo.setPageMeta(
-      'PAGES.ORDER_DETAIL.TITLE',
-      'PAGES.ORDER_DETAIL.DESCRIPTION',
+      'PAGES.SALE_DETAIL.TITLE',
+      'PAGES.SALE_DETAIL.DESCRIPTION',
       { orderId, communityName }
     );
-  }
-
-  getStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'pending': 'status-pending',
-      'processing': 'status-processing',
-      'delivered': 'status-delivered',
-      'cancelled': 'status-cancelled'
-    };
-    return statusMap[status] || 'status-pending';
-  }
-
-  getPaymentStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'pending': 'payment-pending',
-      'approved': 'payment-approved',
-      'cancelled': 'payment-cancelled',
-      'refunded': 'payment-refunded'
-    };
-    return statusMap[status] || 'payment-pending';
-  }
+  }  
 
   getStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      'pending': 'Pendiente',
-      'processing': 'En preparación',
-      'delivered': 'Entregado',
-      'cancelled': 'Cancelado'
-    };
-    return labels[status] || status;
+    return this.orderService.getStatusLabel(status);
   }
 
   getPaymentStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      'pending': 'Pendiente',
-      'approved': 'Pago aprobado',
-      'cancelled': 'Pago cancelado',
-      'refunded': 'Reembolsado'
-    };
-    return labels[status] || status;
-  }
-
-  getDeliveryMethodLabel(type: string): string {
-    const labels: { [key: string]: string } = {
-      'pickup': 'Retiro en local',
-      'delivery': 'Envío a domicilio'
-    };
-    return labels[type] || type;
+    return this.orderService.getPaymentStatusLabel(status);
   }
 
   getCustomerIdentificationTypeLabel(type: string): string {
-    const labels: { [key: string]: string } = {
-      'DNI_ARG': this.i18n.t('COMMON.DNI'),
-      'CUIT_ARG': this.i18n.t('COMMON.CUIT')      
-    };
-    return labels[type] || type;
+    return this.orderService.getCustomerIdentificationTypeLabel(type);
   }
 
-  formatDate(dateString: string): string {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString(environment.locale, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  formatDateTime(dateString: string): string {
+    return this.orderService.formatDateTime(dateString);
   }
 
   formatPrice(price: string | number): string {
-    return '$' + this.listingService.getformattedPrice(price);    
+    return this.listingService.getformattedPrice(price);    
   }  
 
   getCdnUrl(imagePath?: string): string {
-    if (!imagePath) return '/placeholder-product.png';
+    if (!imagePath) return '/placeholder.png';
     return this.cdnService.getCdnUrl(imagePath);
   }
 
@@ -331,7 +202,6 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          // Actualizar el estado local
           this.order.update(order => {
             if (order) {
               return { ...order, status: newStatus };
@@ -344,14 +214,13 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
             'Cerrar',
             { duration: 3000 }
           );
-
-          console.log('✅ Estado actualizado:', response);
+          console.log('Estado actualizado:', response);
         },
         error: (error) => {
-          console.error('❌ Error actualizando estado:', error);
+          console.error('Error actualizando estado:', error);
           this.snackBar.open(
-            'Error al actualizar el estado de la orden',
-            'Cerrar',
+            this.i18n.t('PAGES.SALE_DETAIL.CHANGE_STATUS.ERROR'),
+            this.i18n.t('COMMON.CLOSE'),
             { duration: 4000 }
           );
         }
@@ -360,7 +229,6 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
 
   canChangeStatus(): boolean {
     if (!this.order()) return false;
-    // No se puede cambiar el estado si ya está entregado
     return this.order()!.status !== 'delivered';
   }
 

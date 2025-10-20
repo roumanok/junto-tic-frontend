@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>{{ 'PAGES.SALE_DETAIL.CHANGE_STATUS.TITLE' | translate }}</h2>
+<mat-dialog-content>
+    <div class="status-selection">
+    <h3>{{ 'PAGES.SALE_DETAIL.CHANGE_STATUS.DESCRIPTION' | translate }}</h3>
+    <mat-radio-group [(ngModel)]="selectedStatus" class="status-radio-group">
+        <mat-radio-button 
+        *ngFor="let status of availableStatuses" 
+        [value]="status.value"
+        class="status-option"
+        [class.status-pending]="status.value === 'pending'"
+        [class.status-processing]="status.value === 'processing'"
+        [class.status-delivered]="status.value === 'delivered'"
+        [class.status-cancelled]="status.value === 'cancelled'"
+        >
+        <div class="status-option-content">
+            <i class="fas" [ngClass]="status.icon"></i>
+            <span class="status-label">{{ status.label }}</span>
+            <span *ngIf="status.description" class="status-description">
+            {{ status.description }}
+            </span>
+        </div>
+        </mat-radio-button>
+    </mat-radio-group>
+    </div>
+
+    <div *ngIf="!hasAvailableStatuses()" class="no-changes">
+    <i class="fas fa-info-circle"></i>
+    <p>{{ 'PAGES.SALE_DETAIL.CHANGE_STATUS.NO_CHANGES_AVAILABLE' | translate }}</p>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">
+    {{ 'COMMON.CANCEL' | translate }}
+    </button>
+    <button 
+    mat-raised-button 
+    color="primary"
+    (click)="onConfirm()"
+    [disabled]="!selectedStatus || selectedStatus === data.currentStatus"
+    >
+    {{ 'PAGES.SALE_DETAIL.CHANGE_STATUS.CHANGE_BUTTON' | translate }}
+    </button>
+</mat-dialog-actions>

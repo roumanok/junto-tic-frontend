@@ -45,6 +45,12 @@ $theme: mat.define-theme((
   --alert-order-warning: #957103;
   --alert-order-warning-alt: #ffc107;
 
+  /* === COLORES DE STATS === */
+  --stats-sales: #4A90A4; 
+  --stats-revenue: #11993e;
+  --stats-inventory: #ffc002;
+  --stats-average: #9b59b6;
+
   
   /* === COLORES DE FONDO === */
   --bg-main: #FFFFFF;
@@ -73,14 +79,18 @@ $theme: mat.define-theme((
   --bg-form-input-focus: #FFFFFF;
   --bg-form-button: #d6d6d6;
   --bg-form-button-hover: #bfbfbf;
+  --bg-dialog: #FFFFFF;
+  --bg-dialog-overlay: rgba(0,0,0,0.6);
   --bg-listing-image: #f8f9fa;
   --bg-listing-image-zoom: rgba(0,0,0,0.9);
   --bg-listing-image-nav: rgba(0,0,0,0.5);
   --bg-listing-image-nav-hover: rgba(0,0,0,0.8);
   --bg-listing-detail: #f8f9fa;  
   --bg-listing-inactive-msg: #ffdede;
-  --bg-my-orders-page: #f8f9fa;
+  --bg-my-orders-page: #ffffff;
   --bg-order-detail-page: #ffffff;
+  --bg-my-sales-page: #ffffff;
+  --bg-sale-detail-page: #ffffff;
   --bg-checkout-page: #f8f9fa;
   --bg-checkout-card: #ffffff;
   --bg-checkout-overlay: rgba(0,0,0,0.6);
