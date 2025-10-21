@@ -9,6 +9,7 @@ import { CommunityService } from './core/services/community.service';
 import { ThemeService } from './core/services/theme.service';
 import { CategoryService } from './core/services/category.service';
 import { AuthService } from './core/services/auth.service';
+import { AppLoadingService } from './core/services/app-loading.service';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
@@ -18,9 +19,12 @@ function initApp() {
   const theme       = inject(ThemeService);
   const categories  = inject(CategoryService);
   const auth        = inject(AuthService);
+  const appLoading  = inject(AppLoadingService); 
 
 
   return async () => {
+    appLoading.startLoading();
+
     await community.ensureLoaded().catch(err => {
       console.warn('ensureLoaded() no resolvió comunidad todavía (ok en SSR):', err);
     });
@@ -32,6 +36,8 @@ function initApp() {
         categories.preloadFeatured().catch(err => console.error('Cats featured error:', err)),
       ]);
     }
+    
+    appLoading.finishLoading();
   };
 }
 
