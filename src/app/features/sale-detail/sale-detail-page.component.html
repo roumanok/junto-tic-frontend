@@ -97,12 +97,12 @@
               <h3>{{ item.listing_title }}</h3>
               <div class="item-pricing">
                 <span class="item-quantity">{{ "PAGES.SALE_DETAIL.QUANTITY" | translate }}: {{ item.quantity }}</span>
-                <span class="item-unit-price">{{ formatPrice(item.unit_price) }} c/u</span>
+                <span class="item-unit-price">${{ formatPrice(item.unit_price) }} c/u</span>
               </div>
             </div>
             <div class="item-total">
               <span class="total-label">{{ "PAGES.SALE_DETAIL.SUBTOTAL" | translate }}</span>
-              <span class="total-value">{{ formatPrice(item.total_price) }}</span>
+              <span class="total-value">${{ formatPrice(item.total_price) }}</span>
             </div>
           </div>
         </div>
@@ -113,15 +113,15 @@
         <div class="summary-details">
           <div class="summary-row">
             <span>{{ "PAGES.SALE_DETAIL.SUBTOTAL" | translate }}</span>
-            <span>{{ formatPrice(order()!.subtotal) }}</span>
+            <span>${{ formatPrice(order()!.subtotal) }}</span>
           </div>
           <div class="summary-row">
             <span>{{ "PAGES.SALE_DETAIL.DELIVERY_COST" | translate }}</span>
-            <span>{{ formatPrice(order()!.delivery_cost) }}</span>
+            <span>${{ formatPrice(order()!.delivery_cost) }}</span>
           </div>
           <div class="summary-row summary-total">
             <span>{{ "PAGES.SALE_DETAIL.TOTAL" | translate }}</span>
-            <span>{{ formatPrice(order()!.total) }}</span>
+            <span>${{ formatPrice(order()!.total) }}</span>
           </div>
           <div *ngIf="order()!.paid_at" class="summary-row paid-info">
             <i class="fas fa-check-circle"></i>

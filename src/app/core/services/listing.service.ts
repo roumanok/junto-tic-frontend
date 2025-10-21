@@ -69,7 +69,7 @@ export class ListingService {
     this.error.set(null);
 
     const params = new HttpParams()
-          .set('page', '1')
+          .set('page', String(page))
           .set('limit', String(limit));
     
     return this.apiService.get<any>('/my-listings', params).pipe(
