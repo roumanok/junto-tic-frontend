@@ -8,6 +8,7 @@ export interface Community {
 }
 
 type Dict<T = any> = Record<string, T>;
+
 export interface CommunityTheme {
   slug: string;
   genVersion: number;
@@ -19,5 +20,6 @@ export interface CommunityTheme {
   };
   i18n: Dict<string>;
   slider: { slides: Array<{ image: string; title?: string; link?: string }> };
+  gtmContainerId?: string;
   ready: boolean;
 }

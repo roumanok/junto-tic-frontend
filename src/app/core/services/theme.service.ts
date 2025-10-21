@@ -248,7 +248,8 @@ export class ThemeService {
       const url = this.cdnURL(cdn, `cmn/${slug}/res-${resVersion}.js`);
       console.log('Cargando recursos de comunidad desde:', url);
       const tag = document.createElement('script');
-      tag.src = url;
+      //tag.src = url + `?v=${Date.now()}`; 
+      tag.src = url; 
       tag.async = true;
       tag.onerror = () => {
         delete window.javascriptcommunityResourcesCallback;
@@ -267,6 +268,7 @@ export class ThemeService {
       customJS?: string;
       i18nOverride?: string;
       slider?: string;
+      gtmContainerId?: string;
     },
     resVersion: number
   ): Promise<void> {
@@ -291,6 +293,11 @@ export class ThemeService {
       } catch { /* ignorar si no existe */ }
     }
 
+    // Google Tag Manager
+    if (res.gtmContainerId) {
+      this.loadGoogleTagManager(res.gtmContainerId);
+    }
+
     // slider via JSONP
     if (res.slider) {
       /*
@@ -312,6 +319,44 @@ export class ThemeService {
       });
       */
     }
+  } 
+
+  private loadGoogleTagManager(containerId: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    // Evitar cargar GTM múltiples veces
+    if ((window as any).gtmLoaded) return;
+    (window as any).gtmLoaded = true;
+
+    // Google Tag Manager script estándar
+    const script1 = this.document.createElement('script');
+    script1.innerHTML = `
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','${containerId}');
+    `;
+    this.document.head.insertBefore(script1, this.document.head.firstChild);
+
+    // Agregar noscript al body
+    const noscript = this.document.createElement('noscript');
+    const iframe = this.document.createElement('iframe');
+    iframe.src = `https://www.googletagmanager.com/ns.html?id=${containerId}`;
+    iframe.height = '0';
+    iframe.width = '0';
+    iframe.style.display = 'none';
+    iframe.style.visibility = 'hidden';
+    noscript.appendChild(iframe);
+    
+    // Insertar al principio del body
+    if (this.document.body.firstChild) {
+      this.document.body.insertBefore(noscript, this.document.body.firstChild);
+    } else {
+      this.document.body.appendChild(noscript);
+    }
+
+    console.log(`✓ Google Tag Manager cargado: ${containerId}`);
   }
 
   // ---- UTILS PÚBLICOS
