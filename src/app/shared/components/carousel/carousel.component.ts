@@ -30,8 +30,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   // Touch handling
   private startX = 0;
+  private startY = 0;  // ← AGREGAR
   private currentX = 0;
+  private currentY = 0;  // ← AGREGAR
   private isDragging = false;
+  private isHorizontalSwipe = false;  // ← AGREGAR
   private swipeThreshold = 50;
 
   private destroy$ = new Subject<void>();
@@ -104,19 +107,48 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
   onTouchStart(event: TouchEvent): void {
     this.startX = event.touches[0].clientX;
-    this.isDragging = true;
+    this.startY = event.touches[0].clientY;
+    this.isDragging = false;
+    this.isHorizontalSwipe = false;
   }
 
   onTouchMove(event: TouchEvent): void {
-    if (!this.isDragging) return;
-    event.preventDefault();
+    if (!event.touches[0]) return;
+
     this.currentX = event.touches[0].clientX;
+    this.currentY = event.touches[0].clientY;
+
+    const deltaX = Math.abs(this.currentX - this.startX);
+    const deltaY = Math.abs(this.currentY - this.startY);
+
+    if (!this.isDragging && !this.isHorizontalSwipe) {
+      if (deltaX > deltaY && deltaX > 10) {
+        this.isHorizontalSwipe = true;
+        this.isDragging = true;
+      }
+      else if (deltaY > deltaX && deltaY > 10) {
+        this.isDragging = false;
+        return;
+      }
+      else {
+        return;
+      }
+    }
+
+    if (this.isHorizontalSwipe) {
+      event.preventDefault();
+    }
   }
 
   onTouchEnd(): void {
-    if (!this.isDragging) return;
-    this.isDragging = false;    
+    if (!this.isDragging || !this.isHorizontalSwipe) {
+      this.isDragging = false;
+      this.isHorizontalSwipe = false;
+      return;
+    }
+
     const diff = this.startX - this.currentX;    
+    
     if (Math.abs(diff) > this.swipeThreshold) {
       if (diff > 0) {
         this.nextSlide();
@@ -124,5 +156,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.prevSlide();
       }
     }
+
+    this.isDragging = false;
+    this.isHorizontalSwipe = false;
   }
 }

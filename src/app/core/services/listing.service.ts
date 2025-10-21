@@ -48,10 +48,14 @@ export class ListingService {
   generateSlugWithId(title: string, id: string): string {
     const baseSlug = title
       .toLowerCase()
-      .replace(/[^a-z0-9 -]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();    
+      .normalize('NFD')                    // Descompone caracteres con tildes
+      .replace(/[\u0300-\u036f]/g, '')     // Elimina las tildes
+      .replace(/ñ/g, 'n')                  // Reemplaza ñ por n
+      .replace(/[^a-z0-9 -]/g, '')         // Elimina caracteres especiales
+      .replace(/\s+/g, '-')                // Espacios a guiones
+      .replace(/-+/g, '-')                 // Múltiples guiones a uno solo
+      .trim();                             // Quita espacios al inicio/fin
+      
     // Formato: {slug}-lid-{id}
     return `${baseSlug}-lid-${id}`;
   }
