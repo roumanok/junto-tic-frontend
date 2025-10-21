@@ -31,13 +31,13 @@ export function getAuthConfig(): AuthConfig {
     strictDiscoveryDocumentValidation: false,
     
     // Usar PKCE (Proof Key for Code Exchange) - recomendado para SPAs
-    useSilentRefresh: true,
+    useSilentRefresh: false,
         
     // URL para silent refresh
     silentRefreshRedirectUri: origin + '/silent-refresh.html',
     
     // Tiempo de espera para silent refresh
-    silentRefreshTimeout: 5000,
+    silentRefreshTimeout: 20000,
 
     // Refresh al 75% del tiempo de vida del token
     //timeoutFactor: 0.75,  

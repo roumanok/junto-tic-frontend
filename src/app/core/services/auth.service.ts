@@ -44,54 +44,67 @@ export class AuthService {
   }
 
   private initOAuth(): void {
-    // Configurar OAuth
     this.oauthService.configure(getAuthConfig());
     this.oauthService.setStorage(localStorage);    
-    this.isLoadingSubject$.next(true);
-
-    if (isPlatformBrowser(this.platformId)) {
-    window.addEventListener('message', (event) => {
-      console.log('📨 [AUTH-SERVICE] Mensaje recibido:', {
-        origin: event.origin,
-        data: event.data,
-        source: event.source
-      });
-    });
-  }
+    this.isLoadingSubject$.next(true);    
     
-    // Cargar discovery document (endpoints de Keycloak)
     this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async () => {     
-      console.log('✅ Discovery document cargado');
-      console.log('🔍 Endpoints:', this.oauthService);
-      this.oauthService.setupAutomaticSilentRefresh();          
-      console.log('✅ Silent refresh configurado');
+      // console.log('[DIAG] Estado inicial del token:', {
+      //   hasValidAccessToken: this.oauthService.hasValidAccessToken(),
+      //   hasValidIdToken: this.oauthService.hasValidIdToken(),
+      //   accessTokenExpiration: new Date(this.oauthService.getAccessTokenExpiration()),
+      //   now: new Date()
+      // });
+      this.oauthService.events
+        .pipe(filter(e => e.type === 'token_expires'))
+        .subscribe(() => {
+          //console.log('Token por expirar, intentando refresh...');
+          this.attemptTokenRefresh();
+        });
+
       this.updateAuthenticationState();
       this.loadUserProfile();              
       if (this.isLoggedIn()) {
         await this.loadUserFromApi();
+        console.log('🔍 [INIT] Roles cargados al iniciar:', this.getUserRoles());
+        console.log('🔍 [INIT] isLoggedIn:', this.isLoggedIn());
+        console.log('🔍 [INIT] communityId:', this.communityService.communityId);
       }
       this.isLoadingSubject$.next(false);            
     })
     .catch((error) => {
-      console.error('❌ Error al cargar OAuth:', error);
+      console.error('Error al cargar OAuth:', error);
       this.isLoadingSubject$.next(false);
     });
 
-    /*
-    // ✅ Escuchar TODOS los eventos OAuth para debugging
-    this.oauthService.events.subscribe((event: OAuthEvent) => {
-      console.log('🔔 OAuth Event:', event.type, event);
+    // this.oauthService.events.subscribe((event: OAuthEvent) => {
+    //   console.log('OAuth Event:', event.type, event);
       
-      if (event.type === 'token_refresh_error' || event.type === 'silent_refresh_error') {
-        console.error('💥 Error en refresh:', event);
-      }
-    });
-    */
-    // Suscribirse a eventos de OAuth
+    //   if (event.type === 'token_received') {
+    //     console.log('Token recibido, expires_at:', localStorage.getItem('expires_at'));
+    //   }
+      
+    //   if (event.type === 'token_refreshed') {
+    //     console.log('Token refrescado exitosamente');
+    //   }
+      
+    //   if (event.type === 'token_refresh_error' || event.type === 'silent_refresh_error') {
+    //     console.error('Error en refresh:', event);
+    //     console.error('Detalles localStorage:', {
+    //       refresh_token: localStorage.getItem('refresh_token') ? 'existe' : 'NO EXISTE',
+    //       access_token: localStorage.getItem('access_token') ? 'existe' : 'NO EXISTE'
+    //     });
+    //   }
+      
+    //   if (event.type === 'session_changed' || event.type === 'session_error') {
+    //     console.log('Sesión cambió:', event.type);
+    //   }
+    // });
+
     this.oauthService.events
       .pipe(filter(e => ['token_received', 'token_refreshed', 'token_expires'].includes(e.type)))
       .subscribe((event: OAuthEvent) => {      
-        console.log('🔄 OAuth Event:', event.type);  
+        //console.log('OAuth Event:', event.type);  
         this.updateAuthenticationState();
         this.loadUserProfile();
       });
@@ -99,10 +112,9 @@ export class AuthService {
     this.oauthService.events
       .pipe(filter(e => e.type === 'silent_refresh_error'))
       .subscribe(() => {
-        console.warn('⚠️ Error en silent refresh, redirigiendo al login');
+        //console.warn('Error en silent refresh, redirigiendo al login');
         this.oauthService.initLoginFlow();
-      });
-    
+      });    
 
     this.oauthService.events
       .pipe(filter(e => e.type === 'logout'))
@@ -114,6 +126,30 @@ export class AuthService {
 
   }
 
+  private async attemptTokenRefresh(retryCount = 0): Promise<void> {
+    const maxRetries = 3;
+    
+    try {
+      await this.oauthService.refreshToken();
+      //console.log('Token refrescado exitosamente');
+      this.updateAuthenticationState();
+      await this.loadUserFromApi();
+    } catch (error) {
+      console.error(`Error refrescando token (intento ${retryCount + 1}/${maxRetries}):`, error);
+      
+      if (retryCount < maxRetries) {
+        // Reintentar después de 2 segundos
+        setTimeout(() => {
+          //console.log(`Reintentando refresh... (${retryCount + 2}/${maxRetries})`);
+          this.attemptTokenRefresh(retryCount + 1);
+        }, 2000);
+      } else {
+        console.error('No se pudo refrescar el token después de varios intentos. Cerrando sesión...');
+        this.logout();
+      }
+    }
+  }
+
   /**
    * Carga los datos del usuario desde /api/auth/me
    */
@@ -122,7 +158,7 @@ export class AuthService {
     
     const communityId = this.communityService.communityId;
     if (!communityId) {
-      console.warn('⚠️ No se puede cargar usuario: communityId no disponible');
+      console.warn('No se puede cargar usuario: communityId no disponible');
       return;
     }
 
@@ -133,7 +169,7 @@ export class AuthService {
         this.apiService.getSimple<UserMeResponse>('/auth/me', params)
       );
       
-      console.log('✅ Datos del usuario cargados desde API:', userData);
+      //console.log('Datos del usuario cargados desde API:', userData);
       
       this.communityRolesSubject$.next(userData.roles || []);
       
@@ -146,7 +182,7 @@ export class AuthService {
       }
       
     } catch (error) {
-      console.error('❌ Error al cargar datos del usuario:', error);
+      console.error('Error al cargar datos del usuario:', error);
     }
   }
 
@@ -306,7 +342,7 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const isAuth = this.oauthService.hasValidAccessToken();
-    console.log('🔍 AuthService.isAuthenticated():', {
+    console.log('AuthService.isAuthenticated():', {
       hasValidAccessToken: isAuth,
       accessToken: this.oauthService.getAccessToken() ? 'exists' : 'missing'
     });
