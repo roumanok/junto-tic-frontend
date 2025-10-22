@@ -11,6 +11,7 @@ import { ListingService } from '../../core/services/listing.service';
 import { ThemeService } from 'src/app/core/services/theme.service';
 import { Listing } from '../../core/models/listing.model';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
+import { HeroSliderComponent } from '../../shared/components/hero-slider/hero-slider.component';
 import { HighlightsComponent } from './components/highlights/highlights.component';
 import { FeaturedCategoriesComponent } from './components/featured-categories/featured-categories.component';
 import { FeaturedAdvertisersComponent } from './components/featured-advertisers/featured-advertisers.component';
@@ -21,6 +22,7 @@ import { CarouselComponent } from '../../shared/components/carousel/carousel.com
   standalone: true,
   imports: [
     CommonModule,
+    HeroSliderComponent,
     HighlightsComponent,
     ListingCardComponent,
     FeaturedCategoriesComponent,

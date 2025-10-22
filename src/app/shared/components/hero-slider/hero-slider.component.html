@@ -1,0 +1,46 @@
+<!-- src/app/shared/components/hero-slider/hero-slider.component.html -->
+<section class="hero-slider" *ngIf="slides.length > 0">
+  <div class="swiper" #swiperContainer>
+    <div class="swiper-wrapper">
+      
+      <!-- Slides -->
+      <div class="swiper-slide" *ngFor="let slide of slides">
+        <div class="slide-content" [class.clickable]="slide.link" (click)="onSlideClick(slide)">
+          
+          <!-- Imagen con soporte responsive -->
+          <picture>
+            <source 
+              *ngIf="slide.imageMobile" 
+              media="(max-width: 768px)" 
+              [srcset]="slide.imageMobile" />
+            <img 
+              [src]="slide.image" 
+              [alt]="slide.title || 'Slide'" 
+              class="hero-img"
+              loading="lazy" />
+          </picture>
+
+          <!-- Overlay con texto (opcional) -->
+          <div class="slide-overlay" *ngIf="slide.title || slide.subtitle">
+            <div class="slide-text-container">
+              <h2 class="slide-title" *ngIf="slide.title">{{ slide.title }}</h2>
+              <p class="slide-subtitle" *ngIf="slide.subtitle">{{ slide.subtitle }}</p>
+              <button class="slide-cta" *ngIf="slide.link && slide.buttonText">
+                {{ slide.buttonText }}
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Controles de navegación (solo si hay más de 1 slide) -->
+    <div class="swiper-button-next" *ngIf="slides.length > 1"></div>
+    <div class="swiper-button-prev" *ngIf="slides.length > 1"></div>
+
+    <!-- Paginación (solo si hay más de 1 slide) -->
+    <div class="swiper-pagination" *ngIf="slides.length > 1"></div>
+  </div>
+</section>

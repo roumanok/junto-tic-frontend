@@ -3,7 +3,7 @@ import { Injectable, signal, computed, inject, Inject, PLATFORM_ID } from '@angu
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ApiService } from './api.service';
 import { CommunityService } from './community.service';
-import { CommunityAssetsConfig, CommunityHomeSectionsConfig, CommunityMenuItemsConfig, CommunityTheme } from '../models/community.model';
+import { CommunityAssetsConfig, CommunityHomeSectionsConfig, CommunityMenuItemsConfig, CommunitySlide, CommunityTheme } from '../models/community.model';
 import { environment } from '../../../environments/environment';
 
 type Dict<T = any> = Record<string, T>;
@@ -21,7 +21,7 @@ declare global {
     }) => void;
 
     javascriptsliderConfigCallback?: (data: {
-      slides: Array<{ image: string; title?: string; link?: string }>;
+      slides: Array<CommunitySlide>;
     }) => void;
   }
 }
@@ -39,16 +39,18 @@ export class ThemeService {
     cdn: '',
     assets: {},
     menuItems: {
-      news: true,
-      offers: true,
-      sellerSignup: true
+      news: false,
+      offers: false,
+      sellerSignup: false
     },
     homeSections: {
-      highlights: true,
-      categories: true,
+      heroSlider: false,
+      heroText: false,
+      highlights: false,
+      categories: false,
       advertisers: false,
-      newsStrip: true,
-      offersStrip: true
+      newsStrip: false,
+      offersStrip: false
     },
     i18n: {},
     slider: { slides: [] },
@@ -331,25 +333,24 @@ export class ThemeService {
     }
 
     // slider via JSONP
-    if (res.slider) {
-      /*
+    if (res.slider) {      
       await new Promise<void>((resolve, reject) => {
         window.javascriptsliderConfigCallback = (data) => {
           this._state.update(s => ({ ...s, slider: data ?? { slides: [] } }));
           resolve();
           setTimeout(() => { delete window.javascriptsliderConfigCallback; }, 0);
         };
-        const sliderUrl = this.cdnURL(cdn, `cmn/${slug}/${res.slider.replace('{version}', String(resVersion))}`);
+        const sliderUrl = this.cdnURL(cdn, `cmn/${slug}/${res.slider?.replace('{version}', String(resVersion))}`);
         const tag = document.createElement('script');
         tag.src = sliderUrl;
+        tag.src = sliderUrl + `?cb=${Date.now()}`; // evitar cache
         tag.async = true;
         tag.onerror = () => {
           delete window.javascriptsliderConfigCallback;
           reject(new Error(`No se pudo cargar slider ${sliderUrl}`));
         };
         document.head.appendChild(tag);        
-      });
-      */
+      });      
     }
   } 
 
@@ -393,8 +394,7 @@ export class ThemeService {
 
   // ---- UTILS PÚBLICOS
 
-  getMenuItemsConfig(): CommunityMenuItemsConfig {
-    console.log('[STATE]:', this._state());
+  getMenuItemsConfig(): CommunityMenuItemsConfig {    
     return this._state().menuItems;
   }
 

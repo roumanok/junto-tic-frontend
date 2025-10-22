@@ -9,6 +9,8 @@ javascriptcommunityResourcesCallback({
     "sellerSignup": false
   },
   "homeSections":{
+    "heroSlider": false,
+    "heroText": true,
     "highlights": true,
     "categories": true,
     "advertisers": true,

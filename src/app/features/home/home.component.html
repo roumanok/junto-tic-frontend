@@ -1,11 +1,14 @@
 <div class="home-page">
-  <section class="hero">
+
+  <app-hero-slider *ngIf="getHomeSectionsConfig().heroSlider"></app-hero-slider>
+
+  <section *ngIf="getHomeSectionsConfig().heroText" class="hero">
     <div class="hero-container">
       <h1>{{'PAGES.HOME.HERO.TITLE' | translate}}</h1>
       <p>{{'PAGES.HOME.HERO.SUBTITLE' | translate}}</p>
     </div>
   </section>
-
+  
   <app-highlights *ngIf="getHomeSectionsConfig().highlights"></app-highlights>
 
   <app-featured-categories *ngIf="getHomeSectionsConfig().categories"></app-featured-categories>

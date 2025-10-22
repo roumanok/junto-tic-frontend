@@ -18,7 +18,7 @@ export interface CommunityTheme {
   menuItems: CommunityMenuItemsConfig;
   homeSections: CommunityHomeSectionsConfig
   i18n: Dict<string>;
-  slider: { slides: Array<{ image: string; title?: string; link?: string }> };
+  slider: { slides: Array<CommunitySlide> };
   gtmContainerId?: string;
   ready: boolean;
 }
@@ -35,9 +35,20 @@ export interface CommunityMenuItemsConfig {
 }
 
 export interface CommunityHomeSectionsConfig {
+  heroSlider?: boolean,
+  heroText?: boolean,
   highlights?: boolean,
   categories?: boolean,
   advertisers?: boolean,
   newsStrip?: boolean,
   offersStrip?: boolean
+}
+
+export interface CommunitySlide{
+  image: string;
+  imageMobile?: string;
+  title?: string;
+  subtitle?: string;
+  link?: string;
+  buttonText?: string;
 }

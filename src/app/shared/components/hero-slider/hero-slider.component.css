@@ -1,0 +1,251 @@
+.hero-slider {
+  width: 100%;
+  height: auto;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+
+  .swiper {
+    width: 100%;
+    height: 100%;
+  }
+
+  .swiper-slide {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .slide-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: block;
+
+    &.clickable {
+      cursor: pointer;
+    }
+  }
+
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .slide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .slide-text-container {
+    text-align: center;
+    color: white;
+    max-width: 800px;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .slide-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+  }
+
+  .slide-subtitle {
+    font-size: 1.25rem;
+    margin: 0 0 2rem 0;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    opacity: 0.95;
+  }
+
+  .slide-cta {
+    background: var(--primary-color, #e91e63);
+    color: white;
+    border: none;
+    padding: 0.875rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+
+    &:hover {
+      background: var(--primary-dark, #c2185b);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(233, 30, 99, 0.5);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: white;
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+
+    &:after {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+      transform: scale(1.1);
+    }
+
+    &.swiper-button-disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+
+  .swiper-button-prev {
+    left: 20px;
+  }
+
+  .swiper-button-next {
+    right: 20px;
+  }
+
+  .swiper-pagination {
+    bottom: 20px;
+
+    ::ng-deep .swiper-pagination-bullet {
+      width: 12px;
+      height: 12px;
+      background: white;
+      opacity: 0.6;
+      transition: all 0.3s ease;
+
+      &.swiper-pagination-bullet-active {
+        opacity: 1;
+        background: var(--primary-color, #e91e63);
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-slider {
+    /* height: 450px; */
+
+    .slide-title {
+      font-size: 2.5rem;
+    }
+
+    .slide-subtitle {
+      font-size: 1.125rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-slider {
+    /* height: 420px; */
+
+    .slide-text-container {
+      padding: 1rem;
+    }
+
+    .slide-title {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .slide-subtitle {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .slide-cta {
+      padding: 0.75rem 2rem;
+      font-size: 0.9rem;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      width: 40px;
+      height: 40px;
+
+      &:after {
+        font-size: 1rem;
+      }
+    }
+
+    .swiper-button-prev {
+      left: 10px;
+    }
+
+    .swiper-button-next {
+      right: 10px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-slider {
+    /* height: 360px; */
+
+    .slide-overlay {
+      padding: 1rem;
+    }
+
+    .slide-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .slide-subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .slide-cta {
+      padding: 0.625rem 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      display: none;
+    }
+  }
+}

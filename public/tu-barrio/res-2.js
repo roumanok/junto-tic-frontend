@@ -9,6 +9,8 @@ javascriptcommunityResourcesCallback({
     "sellerSignup": true
   },
   "homeSections":{
+    "heroSlider": true,
+    "heroText": false,
     "highlights": true,
     "categories": true,
     "advertisers": false,
@@ -18,6 +20,6 @@ javascriptcommunityResourcesCallback({
   //"customCSS": "custom-{version}.css",
   //"customJS": "main-{version}.js",
   "i18nOverride": "i18n/es.json",
-  //"slider": "slider-{version}.js",
+  "slider": "slider-{version}.js",
   "gtmContainerId": "GTM-NKDP2V"
 });
