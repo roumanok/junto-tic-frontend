@@ -200,6 +200,10 @@ export class MegaMenuComponent implements OnInit, OnDestroy {
     this.closeMegaMenu();
   }
 
+  getMenuItemsConfig() {
+    return this.themeService.getMenuItemsConfig();
+  }
+
   @HostListener('document:keydown.escape', ['$event'])
   onEscapeKey(event: KeyboardEvent) {
     if (this.isOpen) {

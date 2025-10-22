@@ -34,7 +34,7 @@
             <span>{{ 'HEADER.MENU.MY_ORDERS' | translate }}</span>
             <i class="fas fa-chevron-right arrow"></i>
           </li>          
-          <li *ngIf="hasRole('consumer')" (click)="navigateToSell()">
+          <li *ngIf="getMenuItemsConfig().sellerSignup && hasRole('consumer') && !hasRole('advertiser')" (click)="navigateToSell()">
             <i class="fas fa-store"></i>
             <span>{{ 'HEADER.MENU.SELL' | translate }}</span>
             <i class="fas fa-chevron-right arrow"></i>

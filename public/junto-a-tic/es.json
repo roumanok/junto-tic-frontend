@@ -10,17 +10,17 @@
   
   "SEARCH.PLACEHOLDER": "Buscar propósitos...",
 
-  "PAGES.HOME.HERO.TITLE": "Bienvenido a la Junto a TIC",
-  "PAGES.HOME.HERO.SUBTITLE": "Donde la solidaridad y la economía se encuentran",
+  "PAGES.HOME.HERO.TITLE": "Bienvenido a Junto a TIC",
+  "PAGES.HOME.HERO.SUBTITLE": "Red económica con propósito",
 
-  "PAGES.HOME:HIGHLIGHTS.FIRST.ICON": "fa-hands-holding-heart",
+  "PAGES.HOME:HIGHLIGHTS.FIRST.ICON": "fa-hand-holding-hand",
   "PAGES.HOME:HIGHLIGHTS.FIRST.TITLE": "AYUDÁ DONANDO",
   "PAGES.HOME:HIGHLIGHTS.FIRST.DESCRIPTION": "Doná para apoyar causas sociales.",
   "PAGES.HOME:HIGHLIGHTS.SECOND.ICON": "fa-certificate",
-  "PAGES.HOME:HIGHLIGHTS.SECOND.TITLE": "PRODUCTOS OFICIALES",
-  "PAGES.HOME:HIGHLIGHTS.SECOND.DESCRIPTION": "Productos y servicios con licencia oficial de Club Tu Barrio.",
+  "PAGES.HOME:HIGHLIGHTS.SECOND.TITLE": "ORGANIZACIONES OFICIALES",
+  "PAGES.HOME:HIGHLIGHTS.SECOND.DESCRIPTION": "Trabajamos con ONGs registradas.",
   "PAGES.HOME:HIGHLIGHTS.THIRD.ICON": "fa-shield-halved",
   "PAGES.HOME:HIGHLIGHTS.THIRD.TITLE": "PAGO SEGURO",
-  "PAGES.HOME:HIGHLIGHTS.THIRD.DESCRIPTION": "Para que compres con tranquilidad"
+  "PAGES.HOME:HIGHLIGHTS.THIRD.DESCRIPTION": "Para que ayudes con tranquilidad"
 
 }

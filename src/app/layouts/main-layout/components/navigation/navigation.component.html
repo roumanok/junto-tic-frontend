@@ -29,14 +29,16 @@
       </div>
       
       <div class="featured-categories" *ngIf="!isMobile()">
-        <a 
-          *ngFor="let item of featuredItems" 
-          [routerLink]="item.url" 
-          class="category-item"
-          [class.active]="item.active"
-        >
-          {{ item.name }}
-        </a>
+        <ng-container *ngFor="let item of featuredItems">
+          <a
+            *ngIf="item.enabled"
+            [routerLink]="item.url"
+            class="category-item"
+            [class.active]="item.active"
+          >
+            {{ item.name }}
+          </a>
+        </ng-container>
       </div>
     </div>
     
@@ -75,7 +77,7 @@
                   </a>
                 </li>
                 
-                <li *ngIf="hasRole('consumer') && !hasRole('advertiser')">
+                <li *ngIf="getMenuItemsConfig().sellerSignup && hasRole('consumer') && !hasRole('advertiser')">
                   <a (click)="navigateToSell()">
                     <i class="fas fa-store"></i>
                     <span>{{ 'HEADER.MENU.SELL' | translate }}</span>

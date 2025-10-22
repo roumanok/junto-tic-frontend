@@ -62,7 +62,7 @@ $theme: mat.define-theme((
   
   /* === COLORES DE FONDO === */
   --bg-main: #FFFFFF;
-  --bg-header: #4A90A4;
+  --bg-header: var(--color-primary);
   --bg-navigation: #FFFFFF;
   --bg-menu: #FFFFFF;
   --bg-menu-item: #FFFFFF;
@@ -73,6 +73,8 @@ $theme: mat.define-theme((
   --bg-featured-categories-circle: #FFFFFF;
   --bg-highlight-strip: #F5F5F5;
   --bg-footer: #2C2C2C;
+  --bg-footer-social-link: #4A90A4;
+  --bg-footer-social-link-hover: #D73027;
   --bg-card: #FFFFFF;
   --bg-card-section: #f8f9fa;
   --bg-card-image: #f5f8fa;
@@ -131,12 +133,21 @@ $theme: mat.define-theme((
   --text-on-secondary: #FFFFFF;
   --text-attention: #D73027;
   --text-attention-hover: #B8242A;
+  --text-featured-categories: var(--text-primary);
   --text-page-header: #2c3e50;
+  --text-footer-heading: var(--color-secondary);
+  --text-footer-link: #ccc;
+  --text-footer-link-hover: var(--color-primary);
+  --text-footer-bottom: #999999;
+  --text-footer-social-link: #FFFFFF;
   
   /* === COLORES DE BORDES === */
   --border-color-light: #f1f5f9;
   --border-color-normal: #E0E0E0;
   --border-color-dark: #B0B0B0;  
+  --border-color-header-search: transparent;
+  --border-color-featured-categories-circle: var(--color-primary);
+  --border-color-footer: #B0B0B0;
   --border-radius-sm: 5px;
   --border-radius-md: 10px;
   --border-radius-lg: 15px;
@@ -163,6 +174,11 @@ $theme: mat.define-theme((
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
   --shadow-xl: 0 2px 8px rgba(43, 43, 43, 0.4);
+  --shadow-featured-categories: var(--shadow-md);
+
+  /* === FILTERS === */
+  --filter-header-logo: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  --filter-footer-logo: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
   
   /* === TRANSICIONES === */
   --transition-fast: 0.15s ease;

@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
     this.authService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
       if (isAuth) {
-        console.log('Usuario logueado - Roles:', this.authService.getUserRoles());
+        //console.log('Usuario logueado - Roles:', this.authService.getUserRoles());
       }
     });    
     this.checkAuthStatus();
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
   checkAuthStatus() {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
-      console.log('Usuario logueado - Roles:', this.authService.getUserRoles());
+      //console.log('Usuario logueado - Roles:', this.authService.getUserRoles());
     }
   }
 }

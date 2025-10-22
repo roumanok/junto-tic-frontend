@@ -6,18 +6,18 @@
     </div>
   </section>
 
-  <app-highlights></app-highlights>
+  <app-highlights *ngIf="getHomeSectionsConfig().highlights"></app-highlights>
 
-  <app-featured-categories></app-featured-categories>
+  <app-featured-categories *ngIf="getHomeSectionsConfig().categories"></app-featured-categories>
 
-  <app-carousel title="{{'PAGES.HOME.NEWS.TITLE' | translate}}">
+  <app-carousel title="{{'PAGES.HOME.NEWS.TITLE' | translate}}" *ngIf="getHomeSectionsConfig().newsStrip">
     <app-listing-card 
       *ngFor="let listing of newestListings" 
       [listing]="listing">
     </app-listing-card>
   </app-carousel>
 
-  <app-carousel title="{{'PAGES.HOME.OFFERS.TITLE' | translate}}">
+  <app-carousel title="{{'PAGES.HOME.OFFERS.TITLE' | translate}}" *ngIf="getHomeSectionsConfig().offersStrip">
     <app-listing-card 
       *ngFor="let listing of offerListings" 
       [listing]="listing">

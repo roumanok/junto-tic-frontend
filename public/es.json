@@ -31,7 +31,8 @@
     "COMMON.MY_ACCOUNT": "Mi cuenta",
     "COMMON.MY_ORDERS": "Mis compras",
     "COMMON.MY_SALES": "Mis ventas",
-    "COMMON.MY_LISTINGS": "Mis artículos",    
+    "COMMON.MY_LISTINGS": "Mis artículos",   
+    "COMMON.ADVERTISER": "Anunciante", 
     "COMMON.FREE": "GRATIS",
     "COMMON.DNI": "DNI",
     "COMMON.CUIT": "CUIT / CUIL",
@@ -410,14 +411,18 @@
     "PAGES.MY_LISTINGS.DEACTIVATE_LISTING_SUCCESS": "Artículo desactivado exitosamente",
     "PAGES.MY_LISTINGS.UPDATE_STATUS_ERROR": "Error al actualizar el estado del artículo",
 
-
-
     "PAGES.CREATE_LISTING.TITLE" : "Crear artículo - {{communityName}}",
     "PAGES.CREATE_LISTING.DESCRIPTION" : "Crear nuevo artículo en {{communityName}}",
     "PAGES.CREATE_LISTING.SECTION_TITLE" : "Crear artículo",
 
     "PAGES.EDIT_LISTING.TITLE" : "Editar {{listingTitle}} - {{communityName}}",
     "PAGES.EDIT_LISTING.DESCRIPTION" : "Editar artículo en {{communityName}}",
-    "PAGES.EDIT_LISTING.SECTION_TITLE" : "Editar artículo"
-                
+    "PAGES.EDIT_LISTING.SECTION_TITLE" : "Editar artículo",
+
+    "PAGES.ADVERTISER.TITLE": "{{advertiserName}} - {{communityName}}",
+    "PAGES.ADVERTISER.DESCRIPTION": "Productos y servicios de {{advertiserName}} en {{communityName}}",
+    "PAGES.ADVERTISER.EMPTY_TITLE": "No hay artículos de este vendedor",
+    "PAGES.ADVERTISER.EMPTY_DESC": "No se encontraron artículos de este vendedor, intente buscar en otra sección.",
+    "PAGES.ADVERTISER.LOADING_ERROR": "Error al cargar los artículos del vendedor",
+    "PAGES.ADVERTISER.NOT_FOUND": "Vendedor no encontrado"
 }

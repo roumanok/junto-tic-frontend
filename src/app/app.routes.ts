@@ -20,6 +20,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/category/category.routes').then(m => m.categoryRoutes)
       },
       {
+        path: 'anunciante',
+        loadChildren: () => import('./features/advertiser/advertiser.routes').then(m => m.advertiserRoutes)
+      },
+      {
         path: 'novedades',
         loadChildren: () => import('./features/news/news.routes').then(m => m.newsRoutes)
       },

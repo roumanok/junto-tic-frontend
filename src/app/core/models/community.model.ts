@@ -14,12 +14,30 @@ export interface CommunityTheme {
   genVersion: number;
   resVersion: number;
   cdn: string; 
-  assets: {
-    logo?: string;
-    favicon?: string;
-  };
+  assets: CommunityAssetsConfig;
+  menuItems: CommunityMenuItemsConfig;
+  homeSections: CommunityHomeSectionsConfig
   i18n: Dict<string>;
   slider: { slides: Array<{ image: string; title?: string; link?: string }> };
   gtmContainerId?: string;
   ready: boolean;
+}
+
+export interface CommunityAssetsConfig {
+  logo?: string;
+  favicon?: string;
+}
+
+export interface CommunityMenuItemsConfig {
+  news?: boolean;
+  offers?: boolean;
+  sellerSignup?: boolean;
+}
+
+export interface CommunityHomeSectionsConfig {
+  highlights?: boolean,
+  categories?: boolean,
+  advertisers?: boolean,
+  newsStrip?: boolean,
+  offersStrip?: boolean
 }

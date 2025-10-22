@@ -2,7 +2,7 @@
   
   <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
 
-  <app-page-header [title]="category?.name || ''" [description]="category?.description"></app-page-header>
+  <app-page-header *ngIf="!error && !loading" [title]="category?.name || ''" [description]="category?.description"></app-page-header>
 
   <div class="container">
   

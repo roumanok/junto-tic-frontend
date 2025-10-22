@@ -3,7 +3,7 @@ import { Injectable, signal, computed, inject, Inject, PLATFORM_ID } from '@angu
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ApiService } from './api.service';
 import { CommunityService } from './community.service';
-import { CommunityTheme } from '../models/community.model';
+import { CommunityAssetsConfig, CommunityHomeSectionsConfig, CommunityMenuItemsConfig, CommunityTheme } from '../models/community.model';
 import { environment } from '../../../environments/environment';
 
 type Dict<T = any> = Record<string, T>;
@@ -11,7 +11,9 @@ type Dict<T = any> = Record<string, T>;
 declare global {
   interface Window {
     javascriptcommunityResourcesCallback?: (data: {
-      assets?: { logo?: string; favicon?: string };
+      assets?: CommunityAssetsConfig;
+      menuItems?: CommunityMenuItemsConfig;
+      homeSections?: CommunityHomeSectionsConfig;
       customCSS?: string;
       customJS?: string;
       i18nOverride?: string;
@@ -36,6 +38,18 @@ export class ThemeService {
     resVersion: 0,
     cdn: '',
     assets: {},
+    menuItems: {
+      news: true,
+      offers: true,
+      sellerSignup: true
+    },
+    homeSections: {
+      highlights: true,
+      categories: true,
+      advertisers: false,
+      newsStrip: true,
+      offersStrip: true
+    },
     i18n: {},
     slider: { slides: [] },
     ready: false,
@@ -46,6 +60,8 @@ export class ThemeService {
   readonly i18n = computed(() => this._state().i18n);
   readonly slider = computed(() => this._state().slider);
   readonly assets = computed(() => this._state().assets);
+  readonly menuItems = computed(() => this._state().menuItems);
+  readonly homeSections = computed(() => this._state().homeSections);
 
   constructor(    
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -82,6 +98,8 @@ export class ThemeService {
       resVersion,
       cdn,
       assets: cached?.assets ?? {},
+      menuItems: cached?.menuItems ?? {},
+      homeSections: cached?.homeSections ?? {},
       i18n: cached?.i18n ?? {},
       slider: cached?.slider ?? { slides: [] },
       ready: false,
@@ -105,6 +123,8 @@ export class ThemeService {
     const current = this._state();
     this.writeCache(cacheKey, {
       assets: current.assets,
+      menuItems: current.menuItems,
+      homeSections: current.homeSections,
       i18n: current.i18n,
       slider: current.slider,
       at: Date.now(),
@@ -115,7 +135,7 @@ export class ThemeService {
 
   // ---- HELPERS
 
-   async loadComponentStyles(name: 'home' | string): Promise<void> {
+  async loadComponentStyles(name: 'home' | string): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) return;
     const info = this.community.community?.();
     if (!info) return;
@@ -212,7 +232,7 @@ export class ThemeService {
     console.log('Cargando i18n base desde CDN...');
     console.log('CDN:', cdn);
     console.log('genVersion:', genVersion); 
-    const baseI18n = await this.fetchJSON<Dict<string>>(this.cdnURL(cdn, `gen/i18n/es.json?v=1.0.55`));
+    const baseI18n = await this.fetchJSON<Dict<string>>(this.cdnURL(cdn, `gen/i18n/es.json?v=1.0.58`));
     this._state.update(s => ({ ...s, i18n: { ...baseI18n, ...s.i18n } }));    
   }
 
@@ -221,16 +241,16 @@ export class ThemeService {
     slug: string,
     resVersion: number
   ): Promise<{
-    assets?: { logo?: string; favicon?: string };
+    assets?: CommunityAssetsConfig;
+    menuItems?: CommunityMenuItemsConfig;        
+    homeSections?: CommunityHomeSectionsConfig;
     customCSS?: string;
     customJS?: string;
     i18nOverride?: string;
     slider?: string;
   }> {
     return new Promise((resolve, reject) => {
-      // Registrar callback temporal
       window.javascriptcommunityResourcesCallback = (data) => {
-        // Actualizar assets en state (paths relativos al folder de la comunidad)
         if (data.assets) {
           this._state.update(s => ({
             ...s,
@@ -238,18 +258,26 @@ export class ThemeService {
               ...s.assets,
               ...data.assets,
             },
+            menuItems: {
+              ...s.menuItems,
+              ...data.menuItems,
+            },
+            homeSections: {
+              ...s.homeSections,
+              ...data.homeSections,
+            }
           }));
         }
         resolve(data);
-        // limpiar callback
         setTimeout(() => { delete window.javascriptcommunityResourcesCallback; }, 0);
       };
 
       const url = this.cdnURL(cdn, `cmn/${slug}/res-${resVersion}.js`);
+
       console.log('Cargando recursos de comunidad desde:', url);
-      const tag = document.createElement('script');
-      //tag.src = url + `?v=${Date.now()}`; 
-      tag.src = url; 
+      const tag = document.createElement('script');      
+      tag.src = url;
+      tag.src = `${url}?cb=${Date.now()}`; // evitar cache
       tag.async = true;
       tag.onerror = () => {
         delete window.javascriptcommunityResourcesCallback;
@@ -263,7 +291,9 @@ export class ThemeService {
     cdn: string,
     slug: string,
     res: {
-      assets?: { logo?: string; favicon?: string };
+      assets?: CommunityAssetsConfig;
+      menuItems?: CommunityMenuItemsConfig;        
+      homeSections?: CommunityHomeSectionsConfig;
       customCSS?: string;
       customJS?: string;
       i18nOverride?: string;
@@ -274,7 +304,8 @@ export class ThemeService {
   ): Promise<void> {
     // custom CSS
     if (res.customCSS) {
-      const cssUrl = this.cdnURL(cdn, `cmn/${slug}/${res.customCSS.replace('{version}', String(resVersion))}`);
+      let cssUrl = this.cdnURL(cdn, `cmn/${slug}/${res.customCSS.replace('{version}', String(resVersion))}`);
+      cssUrl = `${cssUrl}?cb=${Date.now()}`; // evitar cache
       await this.loadCSS(cssUrl);
     }
 
@@ -286,7 +317,8 @@ export class ThemeService {
 
     // i18n override
     if (res.i18nOverride) {
-      const i18nUrl = this.cdnURL(cdn, `cmn/${slug}/${res.i18nOverride}`);
+      let i18nUrl = this.cdnURL(cdn, `cmn/${slug}/${res.i18nOverride}`);
+      i18nUrl = `${i18nUrl}?cb=${Date.now()}`; // evitar cache
       try {
         const override = await this.fetchJSON<Dict<string>>(i18nUrl);
         this._state.update(s => ({ ...s, i18n: { ...s.i18n, ...override } }));
@@ -361,7 +393,15 @@ export class ThemeService {
 
   // ---- UTILS PÚBLICOS
 
-  /** Devuelve URL absoluta en CDN para un asset de comunidad (ej: "med/logo.png"). */
+  getMenuItemsConfig(): CommunityMenuItemsConfig {
+    console.log('[STATE]:', this._state());
+    return this._state().menuItems;
+  }
+
+  getHomeSectionsConfig(): CommunityHomeSectionsConfig {
+    return this._state().homeSections;
+  }
+
   assetUrl(relPath: string): string {
     const { cdn, slug } = this._state();
     return this.cdnURL(cdn, `cmn/${slug}/${relPath.replace(/^\/+/, '')}`);
@@ -370,6 +410,20 @@ export class ThemeService {
   getLogoUrl(): string {    
     if (this.assets().logo) {
       return this.assetUrl(this.assets().logo ? this.assets().logo as string : '/med/logo.png');
+    }
+    return 'placeholder.png';
+  }
+
+  getUrlWithCdn(relPath: string | null): string {
+    const { cdn } = this._state();
+    if (!relPath) return 'placeholder.png';
+    return this.cdnURL(cdn, `${relPath.replace(/^\/+/, '')}`);
+  } 
+
+  getAdvertiserLogoUrl(advertiser_id: string | null, relPath: string | null): string {
+    const { cdn, slug } = this._state();
+    if (advertiser_id && relPath) {
+      return this.cdnURL(cdn, `cmn/${slug}/med/adv/${advertiser_id}/${relPath.replace(/^\/+/, '')}`);
     }
     return 'placeholder.png';
   }

@@ -8,6 +8,7 @@ import { I18nService } from '../../core/services/i18n.service';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 import { CommunityService } from '../../core/services/community.service';
 import { ListingService } from '../../core/services/listing.service';
+import { ThemeService } from 'src/app/core/services/theme.service';
 import { Listing } from '../../core/models/listing.model';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { HighlightsComponent } from './components/highlights/highlights.component';
@@ -39,6 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private i18n = inject(I18nService);
   private community = inject(CommunityService);
   private listingService = inject(ListingService);
+  public themeService = inject(ThemeService);
   
   constructor(    
     @Inject(PLATFORM_ID) platformId: Object
@@ -87,6 +89,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  getHomeSectionsConfig() {    
+    return this.themeService.getHomeSectionsConfig();
   }
 
   private setupSEO(): void {    

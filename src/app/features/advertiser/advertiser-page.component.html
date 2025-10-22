@@ -1,0 +1,47 @@
+<div class="advertiser-page">
+
+    <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>    
+
+    <app-page-header *ngIf="!error && !loading" [title]="advertiser?.name || ''" [logoUrl]="getLogoUrl()"></app-page-header>
+
+    <div class="container">
+
+        <app-loading-spinner [message]="( 'COMMON.LOADING' | translate )" *ngIf="loading"></app-loading-spinner>
+
+        <app-error-state 
+        *ngIf="error && !loading"
+        [title]="'PAGES.ADVERTISER.LOADING_ERROR' | translate"
+        [message]="error"
+        [retryButtonText]="'COMMON.RETRY' | translate"
+        (retry)="handleRetry()">
+        </app-error-state>        
+
+        <app-empty-state 
+        *ngIf="!loading && !error && listings.length === 0"
+        [title]="'PAGES.ADVERTISER.EMPTY_TITLE' | translate"
+        [message]="'PAGES.ADVERTISER.EMPTY_DESC' | translate"
+        icon="fa-box"
+        [actionText]="'COMMON.BACK_TO_HOME' | translate"
+        actionRoute="/">
+        </app-empty-state>  
+
+      <!-- Listings Grid -->
+      <section class="listings-section" *ngIf="listings.length > 0">
+        <div class="listings-grid">
+          <app-listing-card
+            *ngFor="let listing of listings; trackBy: trackByListing"
+            [listing]="listing"
+          ></app-listing-card>
+        </div>
+
+        <!-- Pagination -->
+        <app-pagination
+          *ngIf="totalPages > 1"
+          [currentPage]="currentPage"
+          [totalPages]="totalPages"
+          [totalItems]="totalItems"
+          (pageChange)="onPageChange($event)"
+        ></app-pagination>
+      </section>
+  </div>
+</div>

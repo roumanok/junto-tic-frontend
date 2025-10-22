@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { MegaMenuComponent } from './mega-menu/mega-menu.component';
 import { I18nService } from 'src/app/core/services/i18n.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ThemeService } from 'src/app/core/services/theme.service';
 import { TranslatePipe } from 'src/app/shared/pipes/translate.pipe';
 
 @Component({
@@ -30,10 +31,11 @@ export class NavigationComponent implements OnInit {
   private router = inject(Router);
   private i18n = inject(I18nService);
   private authService = inject(AuthService);
+  public themeService = inject(ThemeService);
   
   featuredItems = [
-    { name: this.i18n.t('HEADER.MENU.NEWS'), url: '/novedades', active: false },
-    { name: this.i18n.t('HEADER.MENU.OFFERS'), url: '/ofertas', active: false }
+    { name: this.i18n.t('HEADER.MENU.NEWS'), url: '/novedades', active: false, enabled: this.getMenuItemsConfig().news },
+    { name: this.i18n.t('HEADER.MENU.OFFERS'), url: '/ofertas', active: false, enabled: this.getMenuItemsConfig().offers }
   ];
 
   constructor(
@@ -167,5 +169,9 @@ export class NavigationComponent implements OnInit {
   navigateToMyListings(): void {
     this.router.navigate(['/mi-cuenta/mis-articulos']);
     this.closeMegaMenu();
+  }
+
+  getMenuItemsConfig() {    
+    return this.themeService.getMenuItemsConfig();
   }
 }

@@ -7,6 +7,10 @@
 
 .header-info {
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
 }
 
 .page-title {
@@ -26,6 +30,10 @@
   max-width: 600px;
   margin: 0 auto;
   color: var(--text-page-header);
+}
+
+.header-logo{
+  max-height: 100px;
 }
 
 @media (max-width: 768px) {

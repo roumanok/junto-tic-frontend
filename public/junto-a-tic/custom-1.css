@@ -1,0 +1,52 @@
+/* ========================================
+   VARIABLES GLOBALES
+   ======================================== */
+
+:root {
+  /* === COLORES PRINCIPALES === */
+  --color-primary: #1e1248;
+  --color-primary-hover: #3d355b;
+  --color-secondary: #e50051;
+  --color-secondary-hover: #b40040;
+
+  /* === COLORES DE FONDO === */
+  --bg-main: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-navigation: #FFFFFF;
+  --bg-menu: #FFFFFF;
+  --bg-menu-item: #FFFFFF;
+  --bg-menu-item-hover: #f5f8fa;
+  --bg-menu-item-attention: #fef2f2;
+  --bg-menu-item-attention-hover: #fee2e2;
+  --bg-featured-categories: #FFFFFF;
+  --bg-featured-categories-circle: #FFFFFF;
+  --bg-highlight-strip: #F5F5F5;
+  --bg-footer: #ededed;
+  --bg-footer-social-link: var(--color-primary);
+  --bg-footer-social-link-hover: var(--color-secondary);
+
+  /* === COLORES DE TEXTO === */
+  --text-featured-categories: var(--color-primary);
+  --text-footer-heading: var(--color-secondary);
+  --text-footer-link: var(--color-primary);
+  --text-footer-link-hover: var(--color-primary-hover);
+  --text-footer-bottom: var(--color-primary);
+
+
+  /* === COLORES DE BORDES === */
+  --border-color-header-search: var(--color-secondary);
+  --border-color-featured-categories-circle: transparent;
+
+  /* === SOMBRAS === */  
+  --shadow-featured-categories: none;
+
+  /* === FILTERS === */
+  --filter-header-logo: none;
+  --filter-footer-logo: none;
+
+}
+
+
+/* ========================================
+   FIN - VARIABLES GLOBALES
+   ======================================== */

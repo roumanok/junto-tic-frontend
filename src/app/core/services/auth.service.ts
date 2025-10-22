@@ -66,9 +66,9 @@ export class AuthService {
       this.loadUserProfile();              
       if (this.isLoggedIn()) {
         await this.loadUserFromApi();
-        console.log('🔍 [INIT] Roles cargados al iniciar:', this.getUserRoles());
-        console.log('🔍 [INIT] isLoggedIn:', this.isLoggedIn());
-        console.log('🔍 [INIT] communityId:', this.communityService.communityId);
+        //console.log('🔍 [INIT] Roles cargados al iniciar:', this.getUserRoles());
+        //console.log('🔍 [INIT] isLoggedIn:', this.isLoggedIn());
+        //console.log('🔍 [INIT] communityId:', this.communityService.communityId);
       }
       this.isLoadingSubject$.next(false);            
     })
@@ -342,17 +342,17 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const isAuth = this.oauthService.hasValidAccessToken();
-    console.log('AuthService.isAuthenticated():', {
-      hasValidAccessToken: isAuth,
-      accessToken: this.oauthService.getAccessToken() ? 'exists' : 'missing'
-    });
+    // console.log('AuthService.isAuthenticated():', {
+    //   hasValidAccessToken: isAuth,
+    //   accessToken: this.oauthService.getAccessToken() ? 'exists' : 'missing'
+    // });
     return isAuth;
   }
 
   updateAuthenticationState(): void {
     const isAuth = this.isAuthenticated();
     this.isAuthenticatedSubject$.next(isAuth);
-    console.log('Estado de autenticación actualizado:', isAuth);
+    //console.log('Estado de autenticación actualizado:', isAuth);
   }
 
   checkAdvertiserAccess(): void {

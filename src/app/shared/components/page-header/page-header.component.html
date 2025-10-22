@@ -1,6 +1,7 @@
 <div class="page-header">
   <div class="container">
     <div class="header-info">
+      <img src="" *ngIf="logoUrl" [src]="logoUrl" alt="Logo" class="header-logo" />
       <h1 class="page-title">
         <i *ngIf="icon" [class]="'fas ' + icon"></i>
         {{ title }}
