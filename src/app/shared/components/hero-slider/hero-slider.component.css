@@ -76,7 +76,7 @@
   }
 
   .slide-cta {
-    background: var(--primary-color, #e91e63);
+    background: var(--color-primary);
     color: white;
     border: none;
     padding: 0.875rem 2.5rem;
@@ -87,12 +87,12 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+    box-shadow: var(--shadow-sm);
 
     &:hover {
-      background: var(--primary-dark, #c2185b);
+      background: var(--color-primary-hover);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(233, 30, 99, 0.5);
+      box-shadow: var(--shadow-md);
     }
 
     &:active {
@@ -145,7 +145,7 @@
 
       &.swiper-pagination-bullet-active {
         opacity: 1;
-        background: var(--primary-color, #e91e63);
+        background: var(--color-primary);
         transform: scale(1.2);
       }
     }
