@@ -10,6 +10,8 @@
 
   <app-featured-categories *ngIf="getHomeSectionsConfig().categories"></app-featured-categories>
 
+  <app-featured-advertisers *ngIf="getHomeSectionsConfig().advertisers"></app-featured-advertisers>
+
   <app-carousel title="{{'PAGES.HOME.NEWS.TITLE' | translate}}" *ngIf="getHomeSectionsConfig().newsStrip">
     <app-listing-card 
       *ngFor="let listing of newestListings" 

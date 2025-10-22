@@ -87,8 +87,27 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   private updateCarousel(): void {
-    this.offset = this.currentIndex * (this.itemWidth + this.gap);
+    const itemWidth = this.getCurrentItemWidth();
+    const gap = this.getCurrentGap();
+    this.offset = this.currentIndex * (itemWidth + gap);
     this.slideChange.emit(this.currentIndex);
+  }
+
+  private getCurrentItemWidth(): number {
+    if (typeof window === 'undefined') return this.itemWidth;
+    
+    const width = window.innerWidth;
+    if (width >= 768) return this.itemWidth; // Desktop: 280px
+    if (width >= 480) return 250;            // Mobile landscape: 250px
+    return 250;                              // Mobile portrait: 250px
+  }
+
+  private getCurrentGap(): number {
+    if (typeof window === 'undefined') return this.gap;
+    
+    const width = window.innerWidth;
+    if (width >= 768) return this.gap;  // Desktop: 32px
+    return 16;                          // Mobile: 16px
   }
 
   nextSlide(): void {

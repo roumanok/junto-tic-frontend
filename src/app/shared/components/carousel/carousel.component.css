@@ -69,7 +69,7 @@
   .carousel-section {
     margin: 2rem auto;
     padding: 0 1rem;
-  }
+  }  
 
   .carousel-title {
     font-size: 1.5rem;
@@ -79,7 +79,7 @@
     width: 40px;
     height: 40px;
     font-size: 1rem;
-  }
+  }  
 
   .carousel-track {
     gap: 1rem;
@@ -88,5 +88,11 @@
   .carousel-track ::ng-deep app-listing-card {
     flex: 0 0 250px;
     max-width: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-section {
+    padding: 0 0.5rem;
   }
 }

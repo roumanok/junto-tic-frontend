@@ -11,7 +11,7 @@ import { Advertiser } from '../../core/models/advertiser.model';
 import { SeoService } from '../../core/services/seo.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { CdnService } from 'src/app/core/services/cdn.service';
-import { ThemeService } from 'src/app/core/services/theme.service';
+import { AdvertiserService } from 'src/app/core/services/advertiser.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
@@ -58,7 +58,8 @@ export class AdvertiserPageComponent implements OnInit, OnDestroy {
     private apiService = inject(ApiService);
     private communityService = inject(CommunityService);
     private cdnService = inject(CdnService);
-    private themeService = inject(ThemeService);
+    private advertiserService = inject(AdvertiserService);
+
   
     constructor(
         private route: ActivatedRoute,
@@ -92,13 +93,13 @@ export class AdvertiserPageComponent implements OnInit, OnDestroy {
                 throw new Error(this.i18n.t("PAGES.ADVERTISER.NOT_FOUND") + `: ${slug}`);
             }
             
-            return this.loadAdvertiserInfo(advertiserId).pipe(
-            switchMap((advertiser: Advertiser) => {
-                this.advertiser = advertiser;
-                this.setupSEO();
-                this.buildBreadcrumbs();
-                return this.loadAdvertiserListings(advertiserId, this.currentPage);
-            })
+            return this.advertiserService.getAdvertiserById(advertiserId).pipe(
+                switchMap((advertiser: Advertiser) => {
+                    this.advertiser = advertiser;
+                    this.setupSEO();
+                    this.buildBreadcrumbs();
+                    return this.advertiserService.getAdvertiserListings(advertiserId, this.currentPage, this.itemsPerPage);
+                })
             );
         }),
         catchError(err => {
@@ -130,28 +131,7 @@ export class AdvertiserPageComponent implements OnInit, OnDestroy {
         const match = slug.match(/-aid-([a-f0-9-]+)$/i);
         return match ? match[1] : null;
     }
-
-    private loadAdvertiserInfo(advertiserId: string): Observable<Advertiser> {
-        return this.communityService.waitForId$().pipe(
-            switchMap((communityId: string) => {
-                const endpoint = `/communities/${communityId}/advertisers/${advertiserId}`;
-                return this.apiService.getSimple<Advertiser>(endpoint);
-            })
-        );
-    }
-
-    private loadAdvertiserListings(advertiserId: string, page: number = 1): Observable<ApiPaginatedResponse<Listing>> {
-        return this.communityService.waitForId$().pipe(
-        switchMap((communityId: string) => {
-            const endpoint = `/communities/${communityId}/advertisers/${advertiserId}/listings`;
-            const params = new HttpParams()
-            .set('page', page.toString())
-            .set('limit', this.itemsPerPage.toString());
-            return this.apiService.getPaginated<Listing>(endpoint, params);
-        })
-        );
-    }
-
+    
     private buildBreadcrumbs(): void {
         if (!this.advertiser) return;
 
@@ -186,9 +166,15 @@ export class AdvertiserPageComponent implements OnInit, OnDestroy {
         return listing.id;
     }
 
+    getDefaultLogo(): string {
+        return this.cdnService.getCdnUrl('/gen/med/advertiser-placeholder.png');
+    }
+
     getLogoUrl(): string {              
-        const logoRelPath = this.advertiser?.logo_url || null;      
-        return this.themeService.getUrlWithCdn(logoRelPath);
+        if (!this.advertiser?.logo_url) {
+            return this.getDefaultLogo();
+        }
+        return this.cdnService.getCdnUrl(this.advertiser.logo_url);
     }
 
     private setupSEO(): void {    

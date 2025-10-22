@@ -13,6 +13,7 @@ import { Listing } from '../../core/models/listing.model';
 import { ListingCardComponent } from '../../shared/components/listing-card/listing-card.component';
 import { HighlightsComponent } from './components/highlights/highlights.component';
 import { FeaturedCategoriesComponent } from './components/featured-categories/featured-categories.component';
+import { FeaturedAdvertisersComponent } from './components/featured-advertisers/featured-advertisers.component';
 import { CarouselComponent } from '../../shared/components/carousel/carousel.component';
 
 @Component({
@@ -23,6 +24,7 @@ import { CarouselComponent } from '../../shared/components/carousel/carousel.com
     HighlightsComponent,
     ListingCardComponent,
     FeaturedCategoriesComponent,
+    FeaturedAdvertisersComponent,
     CarouselComponent,
     TranslatePipe
   ],

@@ -413,18 +413,5 @@ export class ThemeService {
     }
     return 'placeholder.png';
   }
-
-  getUrlWithCdn(relPath: string | null): string {
-    const { cdn } = this._state();
-    if (!relPath) return 'placeholder.png';
-    return this.cdnURL(cdn, `${relPath.replace(/^\/+/, '')}`);
-  } 
-
-  getAdvertiserLogoUrl(advertiser_id: string | null, relPath: string | null): string {
-    const { cdn, slug } = this._state();
-    if (advertiser_id && relPath) {
-      return this.cdnURL(cdn, `cmn/${slug}/med/adv/${advertiser_id}/${relPath.replace(/^\/+/, '')}`);
-    }
-    return 'placeholder.png';
-  }
+  
 }

@@ -1,0 +1,24 @@
+<app-carousel 
+  [title]="'PAGES.HOME.ADVERTISERS.TITLE' | translate"
+  *ngIf="!loading && !error && advertisers.length > 0"
+>
+  <a 
+    *ngFor="let advertiser of advertisers; trackBy: trackByAdvertiser"
+    [routerLink]="getAdvertiserUrl(advertiser)"
+    class="advertiser-card"
+    [attr.aria-label]="'Ver tienda de ' + (advertiser.name || advertiser.slug)"
+  >
+    <div class="advertiser-logo">
+      <img 
+        [src]="getAdvertiserLogoUrl(advertiser)"
+        [alt]="advertiser.name || advertiser.slug"
+        class="logo-image"
+        loading="lazy"
+        (error)="onImageError($event)"
+      />
+    </div>
+    <div class="advertiser-name">
+      {{ advertiser.name || advertiser.slug }}
+    </div>
+  </a>
+</app-carousel>
