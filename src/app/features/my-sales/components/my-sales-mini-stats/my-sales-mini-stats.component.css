@@ -49,11 +49,7 @@
   transition: var(--transition-normal);
   border-radius: 12px;
   overflow: hidden;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-  }
+  background: var(--bg-page-section);
 
   mat-card-content {
     display: flex;

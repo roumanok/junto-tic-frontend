@@ -132,6 +132,19 @@
   box-shadow: var(--shadow-md);
 }
 
+.order-detail-page .status-card-with-button {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.order-detail-page .status-card-with-button .status-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .order-detail-page .status-card .status-icon {
   font-size: 2rem;
   color: var(--text-secondary);
@@ -155,6 +168,58 @@
   color: var(--text-primary);
   margin-top: 0.25rem;
 }
+
+.order-detail-page .btn-retry-payment,
+.order-detail-page .btn-download-ticket {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;  
+  cursor: pointer;
+  justify-content: center;
+  margin: 0 auto;
+  padding: var(--padding-button);
+  border: var(--border-button);
+  border-radius: var(--border-radius-button);
+  font-size: var(--font-size-button);
+  font-weight: var(--font-weight-button);  
+  transition: var(--transition-normal);    
+}
+
+.order-detail-page .btn-retry-payment {
+  background: var(--bg-retry-payment-button);
+  color: var(--text-retry-payment-button);
+}
+
+.order-detail-page .btn-retry-payment:hover:not(:disabled) {
+  background: var(--bg-retry-payment-button-hover);
+  color: var(--text-retry-payment-button-hover);
+  transform: var(--transform-button-hover);
+  box-shadow: var(--shadow-button-hover);
+}
+
+.order-detail-page .btn-retry-payment:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.order-detail-page .btn-download-ticket {
+  background: var(--bg-download-ticket-button);
+  color: var(--text-download-ticket-button);
+}
+
+.order-detail-page .btn-download-ticket:hover {
+  background: var(--bg-download-ticket-button-hover);
+  color: var(--text-download-ticket-button-hover);
+  transform: var(--transform-button-hover);
+  box-shadow: var(--shadow-button-hover);
+}
+
+.order-detail-page .btn-retry-payment i,
+.order-detail-page .btn-download-ticket i {
+  font-size: 1rem;
+}
+
 
 /* Status classes */
 .order-detail-page .status-card.status-pending {
@@ -219,6 +284,70 @@
 
 .order-detail-page .status-card.payment-refunded .status-icon {
   color: var(--payment-status-refunded);
+}
+
+.order-detail-page .status-card.payment-issued {
+  border-left-color: var(--payment-status-issued);
+}
+
+.order-detail-page .status-card.payment-issued .status-icon {
+  color: var(--payment-status-issued);
+}
+
+.order-detail-page .status-card.payment-in_process {
+  border-left-color: var(--payment-status-in_process);
+}
+
+.order-detail-page .status-card.payment-in_process .status-icon {
+  color: var(--payment-status-in_process);
+}
+
+.order-detail-page .status-card.payment-rejected {
+  border-left-color: var(--payment-status-rejected);
+}
+
+.order-detail-page .status-card.payment-rejected .status-icon {
+  color: var(--payment-status-rejected);
+}
+
+.order-detail-page .status-card.payment-overdue {
+  border-left-color: var(--payment-status-overdue);
+}
+
+.order-detail-page .status-card.payment-overdue .status-icon {
+  color: var(--payment-status-overdue);
+}
+
+.order-detail-page .status-card.payment-validate {
+  border-left-color: var(--payment-status-validate);
+}
+
+.order-detail-page .status-card.payment-validate .status-icon {
+  color: var(--payment-status-validate);
+}
+
+.order-detail-page .status-card.payment-review {
+  border-left-color: var(--payment-status-review);
+}
+
+.order-detail-page .status-card.payment-review .status-icon {
+  color: var(--payment-status-review);
+}
+
+.order-detail-page .status-card.payment-deferred {
+  border-left-color: var(--payment-status-deferred);
+}
+
+.order-detail-page .status-card.payment-deferred .status-icon {
+  color: var(--payment-status-deferred);
+}
+
+.order-detail-page .status-card.payment-objected {
+  border-left-color: var(--payment-status-objected);
+}
+
+.order-detail-page .status-card.payment-objected .status-icon {
+  color: var(--payment-status-objected);
 }
 
 .order-detail-page .order-content {

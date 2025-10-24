@@ -13,6 +13,7 @@ export interface OrderDetail {
   payment_status: string;
   created_at: string;
   paid_at: string;
+  external_transaction_id?: string;
   customer_identification_type: string;
   customer_identification_number: string;
   billing_name: string;
@@ -97,6 +98,11 @@ export interface SalesResponse {
     has_next: boolean;
     has_previous: boolean;
   };
+}
+
+export interface RetryPaymentResponse {
+  payment_url: string;
+  message?: string;
 }
 
 export type OrderStatus = 'pending' | 'processing' | 'delivered' | 'cancelled';

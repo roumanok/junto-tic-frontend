@@ -21,7 +21,7 @@
 
 .sale-detail-page .order-header-left h1 {
   margin: 0 0 0.5rem 0;
-  color: var(--text-primary);
+  color: var(--text-page-header);
   font-size: 1.75rem;
   font-weight: 600;
 }
@@ -59,11 +59,6 @@
   border-left: 4px solid var(--border-color-dark);
   box-shadow: var(--shadow-sm);
   transition: var(--transition-fast);
-}
-
-.sale-detail-page .status-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
 .sale-detail-page .status-card .status-icon {
@@ -123,6 +118,14 @@
   color: var(--order-status-cancelled);
 }
 
+.sale-detail-page .status-card.payment-issued {
+  border-left-color: var(--payment-status-issued);
+}
+
+.sale-detail-page .status-card.payment-issued .status-icon {
+  color: var(--payment-status-issued);
+}
+
 .sale-detail-page .status-card.payment-pending {
   border-left-color: var(--payment-status-pending);
 }
@@ -131,12 +134,68 @@
   color: var(--payment-status-pending);
 }
 
+.sale-detail-page .status-card.payment-in_process {
+  border-left-color: var(--payment-status-in_process);
+}
+
+.sale-detail-page .status-card.payment-in_process .status-icon {
+  color: var(--payment-status-in_process);
+}
+
 .sale-detail-page .status-card.payment-approved {
   border-left-color: var(--payment-status-approved);
 }
 
 .sale-detail-page .status-card.payment-approved .status-icon {
   color: var(--payment-status-approved);
+}
+
+.sale-detail-page .status-card.payment-rejected {
+  border-left-color: var(--payment-status-rejected);
+}
+
+.sale-detail-page .status-card.payment-rejected .status-icon {
+  color: var(--payment-status-rejected);
+}
+
+.sale-detail-page .status-card.payment-objected {
+  border-left-color: var(--payment-status-objected);
+}
+
+.sale-detail-page .status-card.payment-objected .status-icon {
+  color: var(--payment-status-objected);
+}
+
+.sale-detail-page .status-card.payment-deferred {
+  border-left-color: var(--payment-status-deferred);
+}
+
+.sale-detail-page .status-card.payment-deferred .status-icon {
+  color: var(--payment-status-deferred);
+}
+
+.sale-detail-page .status-card.payment-overdue {
+  border-left-color: var(--payment-status-overdue);
+}
+
+.sale-detail-page .status-card.payment-overdue .status-icon {
+  color: var(--payment-status-overdue);
+}
+
+.sale-detail-page .status-card.payment-review {
+  border-left-color: var(--payment-status-review);
+}
+
+.sale-detail-page .status-card.payment-review .status-icon {
+  color: var(--payment-status-review);
+}
+
+.sale-detail-page .status-card.payment-validate {
+  border-left-color: var(--payment-status-validate);
+}
+
+.sale-detail-page .status-card.payment-validate .status-icon {
+  color: var(--payment-status-validate);
 }
 
 .sale-detail-page .status-card.payment-cancelled {
@@ -184,25 +243,24 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 16px;
-  background: var(--color-primary);
-  color: var(--text-on-primary);
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
-  transition: var(--transition-normal);  
+  margin: 0 auto;
+  color: var(--text-button);
+  background: var(--bg-button);
+  padding: var(--padding-button);
+  border: var(--border-button);
+  border-radius: var(--border-radius-button);
+  font-size: var(--font-size-button);
+  font-weight: var(--font-weight-button);  
+  transition: var(--transition-normal); 
 }
 
-.sale-detail-page .btn-change-status:hover {
-  background: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
+.sale-detail-page .btn-change-status:hover,
 .sale-detail-page .btn-change-status:active {
-  transform: translateY(0);
+  background: var(--bg-button-hover);
+  color: var(--text-button-hover);
+  transform: var(--transform-button-hover);
+  box-shadow: var(--shadow-button-hover);
 }
 
 .sale-detail-page .btn-change-status i {
@@ -216,10 +274,10 @@
 }
 
 .sale-detail-page .order-info-wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2vw;        
-    margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2vw;        
+  margin-bottom: 30px;
 }
 
 /* Order Section */
@@ -293,16 +351,6 @@
   font-size: 1.1rem;
   color: var(--text-primary);
   font-weight: 500;
-}
-
-.sale-detail-page .order-item .item-details .item-seller {
-  margin: 0 0 0.75rem 0;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.sale-detail-page .order-item .item-details .item-seller i {
-  margin-right: 0.25rem;
 }
 
 .sale-detail-page .order-item .item-details .item-pricing {
@@ -421,56 +469,42 @@
   color: var(--color-primary);
 }
 
-.sale-detail-page .btn {
-  padding: 0.625rem 1.25rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-normal);
+.sale-detail-page .btn {  
+  cursor: pointer;  
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
+  padding: var(--padding-button);
+  border: var(--border-button);
+  border-radius: var(--border-radius-button);
+  font-size: var(--font-size-button);
+  font-weight: var(--font-weight-button);  
+  transition: var(--transition-normal); 
 }
 
 .sale-detail-page .btn.btn-goback {
-  background: var(--color-primary);
-  color: var(--text-on-primary);
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
+  background: var(--bg-button);
+  color: var(--text-button);
 }
 
-.order-detail-page .btn.btn-goback:hover {
-  background: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+.sale-detail-page .btn.btn-goback:hover {
+  background: var(--bg-button-hover);
+  color: var(--text-button-hover);
+  transform: var(--transform-button-hover);
+  box-shadow: var(--shadow-button-hover);
 }
 
 .sale-detail-page .btn.btn-print {
   background: var(--color-secondary);
   color: var(--text-on-secondary);
-  padding: 0.625rem 1.25rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-normal);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .sale-detail-page .btn.btn-print:hover {
   background: var(--color-secondary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  color: var(--text-on-secondary);
+  transform: var(--transform-button-hover);
+  box-shadow: var(--shadow-button-hover);
 }
 
 .sale-detail-page .btn i {

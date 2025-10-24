@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, tap, catchError } from 'rxjs';
+import { Observable, tap, catchError, map } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { ApiService } from '../../core/services/api.service';
-import { OrderDetail, OrdersResponse, SalesResponse } from '../models/order.model';
+import { OrderDetail, OrdersResponse, SalesResponse, RetryPaymentResponse } from '../models/order.model';
 import { I18nService } from './i18n.service';
 import { environment } from 'src/environments/environment';
 
@@ -81,6 +81,27 @@ export class OrderService {
     );
   }
 
+  retryPayment(paymentId: string): Observable<RetryPaymentResponse> {
+    return this.apiService.post<RetryPaymentResponse>(
+      `/payments/pagotic/retry-payment/${paymentId}`,
+      { payment_id: paymentId }
+    ).pipe(
+      tap((response) => {
+        console.log('Payment retry initiated:', response);
+      }),
+      map((response: any) => {
+          if (response.items !== undefined) {
+            return response.items;
+          }
+          return response;
+      }),
+      catchError((error) => {
+        console.error('Error retrying payment:', error);
+        throw error;
+      })
+    );
+  }
+
   getStatusLabel(status: string): string {
     const labels: { [key: string]: string } = {
       'pending': this.i18n.t('ORDER.STATUS.PENDING'),
@@ -94,9 +115,17 @@ export class OrderService {
   getPaymentStatusLabel(status: string): string {
     const labels: { [key: string]: string } = {
       'pending': this.i18n.t('ORDER.PAYMENT_STATUS.PENDING'),
+      'issued': this.i18n.t('ORDER.PAYMENT_STATUS.ISSUED'),
+      'in_process': this.i18n.t('ORDER.PAYMENT_STATUS.IN_PROCESS'),
       'approved': this.i18n.t('ORDER.PAYMENT_STATUS.APPROVED'),
+      'rejected': this.i18n.t('ORDER.PAYMENT_STATUS.REJECTED'),
       'cancelled': this.i18n.t('ORDER.PAYMENT_STATUS.CANCELLED'),
-      'refunded': this.i18n.t('ORDER.PAYMENT_STATUS.REFUNDED')
+      'refunded': this.i18n.t('ORDER.PAYMENT_STATUS.REFUNDED'),
+      'deferred': this.i18n.t('ORDER.PAYMENT_STATUS.DEFERRED'),
+      'objected': this.i18n.t('ORDER.PAYMENT_STATUS.OBJECTED'),
+      'review': this.i18n.t('ORDER.PAYMENT_STATUS.REVIEW'),
+      'validate': this.i18n.t('ORDER.PAYMENT_STATUS.VALIDATE'),
+      'overdue': this.i18n.t('ORDER.PAYMENT_STATUS.OVERDUE')
     };
     return labels[status] || status;
   }

@@ -37,6 +37,7 @@
    /* === BORDER RADIUS === */
    --border-radius-button: var(--border-radius-round);
    --border-radius-search-bar: var(--border-radius-round);
+   --border-radius-order-status-badge: var(--border-radius-md);
 
    /* === TIPOGRAFÍA === */
    --font-weight-featured-category-button: var(--font-weight-normal);

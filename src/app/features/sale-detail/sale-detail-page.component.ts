@@ -15,7 +15,6 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../shared/components/bre
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorStateComponent } from 'src/app/shared/components/error-state/error-state.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-sale-detail-page',
@@ -210,11 +209,11 @@ export class SaleDetailPageComponent implements OnInit, OnDestroy {
           });
 
           this.snackBar.open(
-            `Estado actualizado a: ${this.getStatusLabel(newStatus)}`,
-            'Cerrar',
+            this.i18n.t('PAGES.SALE_DETAIL.CHANGE_STATUS.SUCCESS'),
+            this.i18n.t('COMMON.CLOSE'),
             { duration: 3000 }
           );
-          console.log('Estado actualizado:', response);
+          //console.log('Estado actualizado:', response);
         },
         error: (error) => {
           console.error('Error actualizando estado:', error);

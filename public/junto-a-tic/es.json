@@ -4,14 +4,21 @@
   "COMMUNITY.SOCIAL.INSTAGRAM": "https://instagram.com/juntoatic",
   "COMMUNITY.SOCIAL.FACEBOOK": "https://facebook.com/juntoatic",
   "COMMUNITY.SOCIAL.LINKEDIN": "https://linkedin.com/juntoatic",  
+
+  "COMMON.MY_ORDERS": "Mis colaboraciones",
   
   "HEADER.TITLE": "Junto a TIC",
   "HEADER.SUBTITLE": "Red económica con propósito",
+
+  "HEADER.MENU.MY_ORDERS": "Mis colaboraciones",
   
   "SEARCH.PLACEHOLDER": "Buscar propósitos para colaborar...",
 
   "PAGES.HOME.HERO.TITLE": "Bienvenido a Junto a TIC",
   "PAGES.HOME.HERO.SUBTITLE": "Red económica con propósito",
+
+  "PAGES.LOGIN_REQ.DESCRIPTION": "Para realizar una colaboración necesitás tener una cuenta en {{communityName}}",
+  "PAGES.LOGIN_REQ.SECTION_DESCRIPTION": "Para realizar una colaboración necesitás tener una cuenta e iniciar sesión.",
 
   "PAGES.HOME.ADVERTISERS.TITLE": "Nuestros aliados",
 
@@ -24,6 +31,23 @@
   "PAGES.HOME:HIGHLIGHTS.THIRD.ICON": "fa-shield-halved",
   "PAGES.HOME:HIGHLIGHTS.THIRD.TITLE": "PAGO SEGURO",
   "PAGES.HOME:HIGHLIGHTS.THIRD.DESCRIPTION": "Para que ayudes con tranquilidad",
+
+  "PAGES.MY_ORDERS.TITLE": "Mis colaboraciones - {{communityName}}",
+  "PAGES.MY_ORDERS.DESCRIPTION": "Tus colaboraciones en {{communityName}}",      
+  "PAGES.MY_ORDERS.SECTION_TITLE": "Mis colaboraciones",
+  "PAGES.MY_ORDERS.LOADING_ERROR": "Error al cargar tus colaboraciones",
+  "PAGES.MY_ORDERS.EMPTY_TITLE": "No realizaste colaboraciones aún",
+  "PAGES.MY_ORDERS.EMPTY_DESC": "Tus colaboraciones aparecerán en esta sección cuando realices alguna.",
+
+  "PAGES.CHECKOUT.TITLE": "Colaborar - {{communityName}}",
+  "PAGES.CHECKOUT.DESCRIPTION": "Realizar colaboración en {{communityName}}",
+  "PAGES.CHECKOUT.NO_LISTING_DESC": "Por favor selecciona un artículo para continuar con la colaboración.",
+  "PAGES.CHECKOUT.CONTINUE_SHOPPING": "Seguir colaborando",  
+  "PAGES.CHECKOUT.SUMMARY": "Resumen de tu colaboración",
+
+  "PAGES.ORDER_DETAIL.DESCRIPTION": "Tu colaboración en {{communityName}}",   
+  "PAGES.ORDER_DETAIL.ORDER_DATE": "Fecha de colaboración",
+  "PAGES.ORDER_DETAIL.LISTINGS": "Colaboraciones realizadas",
 
   "LISTINGS.PURCHASE": "Colaborar",
   "LISTINGS.PURCHASE_ICON": "fa-hand-holding-hand",

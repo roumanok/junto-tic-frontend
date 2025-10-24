@@ -32,6 +32,7 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
   loading = signal(true);
   error = signal<string | null>(null);
   paymentStatusMessage = signal<{ type: 'success' | 'error' | 'warning' | null, text: string } | null>(null);
+  retryingPayment = signal(false);
 
   breadcrumbItems: BreadcrumbItem[] = [];
   
@@ -115,11 +116,21 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
 
     switch (status.toLowerCase()) {
       case 'pending':
-      case 'issued':
-      case 'in_process':
         this.paymentStatusMessage.set({
           type: 'warning',
           text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_PENDING')
+        });
+        break;
+      case 'issued':
+        this.paymentStatusMessage.set({
+          type: 'warning',
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_ISSUED')
+        });
+        break;
+      case 'in_process':
+        this.paymentStatusMessage.set({
+          type: 'warning',
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_IN_PROCESS')
         });
         break;
       case 'approved':
@@ -135,10 +146,15 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
         });
         break;
       case 'cancelled':
-      case 'overdue':
         this.paymentStatusMessage.set({
           type: 'error',
           text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_CANCELLED')
+        });
+        break;
+      case 'overdue':
+        this.paymentStatusMessage.set({
+          type: 'error',
+          text: this.i18n.t('PAGES.ORDER_DETAIL.PAYMENT_MSG_OVERDUE')
         });
         break;
       case 'refunded':
@@ -237,6 +253,63 @@ export class OrderDetailPageComponent implements OnInit, OnDestroy {
 
   goToListing(listingId: string): void {
     this.router.navigate(['/articulo', listingId]);
+  }
+
+  shouldShowRetryButton(): boolean {
+    const order = this.order();
+    if (!order) return false;
+    
+    const paymentStatus = order.payment_status.toLowerCase();
+    return paymentStatus === 'rejected' || 
+           paymentStatus === 'objected' || 
+           paymentStatus === 'overdue';
+  }
+
+  shouldShowDownloadTicketButton(): boolean {
+    const order = this.order();
+    if (!order) return false;
+    
+    return order.payment_status.toLowerCase() === 'approved' && 
+           !!order.external_transaction_id;
+  }
+
+  retryPayment(): void {
+    const order = this.order();
+    if (!order || !order.external_transaction_id) {
+      console.error('No se puede reintentar el pago: falta external_transaction_id');
+      return;
+    }
+
+    this.retryingPayment.set(true);
+    
+    this.orderService.retryPayment(order.external_transaction_id).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (response) => {
+        console.log('✅ Reintento de pago iniciado:', response);
+        // Redirigir al usuario a la URL de pago
+        if (response.payment_url) {
+          window.location.href = response.payment_url;
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error al reintentar el pago:', error);
+        this.retryingPayment.set(false);
+        // Aquí podrías mostrar un mensaje de error al usuario
+        alert(this.i18n.t('PAGES.ORDER_DETAIL.RETRY_PAYMENT_ERROR'));
+      }
+    });
+  }
+
+  downloadTicket(): void {
+    const order = this.order();
+    if (!order || !order.external_transaction_id) {
+      console.error('No se puede descargar el comprobante: falta external_transaction_id');
+      return;
+    }
+
+    const ticketUrl = `https://checkout.paypertic.com/app/${order.external_transaction_id}/ticket`;
+    window.open(ticketUrl, '_blank');
   }
   
 }

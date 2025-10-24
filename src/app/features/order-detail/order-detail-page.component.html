@@ -55,14 +55,36 @@
         </div>
       </div>
 
-      <div class="status-card" [ngClass]="'payment-' + order()!.payment_status">
-        <div class="status-icon">
-          <i class="fas fa-credit-card"></i>
+      <div class="status-card status-card-with-button" [ngClass]="'payment-' + order()!.payment_status">
+        <div class="status-content">
+          <div class="status-icon">
+            <i class="fas fa-credit-card"></i>
+          </div>
+          <div class="status-info">
+            <span class="status-label">{{ 'PAGES.ORDER_DETAIL.PAYMENT_STATUS' | translate }}</span>
+            <span class="status-value">{{ getPaymentStatusLabel(order()!.payment_status) }}</span>
+          </div>
         </div>
-        <div class="status-info">
-          <span class="status-label">{{ 'PAGES.ORDER_DETAIL.PAYMENT_STATUS' | translate }}</span>
-          <span class="status-value">{{ getPaymentStatusLabel(order()!.payment_status) }}</span>
-        </div>
+
+        <button 
+          *ngIf="shouldShowRetryButton()"
+          class="btn-retry-payment"
+          (click)="retryPayment(); $event.stopPropagation()"
+          [disabled]="retryingPayment()"
+        >
+          <i class="fas" [ngClass]="retryingPayment() ? 'fa-spinner fa-spin' : 'fa-redo'"></i>
+          {{ retryingPayment() ? ('PAGES.ORDER_DETAIL.RETRYING_PAYMENT' | translate) : ('PAGES.ORDER_DETAIL.RETRY_PAYMENT' | translate) }}
+        </button>
+
+        <button 
+          *ngIf="shouldShowDownloadTicketButton()"
+          class="btn-download-ticket"
+          (click)="downloadTicket(); $event.stopPropagation()"          
+        >
+          <i class="fas fa-download"></i>
+          {{ 'PAGES.ORDER_DETAIL.DOWNLOAD_TICKET' | translate }}
+        </button>
+
       </div>
 
       <div class="status-card">

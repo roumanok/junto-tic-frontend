@@ -164,8 +164,40 @@
   color: var(--payment-status-pending);
 }
 
+.my-orders-page .order-card-body .payment-status.payment-issued {
+  color: var(--payment-status-issued);
+}
+
+.my-orders-page .order-card-body .payment-status.payment-in_process {
+  color: var(--payment-status-in_process);
+}
+
 .my-orders-page .order-card-body .payment-status.payment-approved {
   color: var(--payment-status-approved);
+}
+
+.my-orders-page .order-card-body .payment-status.payment-rejected {
+  color: var(--payment-status-rejected);
+}
+
+.my-orders-page .order-card-body .payment-status.payment-overdue {
+  color: var(--payment-status-overdue);
+}
+
+.my-orders-page .order-card-body .payment-status.payment-review {
+  color: var(--payment-status-review);
+}
+
+.my-orders-page .order-card-body .payment-status.payment-validate {
+  color: var(--payment-status-validate);
+}
+
+.my-orders-page .order-card-body .payment-status.payment-objected {
+  color: var(--payment-status-objected);
+}
+
+.my-orders-page .order-card-body .payment-status.payment-deferred {
+  color: var(--payment-status-deferred);
 }
 
 .my-orders-page .order-card-body .payment-status.payment-cancelled {

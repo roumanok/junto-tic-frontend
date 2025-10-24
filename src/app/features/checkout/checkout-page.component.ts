@@ -551,7 +551,7 @@ export class CheckoutPageComponent implements OnInit {
         if (response.payment_url) {
           window.location.href = response.payment_url;
         } else {
-          this.router.navigate(['/payment-result']);
+          this.router.navigate(['/mi-cuenta/mis-compras']);
         }
       },
       error: (err) => {

@@ -49,9 +49,17 @@
     "ORDER.STATUS.CANCELLED": "Cancelado",
     "ORDER.STATUS.CANCELLED_DESCRIPTION": "Orden cancelada",
     "ORDER.PAYMENT_STATUS.PENDING": "Pendiente",
+    "ORDER.PAYMENT_STATUS.ISSUED": "Pago emitido",
+    "ORDER.PAYMENT_STATUS.IN_PROCESS": "Pago en proceso",
     "ORDER.PAYMENT_STATUS.APPROVED": "Pago aprobado",
-    "ORDER.PAYMENT_STATUS.CANCELLED": "Pago cancelado",
+    "ORDER.PAYMENT_STATUS.REJECTED": "Pago rechazado",
+    "ORDER.PAYMENT_STATUS.DEFERRED": "Pago diferido",
+    "ORDER.PAYMENT_STATUS.OBJECTED": "Pago objetado",
+    "ORDER.PAYMENT_STATUS.REVIEW": "Pago en revisión",
+    "ORDER.PAYMENT_STATUS.VALIDATE": "Pago por validar",
+    "ORDER.PAYMENT_STATUS.CANCELLED": "Pago cancelado",    
     "ORDER.PAYMENT_STATUS.REFUNDED": "Reembolsado",
+    "ORDER.PAYMENT_STATUS.OVERDUE": "Pago vencido",
 
     "ERRORS.NETWORK": "Error de conexión",
     "ERRORS.GENERAL": "Ha ocurrido un error inesperado",
@@ -203,6 +211,10 @@
     "PAGES.ORDER_DETAIL.PAYMENT_STATUS_APPROVED": "Aprobado",
     "PAGES.ORDER_DETAIL.PAYMENT_STATUS_CANCELED": "Cancelado",
     "PAGES.ORDER_DETAIL.PAYMENT_STATUS_REFUNDED": "Reembolsado",
+    "PAGES.ORDER_DETAIL.RETRY_PAYMENT": "Reintentar pago",
+    "PAGES.ORDER_DETAIL.RETRYING_PAYMENT": "Redirigiendo...",
+    "PAGES.ORDER_DETAIL.RETRY_PAYMENT_ERROR": "Ocurrió un error al intentar reintentar el pago. Por favor, intenta nuevamente más tarde.",
+    "PAGES.ORDER_DETAIL.DOWNLOAD_TICKET": "Descargar Comprobante",
     "PAGES.ORDER_DETAIL.SUMMARY": "Resumen de la orden",
     "PAGES.ORDER_DETAIL.PAID_AT": "Pagado el",
     "PAGES.ORDER_DETAIL.LISTINGS": "Artículos comprados",
@@ -227,8 +239,10 @@
     "PAGES.ORDER_DETAIL.CUSTOMER_IDENTIFICATION_NUMBER": "Número de documento",
     "PAGES.ORDER_DETAIL.BILLING_ADDRESS": "Dirección de facturación",
     
-
+    
     "PAGES.ORDER_DETAIL.PAYMENT_MSG_PENDING": "El pago está pendiente o en proceso",
+    "PAGES.ORDER_DETAIL.PAYMENT_MSG_ISSUED": "El pago ha sido emitido",   
+    "PAGES.ORDER_DETAIL.PAYMENT_MSG_IN_PROCESS": "El pago se encuentra en proceso",   
     "PAGES.ORDER_DETAIL.PAYMENT_MSG_APPROVED": "El pago ha sido aprobado",
     "PAGES.ORDER_DETAIL.PAYMENT_MSG_REJECTED": "El pago ha sido rechazado",
     "PAGES.ORDER_DETAIL.PAYMENT_MSG_CANCELED": "El pago ha sido cancelado",
@@ -237,6 +251,7 @@
     "PAGES.ORDER_DETAIL.PAYMENT_MSG_OBJECTED": "El pago se encuentra objetado",    
     "PAGES.ORDER_DETAIL.PAYMENT_MSG_REVIEW": "El pago se realizó y está siendo revisado por la entidad",
     "PAGES.ORDER_DETAIL.PAYMENT_MSG_VALIDATE": "El pago se realizó pero debe ser validado",
+    "PAGES.ORDER_DETAIL.PAYMENT_MSG_OVERDUE": "El pago se encuentra vencido",
 
 
 
@@ -334,6 +349,7 @@
     "PAGES.SALE_DETAIL.CHANGE_STATUS.NO_CHANGES_AVAILABLE" : "No hay cambios de estado disponibles. La orden ya fue entregada.",
     "PAGES.SALE_DETAIL.CHANGE_STATUS.CHANGE_BUTTON" : "Cambiar estado",
     "PAGES.SALE_DETAIL.CHANGE_STATUS.ERROR" : "Error al cambiar el estado de la orden", 
+    "PAGES.SALE_DETAIL.CHANGE_STATUS.SUCCESS" : "Estado de la orden cambiado exitosamente",   
     "PAGES.SALE_DETAIL.CREATED_AT": "Realizada el",
     "PAGES.SALE_DETAIL.STATUS": "Estado de la orden",
     "PAGES.SALE_DETAIL.ORDER_DATE": "Fecha de compra",
