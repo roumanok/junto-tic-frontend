@@ -14,8 +14,8 @@
 }
 
 .page-title {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-page-header);
+  font-weight: var(--font-weight-page-header);
   color: var(--text-page-header);
   margin: 0 0 0.5rem 0;
   display: flex;

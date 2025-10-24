@@ -163,6 +163,10 @@ export class ThemeService {
     this.document.head.appendChild(link);
   }
 
+  private getAvoidStaticCacheParameter(): string {    
+    return environment.avoidStaticCache === true ? '?cb=' + Date.now() : '';
+  }
+
   private cacheKey(slug: string, genV: number, resV: number) {
     return `theme_${slug}_${genV}_${resV}`;
   }
@@ -277,9 +281,8 @@ export class ThemeService {
       const url = this.cdnURL(cdn, `cmn/${slug}/res-${resVersion}.js`);
 
       console.log('Cargando recursos de comunidad desde:', url);
-      const tag = document.createElement('script');      
-      tag.src = url;
-      tag.src = `${url}?cb=${Date.now()}`; // evitar cache
+      const tag = document.createElement('script');               
+      tag.src = `${url}${this.getAvoidStaticCacheParameter()}`;
       tag.async = true;
       tag.onerror = () => {
         delete window.javascriptcommunityResourcesCallback;
@@ -307,20 +310,21 @@ export class ThemeService {
     // custom CSS
     if (res.customCSS) {
       let cssUrl = this.cdnURL(cdn, `cmn/${slug}/${res.customCSS.replace('{version}', String(resVersion))}`);
-      cssUrl = `${cssUrl}?cb=${Date.now()}`; // evitar cache
+      cssUrl = `${cssUrl}${this.getAvoidStaticCacheParameter()}`;
       await this.loadCSS(cssUrl);
     }
 
     // custom JS
     if (res.customJS) {
-      const jsUrl = this.cdnURL(cdn, `cmn/${slug}/${res.customJS.replace('{version}', String(resVersion))}`);
+      let jsUrl = this.cdnURL(cdn, `cmn/${slug}/${res.customJS.replace('{version}', String(resVersion))}`);
+      jsUrl = `${jsUrl}${this.getAvoidStaticCacheParameter()}`;
       await this.loadScript(jsUrl);
     }
 
     // i18n override
     if (res.i18nOverride) {
       let i18nUrl = this.cdnURL(cdn, `cmn/${slug}/${res.i18nOverride}`);
-      i18nUrl = `${i18nUrl}?cb=${Date.now()}`; // evitar cache
+      i18nUrl = `${i18nUrl}${this.getAvoidStaticCacheParameter()}`;
       try {
         const override = await this.fetchJSON<Dict<string>>(i18nUrl);
         this._state.update(s => ({ ...s, i18n: { ...s.i18n, ...override } }));
@@ -341,9 +345,8 @@ export class ThemeService {
           setTimeout(() => { delete window.javascriptsliderConfigCallback; }, 0);
         };
         const sliderUrl = this.cdnURL(cdn, `cmn/${slug}/${res.slider?.replace('{version}', String(resVersion))}`);
-        const tag = document.createElement('script');
-        tag.src = sliderUrl;
-        tag.src = sliderUrl + `?cb=${Date.now()}`; // evitar cache
+        const tag = document.createElement('script');        
+        tag.src = sliderUrl + this.getAvoidStaticCacheParameter();
         tag.async = true;
         tag.onerror = () => {
           delete window.javascriptsliderConfigCallback;

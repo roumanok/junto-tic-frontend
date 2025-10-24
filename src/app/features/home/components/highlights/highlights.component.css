@@ -60,7 +60,7 @@
 
 .highlight-content p {
   font-size: 0.85rem;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.4;  
 }

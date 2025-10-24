@@ -155,6 +155,8 @@ export class AuthService {
    */
   async loadUserFromApi(): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) return;
+
+    await this.communityService.ensureLoaded();
     
     const communityId = this.communityService.communityId;
     if (!communityId) {

@@ -15,6 +15,7 @@ export const environment = {
   googleAnalyticsId: '',
   enableDevTools: true,
   cacheTimeout: 5 * 60 * 1000,
+  avoidStaticCache: true,  
   logLevel: 'debug',
   features: {
     enablePWA: false,

@@ -24,6 +24,8 @@ $theme: mat.define-theme((
   --color-primary-hover: #2C5F6F;
   --color-secondary: #D73027;
   --color-secondary-hover: #B8242A;
+  --color-sections-bg: #f8f9fa;
+  --color-sections-bg-dark: #e9ecef;
 
   /* === COLORES DE ESTADOS DE ORDEN === */
   --order-status-pending: #957103;
@@ -65,39 +67,56 @@ $theme: mat.define-theme((
   --bg-header: var(--color-primary);
   --bg-navigation: #FFFFFF;
   --bg-menu: #FFFFFF;
+  --bg-menu-sidebar: #FFFFFF;
+  --bg-menu-rightbar: #FFFFFF;
   --bg-menu-item: #FFFFFF;
-  --bg-menu-item-hover: #f5f8fa;
+  --bg-menu-item-hover: var(--color-sections-bg);
   --bg-menu-item-attention: #fef2f2;
   --bg-menu-item-attention-hover: #fee2e2;
+  --bg-button: var(--color-primary);
+  --bg-button-hover: var(--color-primary-hover);
+  --bg-categories-button: var(--color-secondary);
+  --bg-categories-button-hover: var(--color-secondary-hover);
+  --bg-featured-category-button: none;
+  --bg-featured-category-button-hover: var(--color-primary-hover);
+  --bg-account-button: var(--color-primary);
+  --bg-account-button-hover: var(--color-primary-hover);
+  --bg-register-button: var(--color-secondary);
+  --bg-register-button-hover: var(--color-secondary-hover);
+  --bg-login-button: var(--color-primary);
+  --bg-login-button-hover: var(--color-primary-hover);
   --bg-featured-categories: #FFFFFF;
   --bg-featured-categories-circle: #FFFFFF;
   --bg-highlight-strip: #F5F5F5;
   --bg-footer: #2C2C2C;
-  --bg-footer-social-link: #4A90A4;
-  --bg-footer-social-link-hover: #D73027;
+  --bg-footer-social-link: var(--color-primary);
+  --bg-footer-social-link-hover: var(--color-secondary);
   --bg-card: #FFFFFF;
-  --bg-card-section: #f8f9fa;
-  --bg-card-image: #f5f8fa;
+  --bg-card-section: var(--color-sections-bg);
+  --bg-card-image: var(--color-sections-bg);
   --bg-card-badge-out-of-stock: #949494;
   --bg-carousel-button: #FFFFFF;
-  --bg-breadcrumb: #FFFFFF;
+  --bg-carousel-button-hover: var(--color-primary);
+  --bg-breadcrumb: var(--color-sections-bg);
   --bg-pagination-button: #FFFFFF;
   --bg-pagination-button-disabled: #f8f9fa;
-  --bg-page-header: #e9ecef;
-  --bg-page-section: #f8f9fa;
-  --bg-page-section-dark: #e9ecef;
+  --bg-page-header: var(--color-sections-bg);
+  --bg-page-section: var(--color-sections-bg);
+  --bg-page-section-dark: var(--color-sections-bg-dark);
   --bg-form-input: #FFFFFF;
   --bg-form-input-focus: #FFFFFF;
   --bg-form-button: #d6d6d6;
   --bg-form-button-hover: #bfbfbf;
   --bg-dialog: #FFFFFF;
   --bg-dialog-overlay: rgba(0,0,0,0.6);
-  --bg-listing-image: #f8f9fa;
+  --bg-listing-image: var(--color-sections-bg);
   --bg-listing-image-zoom: rgba(0,0,0,0.9);
   --bg-listing-image-nav: rgba(0,0,0,0.5);
   --bg-listing-image-nav-hover: rgba(0,0,0,0.8);
-  --bg-listing-detail: #f8f9fa;  
+  --bg-listing-detail: var(--color-sections-bg);
   --bg-listing-inactive-msg: #ffdede;
+  --bg-listing-card-button: var(--color-primary);
+  --bg-listing-card-button-hover: var(--color-primary-hover);
   --bg-my-orders-page: #ffffff;
   --bg-order-detail-page: #ffffff;
   --bg-my-sales-page: #ffffff;
@@ -133,8 +152,32 @@ $theme: mat.define-theme((
   --text-on-secondary: #FFFFFF;
   --text-attention: #D73027;
   --text-attention-hover: #B8242A;
+  --text-menu-item: var(--text-primary);
+  --text-menu-item-hover: var(--color-secondary);
+  --text-menu-title: var(--text-primary);
+  --text-menu-subitem: var(--color-primary);
+  --text-menu-subitem-hover: var(--color-secondary);
+  --text-breadcrumb-link: var(--text-secondary);
+  --text-breadcrumb-link-hover: var(--color-secondary);
+  --text-breadcrumb-link-current: var(--color-primary);
+  --text-button: var(--text-on-primary);
+  --text-button-hover: var(--text-on-primary);
+  --text-categories-button: var(--text-on-secondary);
+  --text-categories-button-hover: var(--text-on-secondary);
+  --text-featured-category-button: var(--text-primary);
+  --text-featured-category-button-hover: var(--text-on-primary);
+  --text-account-button: var(--text-on-primary); 
+  --text-account-button-hover: var(--text-on-primary); 
+  --text-login-button: var(--text-on-primary); 
+  --text-login-button-hover: var(--text-on-primary);
+  --text-register-button: var(--text-on-secondary); 
+  --text-register-button-hover: var(--text-on-secondary);
   --text-featured-categories: var(--text-primary);
-  --text-page-header: #2c3e50;
+  --text-carousel-button: var(--color-primary);
+  --text-carousel-button-hover: var(--text-on-primary);
+  --text-page-header: var(--text-primary);
+  --text-listing-card-button: var(--text-on-primary);
+  --text-listing-card-button-hover: var(--text-on-primary);
   --text-footer-heading: var(--color-secondary);
   --text-footer-link: #ccc;
   --text-footer-link-hover: var(--color-primary);
@@ -145,22 +188,76 @@ $theme: mat.define-theme((
   --border-color-light: #f1f5f9;
   --border-color-normal: #E0E0E0;
   --border-color-dark: #B0B0B0;  
-  --border-color-header-search: transparent;
+  --border-color-spinner-bottom: var(--text-on-primary);
+  --border-color-spinner-top: var(--color-primary);
+  --border-color-search-bar: transparent;
   --border-color-featured-categories-circle: var(--color-primary);
   --border-color-footer: #B0B0B0;
+
+  /* === BORDES === */
+  --border-search-bar: 2px solid var(--border-color-search-bar);
+  --border-button: none;
+  --border-categories-button: var(--border-button);
+  --border-featured-category-button: var(--border-button);
+  --border-account-button: var(--border-button);
+  --border-login-button: var(--border-button);
+  --border-register-button: var(--border-button);  
+  --border-listing-card-button: var(--border-button);
+  --border-carousel-button: 2px solid var(--color-primary);
+
+  /* === BORDER RADIUS === */
   --border-radius-sm: 5px;
-  --border-radius-md: 10px;
+  --border-radius-md: 8px;
   --border-radius-lg: 15px;
+  --border-radius-round: 50rem;
+  --border-radius-search-bar: var(--border-radius-md);
+  --border-radius-button: var(--border-radius-md);
+  --border-radius-categories-button: var(--border-radius-button);
+  --border-radius-featured-category-button: var(--border-radius-button);
+  --border-radius-account-button: var(--border-radius-button);
+  --border-radius-login-button: var(--border-radius-button);
+  --border-radius-register-button: var(--border-radius-button);  
+  --border-radius-listing-card-button: var(--border-radius-button);
+  --border-radius-carousel-button: var(--border-radius-round);
   
   /* === TIPOGRAFÍA === */
   --font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --font-size-base: 16px;
   --font-size-sm: 0.875rem;
   --font-size-lg: 1.125rem;
+  --font-size-search-bar: 1rem;
+  --font-size-page-header: 2.5rem;
+  --font-size-text-menu-subitem: 0.95rem;  
+  --font-size-breadcrumb-link: 0.9rem;
+  --font-size-button: 1rem;
+  --font-size-categories-button: var(--font-size-button);
+  --font-size-featured-category-button: var(--font-size-button);
+  --font-size-account-button: var(--font-size-button);
+  --font-size-login-button: var(--font-size-button);
+  --font-size-register-button: var(--font-size-button);  
+  --font-size-listing-card-button: var(--font-size-button);
+  --font-size-carousel-button: 1.5rem;
   --font-weight-normal: 400;
   --font-weight-semibold: 500;
   --font-weight-bold: 600;
   --font-weight-black: 700;
+  --font-weight-breadcrumb-link: var(--font-weight-normal);
+  --font-weight-breadcrumb-link-current: var(--font-weight-semibold);
+  --font-weight-page-header: var(--font-weight-black);
+  --font-weight-text-menu-subitem: var(--font-weight-bold);
+  --font-weight-categories-button: var(--font-weight-bold);
+  --font-weight-featured-category-button: var(--font-weight-bold);
+  --font-weight-account-button: var(--font-weight-bold);
+  --font-weight-login-button: var(--font-weight-bold);
+  --font-weight-register-button: var(--font-weight-bold);  
+  --font-weight-listing-card-button: var(--font-weight-semibold);
+  --font-weight-carousel-button: var(--font-weight-bold);
+  --text-transform-button: none;
+  --text-transform-account-button: var(--text-transform-button);
+  --text-transform-login-button: var(--text-transform-button);
+  --text-transform-register-button: var(--text-transform-button);
+  --text-transform-categories-button: var(--text-transform-button);
+  --text-transform-listing-card-button: var(--text-transform-button);
   
   /* === ESPACIADOS === */
   --spacing-xs: 0.5rem;
@@ -168,13 +265,23 @@ $theme: mat.define-theme((
   --spacing-md: 1.5rem;
   --spacing-lg: 2rem;
   --spacing-xl: 3rem;
+  --padding-button: 15px 25px;
+  --padding-categories-button: var(--padding-button);
+  --padding-featured-category-button: 5px 20px;
+  --padding-account-button: var(--padding-button);
+  --padding-login-button: var(--padding-button);
+  --padding-register-button: var(--padding-button);  
+  --padding-listing-card-button: var(--padding-button);
   
   /* === SOMBRAS === */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
   --shadow-xl: 0 2px 8px rgba(43, 43, 43, 0.4);
+  --shadow-header: var(--shadow-md);
+  --shadow-navigation: var(--shadow-md);
   --shadow-featured-categories: var(--shadow-md);
+  --shadow-button-hover: var(--shadow-md);   
 
   /* === FILTERS === */
   --filter-header-logo: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
@@ -184,6 +291,24 @@ $theme: mat.define-theme((
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
+
+  /* TRANSFORMACIONES */
+  --transform-button-hover: translateY(-2px);
+  --transform-categories-button-hover: var(--transform-button-hover);
+  --transform-featured-category-button-hover: none;
+  --transform-account-button-hover: var(--transform-button-hover);
+  --transform-login-button-hover: var(--transform-button-hover);
+  --transform-register-button-hover: var(--transform-button-hover);  
+  --transform-listing-card-button-hover: var(--transform-button-hover);
+  --transform-carousel-button-hover: var(--transform-button-hover);
+
+  /* === OTROS === */
+  --header-logo-height: 45px;
+  --header-logo-width: auto;
+  --search-bar-max-width: 800px;
+  --mega-menu-width: 900px;
+  --mega-menu-min-width: 300px;
+  --mega-menu-min-height: 380px;
   
 }
 

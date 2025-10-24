@@ -23,15 +23,15 @@
 }
 
 .advertiser-logo {
-  width: 140px;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-featured-categories-circle);
-  border-radius: 12px;
-  padding: 1rem;
-  overflow: hidden;
+    width: 80%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-featured-categories-circle);
+    border-radius: 12px;
+    padding: 0.5rem;
+    overflow: hidden;
 }
 
 .logo-image {

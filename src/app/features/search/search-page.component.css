@@ -11,9 +11,9 @@
 }
 
 .search-title {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-size: var(--font-size-page-header);
+  font-weight: var(--font-weight-page-header);
+  color: var(--text-page-header);
   margin-bottom: 0.5rem;
   line-height: 1.2;
 }
@@ -48,7 +48,7 @@
 }
 
 .filters-card {
-  background: var(--bg-page-header);
+  background: var(--bg-page-section);
   border-radius: 0.5rem;
   border: 1px solid var(--border-color-normal);
   padding: 1.5rem;

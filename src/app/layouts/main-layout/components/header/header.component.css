@@ -7,9 +7,8 @@
 
 .header {
   background: var(--bg-header);
-  color: var(--text-on-primary);
   padding: 1rem 0;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-header);
 }
 
 .header-container {
@@ -30,26 +29,26 @@
 }
 
 .logo-img {
-  height: 45px;
-  width: auto;
-  object-fit: contain;
+  height: var(--header-logo-height);
+  width: var(--header-logo-width);;  
   filter: var(--filter-header-logo);
+  object-fit: contain;
 }
 
 .search-container {
   flex: 1;
-  max-width: 800px;
+  max-width: var(--search-bar-max-width);
   position: relative;
 }
 
 .search-bar {
   width: calc(100% - 20px);
   padding: 12px 50px 12px 20px;
-  border: 2px solid var(--border-color-header-search);
-  border-radius: 10px;
-  font-size: 1rem;
+  border: var(--border-search-bar);
+  border-radius: var(--border-radius-search-bar);
+  font-size: var(--font-size-search-bar);
   outline: none;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-search-bar);
   box-sizing: border-box;
 }
 

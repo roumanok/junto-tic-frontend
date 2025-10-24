@@ -8,7 +8,7 @@
   "HEADER.TITLE": "Junto a TIC",
   "HEADER.SUBTITLE": "Red económica con propósito",
   
-  "SEARCH.PLACEHOLDER": "Buscar propósitos...",
+  "SEARCH.PLACEHOLDER": "Buscar propósitos para colaborar...",
 
   "PAGES.HOME.HERO.TITLE": "Bienvenido a Junto a TIC",
   "PAGES.HOME.HERO.SUBTITLE": "Red económica con propósito",
@@ -23,6 +23,10 @@
   "PAGES.HOME:HIGHLIGHTS.SECOND.DESCRIPTION": "Trabajamos con ONGs registradas.",
   "PAGES.HOME:HIGHLIGHTS.THIRD.ICON": "fa-shield-halved",
   "PAGES.HOME:HIGHLIGHTS.THIRD.TITLE": "PAGO SEGURO",
-  "PAGES.HOME:HIGHLIGHTS.THIRD.DESCRIPTION": "Para que ayudes con tranquilidad"
+  "PAGES.HOME:HIGHLIGHTS.THIRD.DESCRIPTION": "Para que ayudes con tranquilidad",
+
+  "LISTINGS.PURCHASE": "Colaborar",
+  "LISTINGS.PURCHASE_ICON": "fa-hand-holding-hand",
+  "LISTINGS.RELATED": "Otros propósitos"
 
 }

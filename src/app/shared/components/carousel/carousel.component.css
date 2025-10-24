@@ -26,21 +26,24 @@
 .carousel-btn {
   width: 50px;
   height: 50px;
-  background: var(--bg-carousel-button);
-  border: 2px solid var(--color-primary);
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  background: var(--bg-carousel-button);
+  border: var(--border-carousel-button);
+  border-radius: var(--border-radius-carousel-button);    
   transition: var(--transition-normal);
-  color: var(--color-primary);
-  font-size: 1.2rem;
+  color: var(--text-carousel-button);
+  font-size: var(--font-size-carousel-button);
+  font-weight: var(--font-weight-carousel-button);
 }
 
 .carousel-btn:hover:not(:disabled) {
-  background: var(--color-primary);
-  color: var(--bg-carousel-button);
+  background: var(--bg-carousel-button-hover);
+  color: var(--text-carousel-button-hover);
+  transform: var(--transform-carousel-button-hover);
+  box-shadow: var(--shadow-button-hover);
 }
 
 .carousel-btn:disabled {

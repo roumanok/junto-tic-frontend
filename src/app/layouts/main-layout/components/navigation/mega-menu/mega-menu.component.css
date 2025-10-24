@@ -3,7 +3,7 @@
   top: 100%;
   left: 0;
   background: var(--bg-menu);
-  min-width: 300px;
+  min-width: var(--mega-menu-min-width); 
   border-radius: 8px;
   box-shadow: var(--shadow-lg);
   opacity: 0;
@@ -12,7 +12,7 @@
   transition: var(--transition-slow);
   z-index: 1000;
   margin-top: 8px;
-  width: 900px; 
+  width: var(--mega-menu-width); 
   max-width: 92vw; 
   padding: 10px;
 }
@@ -31,17 +31,19 @@
 .mega-grid { 
   display: grid; 
   grid-template-columns: 260px 1fr; 
-  min-height: 380px; 
+  min-height: var(--mega-menu-min-height); 
 }
 
 .mega-left { 
-  border-right: 1px solid #eef1f4; 
+  border-right: 1px solid var(--border-color-normal); 
+  background: var(--bg-menu-sidebar);
   padding: 8px; 
 }
 
 .mega-right { 
   padding: 16px 18px; 
   overflow: auto; 
+  background: var(--bg-menu-rightbar);
 }
 
 /* ===== MOBILE HEADER ===== */
@@ -71,7 +73,7 @@
   border-radius: 8px; 
   cursor: pointer;
   font-weight: 700; 
-  color: var(--text-primary);
+  color: var(--text-menu-item);
   flex-direction: column;
 }
 
@@ -81,14 +83,10 @@
   transition: transform .18s;
 }
 
-.mega-parents li:hover { 
-  background: var(--bg-menu-item-hover); 
-  color: var(--color-primary-hover);
-}
-
+.mega-parents li:hover,
 .mega-parents li.active { 
   background: var(--bg-menu-item-hover); 
-  color: var(--color-primary-hover);
+  color: var(--text-menu-item-hover);
 }
 
 .mega-parents li.active .chev {
@@ -135,15 +133,15 @@
 .mega-col h4 { 
   margin: 0 0 8px; 
   font-size: .95rem; 
-  color: var(--color-primary); 
+  color: var(--text-menu-title); 
   font-weight: 600;
 }
 
 .subcategory-title-link {
   text-decoration: none;
-  color: var(--color-primary);
-  font-size: .95rem;
-  font-weight: 600;
+  color: var(--text-menu-subitem);
+  font-size: var(--font-size-text-menu-subitem);
+  font-weight: var(--font-weight-text-menu-subitem);
   display: block;
   padding: 6px 8px;
   border-radius: 6px;
@@ -152,7 +150,7 @@
 
 .subcategory-title-link:hover {
   background: var(--bg-menu-item-hover);
-  color: var(--color-primary-hover);
+  color: var(--text-menu-subitem-hover);
   text-decoration: none;
 }
 
